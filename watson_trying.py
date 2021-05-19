@@ -22,7 +22,13 @@ response = assistant.get_workspace(
 json_response = json.dumps(response, indent=2, ensure_ascii=False).encode('utf8')
 print("test_bank workspace:\n", json_response.decode(), "\n\n")
 
-
+# Print workspace entities
+response = assistant.list_entities(
+    workspace_id=workspace_id,
+    export=True
+).get_result()
+json_response = json.dumps(response, indent=2, ensure_ascii=False).encode('utf8')
+print("test_bank entities:\n", json_response.decode(), "\n\n")
 
 # Copied from example https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/assistant_v1.py
 # Little changes
