@@ -87,7 +87,7 @@ response =  {
 
 
 
-def parse_merge_entities(response: dict):
+def parse_merge_entities(response: dict) -> dict:
     """
     Parses entities from Watson response into more usable dict.
     If one entity is found in consecutive intervals, the intervals are merged 
@@ -134,7 +134,7 @@ print(entities)
 
 
 
-def get_entity_char_mapping(entities: dict):
+def get_entity_char_mapping(entities: dict) -> dict:
     """
     Maps entities to indices in input string.
 
@@ -167,7 +167,7 @@ print(char_ents_mapping)
 
 
 
-def drop_subsets(entities, mapping):
+def drop_subsets(entities: dict, mapping: dict) -> dict:
     """
     Drops entities, which map to a subset of indices of another entity of the same type.
     When in the input string is "name surname", the first entity matches only the "name" and 
@@ -184,6 +184,7 @@ def drop_subsets(entities, mapping):
     Returns:
     entities (dict): Dict in the same form as input with subset entities dropped.
     """
+    # create a copy to be able to manipulate the other dict
     entities_copy = deepcopy(entities)
     for entity, entity_dict in entities_copy.items():
         entity_start, entity_end = entity_dict["location"][0], entity_dict["location"][1]
