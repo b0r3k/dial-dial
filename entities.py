@@ -167,18 +167,18 @@ print(char_ents_mapping)
 
 
 
-def drop_subsets(entities: dict, mapping: dict) -> dict:
+def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
     """
     Drops entities, which map to a subset of indices of another entity of the same type.
     When in the input string is "name surname", the first entity matches only the "name" and 
     the second entity matches the whole "name surname", we can drop the first one.
 
     Parameters:
-    entities (dict): The dict of entities as return from parse_merge_entities,
-    i.e. entities[entity_type][value] = {Given entity information in dict}
+    entities (dict): The dict of entities of given type,
+    i.e. entities[value] = {Given entity information in dict}
 
-    mapping (dict): The dict of mapping as return from get_entity_char_mapping, 
-    i. e. mapping[entity_type][char_index] = [List of entity values mapped to this index]
+    mapping (dict): The dict of mapping of entities of given type, 
+    i.e. mapping[char_index] = [List of entity values of the type mapped to this index]
 
 
     Returns:
@@ -210,8 +210,8 @@ def drop_subsets(entities: dict, mapping: dict) -> dict:
     return entities
         
 # try on the example response
-entities = drop_subsets(entities["name"], char_ents_mapping["name"])
-print(entities)
+entities_name = drop_subsets_of_type(entities["name"], char_ents_mapping["name"])
+print(entities_name)
 
 
 
