@@ -2,7 +2,7 @@ import json
 from ibm_watson import AssistantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
-api_key = 'Zgr2__7dC38Vx7vSSOQjCxUHXaTU9TmWUwFx4M381t_N'
+api_key = ''
 
 # Authentication and assistant creation
 authenticator = IAMAuthenticator(api_key)
@@ -11,29 +11,34 @@ assistant.set_service_url('https://api.eu-de.assistant.watson.cloud.ibm.com')
 
 # List workspaces
 response = assistant.list_workspaces().get_result()
-print(json.dumps(response, indent=2))
+json_response = json.dumps(response, indent=2, ensure_ascii=False).encode('utf8')
+print("Assistant workspaces:\n", json_response.decode(), "\n\n")
+
+workspace_id='0599331d-5a46-4621-9837-36079e355ece'
 
 # Print workspace with hardcoded id
 response = assistant.get_workspace(
     workspace_id='0599331d-5a46-4621-9837-36079e355ece', export=True).get_result()
-print(json.dumps(response, indent=2))
+json_response = json.dumps(response, indent=2, ensure_ascii=False).encode('utf8')
+print("test_bank workspace:\n", json_response.decode(), "\n\n")
 
 
 
 # Copied from example https://github.com/watson-developer-cloud/python-sdk/blob/master/examples/assistant_v1.py
+# Little changes
 
-# #  message
-# response = assistant.message(
-#     workspace_id=workspace_id,
-#     input={
-#         'text': 'What\'s the weather like?'
-#     },
-#     context={
-#         'metadata': {
-#             'deployment': 'myDeployment'
-#         }
-#     }).get_result()
-# print(json.dumps(response, indent=2))
+#  message
+response = assistant.message(
+    workspace_id=workspace_id,
+    input={
+        'text': 'Pošli 100 Janovi'
+    },
+    context={
+        'metadata': {
+        }
+    }).get_result()
+json_response = json.dumps(response, indent=2, ensure_ascii=False).encode('utf8')
+print("Response:\n", json_response.decode(), "\n\n")
 
 # response = assistant.list_workspaces().get_result()
 # print(json.dumps(response, indent=2))
