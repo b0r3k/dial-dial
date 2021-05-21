@@ -2,90 +2,92 @@ from collections import defaultdict
 from copy import deepcopy
 
 # example response to work with
-response =  {
-  "intents": [
-    {
-      "intent": "send_money",
-      "confidence": 0.8539069175720215
-    }
-  ],
-  "entities": [
-    {
-      "entity": "name",
-      "location": [
-        10,
-        15
-      ],
-      "value": "Petr Nosek",
-      "confidence": 0.83
-    },
-    {
-      "entity": "name",
-      "location": [
-        10,
-        15
-      ],
-      "value": "Petr Svoboda",
-      "confidence": 0.83
-    },
-    {
-      "entity": "name",
-      "location": [
-        16,
-        25
-      ],
-      "value": "Petr Svoboda",
-      "confidence": 0.7
-    }
-  ],
-  "input": {
-    "text": "Pošli 100 Petru Svobodovi."
-  },
-  "output": {
-    "generic": [
-      {
-        "response_type": "text",
-        "text": "Nerozumím. Zkuste přeformulovat váš dotaz."
-      }
-    ],
-    "text": [
-      "Nerozumím. Zkuste přeformulovat váš dotaz."
-    ],
-    "nodes_visited": [
-      "V ostatních případech"
-    ],
-    "log_messages": []
-  },
-  "context": {
-    "metadata": {
-      "user_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4"
-    },
-    "conversation_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4",
-    "system": {
-      "initialized": True,
-      "dialog_stack": [
+def return_test_response():
+    response =  {
+    "intents": [
         {
-          "dialog_node": "root"
+        "intent": "send_money",
+        "confidence": 0.8539069175720215
         }
-      ],
-      "dialog_turn_counter": 1,
-      "dialog_request_counter": 1,
-      "_node_output_map": {
-        "V ostatních případech": {
-          "0": [
-            0
-          ]
+    ],
+    "entities": [
+        {
+        "entity": "name",
+        "location": [
+            10,
+            15
+        ],
+        "value": "Petr Nosek",
+        "confidence": 0.83
+        },
+        {
+        "entity": "name",
+        "location": [
+            10,
+            15
+        ],
+        "value": "Petr Svoboda",
+        "confidence": 0.83
+        },
+        {
+        "entity": "name",
+        "location": [
+            16,
+            25
+        ],
+        "value": "Petr Svoboda",
+        "confidence": 0.7
         }
-      },
-      "last_branch_node": "V ostatních případech",
-      "branch_exited": True,
-      "branch_exited_reason": "completed"
+    ],
+    "input": {
+        "text": "Pošli 100 Petru Svobodovi."
+    },
+    "output": {
+        "generic": [
+        {
+            "response_type": "text",
+            "text": "Nerozumím. Zkuste přeformulovat váš dotaz."
+        }
+        ],
+        "text": [
+        "Nerozumím. Zkuste přeformulovat váš dotaz."
+        ],
+        "nodes_visited": [
+        "V ostatních případech"
+        ],
+        "log_messages": []
+    },
+    "context": {
+        "metadata": {
+        "user_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4"
+        },
+        "conversation_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4",
+        "system": {
+        "initialized": True,
+        "dialog_stack": [
+            {
+            "dialog_node": "root"
+            }
+        ],
+        "dialog_turn_counter": 1,
+        "dialog_request_counter": 1,
+        "_node_output_map": {
+            "V ostatních případech": {
+            "0": [
+                0
+            ]
+            }
+        },
+        "last_branch_node": "V ostatních případech",
+        "branch_exited": True,
+        "branch_exited_reason": "completed"
+        }
+    },
+    "user_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4"
     }
-  },
-  "user_id": "07ba4cb2-9e12-4edf-b2aa-e629a6b79ed4"
-}
+    return response
 
-
+# response = return_test_response()
 
 def parse_merge_entities(response: dict) -> dict:
     """
@@ -129,8 +131,8 @@ def parse_merge_entities(response: dict) -> dict:
     return entities
 
 # try on the example response
-entities = parse_merge_entities(response)
-print(entities)
+# entities = parse_merge_entities(response)
+# print(entities)
 
 
 
@@ -162,8 +164,8 @@ def get_entity_char_mapping(entities: dict) -> dict:
     return char_ents_mapping
 
 # try on the example response
-char_ents_mapping = get_entity_char_mapping(entities)
-print(char_ents_mapping)
+# char_ents_mapping = get_entity_char_mapping(entities)
+# print(char_ents_mapping)
 
 
 
@@ -210,8 +212,8 @@ def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
     return entities
         
 # try on the example response
-entities_name = drop_subsets_of_type(entities["name"], char_ents_mapping["name"])
-print(entities_name)
+# entities_name = drop_subsets_of_type(entities["name"], char_ents_mapping["name"])
+# print(entities_name)
 
 
 
