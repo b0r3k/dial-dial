@@ -1,4 +1,5 @@
 import json, pickle
+import entities
 
 class NEDisambiguator():
     """
@@ -71,3 +72,15 @@ class NEDisambiguator():
             model = pickle.loads(models[model_id]["model"])
         self.model = model
         return model
+
+
+    def get_match(model_id, wa_response, stt_response, wav):
+        ents = entities.parse_merge_entities(wa_response)
+        char_ents_mapping = entities.get_entity_char_mapping(ents)
+        ents = entities.drop_subsets_of_type(ents["name"], char_ents_mapping["name"])
+
+        with open("models.json", encoding="utf-8") as models_file:
+            models = json.load(models_file)
+            contacts = models[model_id]["contacts"]
+
+        
