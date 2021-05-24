@@ -75,6 +75,24 @@ class NEMatcher():
 
 
     def get_match(self, model_id, wa_response, stt_response, wav):
+        """
+        Tries to match NEs from wa_response to contacts assigned to given model_id.
+
+
+        Parameters:
+        model_id (int): id of given user's model.
+        
+        wa_response (dict): Response from the WA.
+
+        stt_response: Speech-to-text with metadata.
+
+        wav: Audiofile with user's input.
+
+
+        Returns:
+        result_ids (dict): dictionary result[id] = confidence
+            Confidence that given contact id was in the user's input.
+        """
         # get the entities from WA response, merge consecutive occurences into one
         ents = entities.parse_merge_entities(wa_response)
         char_ents_mapping = entities.get_entity_char_mapping(ents)
@@ -87,6 +105,27 @@ class NEMatcher():
             self.contacts = models[model_id]["contacts"]
             self.model = models[model_id]["model"]
         
-
-
+        # try to match WA returned entities to the contact list
+        result_ids = {}
+        for entity in ents:
+            wa_confidence = ents[entity]["confidence"]
+            # exact match
+            if entity in self.contacts:
+                ids = self.contacts[entity]
+                for id in ids:
+                    confidence = wa_confidence * (1 / len(ids))
+                    # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
+                    result_ids[id] = round(confidence, 1)
             
+            # not matched, try split by space and match parts
+            elif len(parts := entity.split()) > 1:
+                num_parts_matching = sum([part in self.contacts for part in parts])
+                for part in parts:
+                    if part in self.contacts:
+                        ids = self.contacts[part]
+                        for id in ids:
+                            confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching)
+                            # TODO same as above
+                            result_ids[id] = round(confidence, 1)
+        
+        return result_ids
