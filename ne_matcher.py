@@ -153,7 +153,7 @@ class NEMatcher():
                 for id in ids:
                     confidence = wa_confidence * (1 / len(ids))
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
-                    result_ids[id] = round(confidence, 1)
+                    result_ids[id] = round(confidence, 2)
             
             # not matched, try split by space and match parts
             elif len(parts := entity.split()) > 1:
@@ -164,6 +164,6 @@ class NEMatcher():
                         for id in ids:
                             confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching)
                             # TODO same as above
-                            result_ids[id] = round(confidence, 1)
+                            result_ids[id] = round(confidence, 2)
         
         return result_ids
