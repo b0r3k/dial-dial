@@ -1,9 +1,9 @@
 import json, pickle
 import entities
 
-class NEDisambiguator():
+class NEMatcher():
     """
-    Component which disambiguates named entities.
+    Component which tries to match named entities recognized by WA to some contact list.
     """
     def __init__(self) -> None:
         self.model = None
@@ -74,13 +74,19 @@ class NEDisambiguator():
         return model
 
 
-    def get_match(model_id, wa_response, stt_response, wav):
+    def get_match(self, model_id, wa_response, stt_response, wav):
+        # get the entities from WA response, merge consecutive occurences into one
         ents = entities.parse_merge_entities(wa_response)
         char_ents_mapping = entities.get_entity_char_mapping(ents)
+        # if more entities match same segment, use only the biggest match
         ents = entities.drop_subsets_of_type(ents["name"], char_ents_mapping["name"])
 
+        # load the model and contacts
         with open("models.json", encoding="utf-8") as models_file:
             models = json.load(models_file)
-            contacts = models[model_id]["contacts"]
-
+            self.contacts = models[model_id]["contacts"]
+            self.model = models[model_id]["model"]
         
+
+
+            
