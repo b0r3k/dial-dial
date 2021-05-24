@@ -1,4 +1,5 @@
 import json, pickle
+from json.decoder import JSONDecodeError
 import entities
 
 class NEMatcher():
@@ -24,13 +25,17 @@ class NEMatcher():
         """
         self.model = model
         with open("models.json", encoding="utf-8") as models_file:
-            models = json.load(models_file)
-            models["_last_id"] = models["_last_id"] + 1 if "_last_id" in models else 0
-            id = models["_last_id"]
-            if not id in models:
-                models[id] = {}
-            models[id]["model"] = pickle.dumps(model)
-            json.dump(models, "models.json")
+            try:
+                models = json.load(models_file)
+            except JSONDecodeError:
+                models = {}
+            else:
+                models["_last_id"] = models["_last_id"] + 1 if "_last_id" in models else 0
+                id = models["_last_id"]
+                if not id in models:
+                    models[id] = {}
+                models[id]["model"] = pickle.dumps(model)
+                json.dump(models, models_file)
         return id
 
 
@@ -50,12 +55,16 @@ class NEMatcher():
         """
         self.contacts = contacts
         with open("models.json", encoding="utf-8") as models_file:
-            models = json.load(models_file)
-            models[model_id]["contacts"] = contacts
-            json.dump(models, "models.json")
+            try:
+                models = json.load(models_file)
+                models[model_id]["contacts"] = contacts
+            except (JSONDecodeError, KeyError) as exception:
+                raise KeyError("Given model_id does not exist!") from exception
+            else:
+                json.dump(models, models_file)
 
 
-    def get_user_model(self, model_id):
+    def get_user_model(self, model_id: int):
         """
         Returns user's model based on the id given.
 
@@ -68,13 +77,17 @@ class NEMatcher():
         model: ML model of given user
         """
         with open("models.json", encoding="utf-8") as models_file:
-            models = json.load(models_file)
-            model = pickle.loads(models[model_id]["model"])
-        self.model = model
-        return model
+            try:
+                models = json.load(models_file)
+                model = pickle.loads(models[model_id]["model"])
+            except (JSONDecodeError, KeyError) as exception:
+                raise KeyError("Given model_id does not exist!") from exception
+            else:
+                self.model = model
+                return model
 
 
-    def get_match(self, model_id, wa_response, stt_response, wav):
+    def get_match(self, model_id: int, wa_response: dict, stt_response, wav):
         """
         Tries to match NEs from wa_response to contacts assigned to given model_id.
 
@@ -101,9 +114,12 @@ class NEMatcher():
 
         # load the model and contacts
         with open("models.json", encoding="utf-8") as models_file:
-            models = json.load(models_file)
-            self.contacts = models[model_id]["contacts"]
-            self.model = models[model_id]["model"]
+            try:
+                models = json.load(models_file)
+                self.contacts = models[model_id]["contacts"]
+                self.model = models[model_id]["model"]
+            except (JSONDecodeError, KeyError) as exception:
+                raise KeyError("Given model_id does not exist or it doesn't have contacts assigned!") from exception
         
         # try to match WA returned entities to the contact list
         result_ids = {}
