@@ -177,7 +177,7 @@ class NEMatcher():
                     if part in self.contacts_dict:
                         ids = self.contacts_dict[part]
                         for id in ids:
-                            confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching)
+                            confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching) * (1 / num_ents_matching)
                             # TODO same as above
                             if id in result_ids:
                                 confidence = max(confidence, result_ids[id])
