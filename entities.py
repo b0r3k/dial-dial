@@ -218,7 +218,7 @@ def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
 
 
 
-def get_entity_starts_ends_mapping(entities: dict) -> Tuple(dict, dict):
+def get_entity_starts_ends_mapping(entities: dict) -> Tuple[dict, dict]:
     """
     Maps entities to their start and end indices.
 
