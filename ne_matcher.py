@@ -133,10 +133,15 @@ class NEMatcher():
             Confidence that given contact id was in the user's input.
         """
         # get the entities from WA response, merge consecutive occurences into one
-        ents = entities.parse_merge_entities(wa_response)
-        char_ents_mapping = entities.get_entity_char_mapping(ents)
+        ents = entities.parse_merge_same_entities(wa_response)["name"]
+        # get the starts and ends dictionaries
+        starts, ends = entities.get_entity_starts_ends_mapping(ents)
+        # merge different consecutive entitites
+        ents = entities.merge_different_consecutive(ents, starts, ends)
+        # get the new mapping
+        starts, ends = entities.get_entity_starts_ends_mapping(ents)
         # if more entities match same segment, use only the biggest match
-        ents = entities.drop_subsets_of_type(ents["name"], char_ents_mapping["name"])
+        ents = entities.drop_subsets(ents, starts, ends)
 
         # load the model and contacts
         with open("models.json", encoding="utf-8", mode="r") as models_file:
