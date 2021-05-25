@@ -41,14 +41,14 @@ response =  {
     ]
 }
 
-ents = entities.parse_merge_same_entities(response)["name"]
-starts, ends = entities.get_entity_starts_ends_mapping(ents)
-ents = entities.merge_different_consecutive(ents, starts, ends)
-starts, ends = entities.get_entity_starts_ends_mapping(ents)
-ents = entities.drop_subsets(ents, starts, ends)
-print(ents)
+# ents = entities.parse_merge_same_entities(response)["name"]
+# starts, ends = entities.get_entity_starts_ends_mapping(ents)
+# ents = entities.merge_different_consecutive(ents, starts, ends)
+# starts, ends = entities.get_entity_starts_ends_mapping(ents)
+# ents = entities.drop_subsets(ents, starts, ends)
+# print(ents)
 
-# resp = entities.return_test_response()
+# response = entities.return_test_response()
 # conts_dict, conts_list = contacts.wa_contacts_to_dict_and_list(contacts.return_test_contacts())
 
 # id = matcher.set_user_model("Here will be ML model.")
@@ -57,8 +57,8 @@ print(ents)
 # matcher.set_contacts(id, conts_dict, conts_list)
 # print("Contacts saved to this id.")
 
-# id = "0"
+id = "0"
 
-# matched_ids = matcher.get_match(id, resp, None, None)
-# print("Matched ids with confidences:")
-# print(matched_ids)
+matched_ids = matcher.get_match(id, response, None, None)
+print("Matched ids with confidences:")
+print(matched_ids)
