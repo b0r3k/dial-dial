@@ -159,9 +159,9 @@ def merge_different_consecutive(entities: dict, starts: dict, ends: dict) -> dic
             combinations = [(entities[first], entities[second]) for first in ends[end] for second in starts[cons_start] if (' ' not in first) and (' ' not in second)]
             for first, second in combinations:
                 # remove the individual occurences
-                if first["value"] in entities:
+                if first["value"] in entities_copy:
                     del entities_copy[first["value"]]
-                if second["value"] in entities:
+                if second["value"] in entities_copy:
                     del entities_copy[second["value"]]
                 # create the combination occurence
                 new_value = first["value"] + ' ' + second["value"]
