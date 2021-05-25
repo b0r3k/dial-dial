@@ -1,5 +1,5 @@
 from collections import defaultdict
-import json, pickle
+import json
 from json.decoder import JSONDecodeError
 import entities
 
@@ -73,11 +73,10 @@ class NEMatcher():
             try:
                 models = json.load(models_file)
             except JSONDecodeError as exception:
-                raise JSONDecodeError("Given file with models is not json-readable (maybe empty)!") from exception
+                raise Exception("Given file with models is not json-readable (maybe empty)!") from exception
             else:
                 read_success = True
 
-        print(models)
         # if successfull, save contacts to it and dump everything to the file
         if read_success:   
             try:
@@ -105,7 +104,8 @@ class NEMatcher():
         with open("models.json", encoding="utf-8", mode="r") as models_file:
             try:
                 models = json.load(models_file)
-                model = pickle.loads(models[model_id]["model"])
+                # TODO this needs to change when saving real model
+                model = models[model_id]["model"]
             except (JSONDecodeError, KeyError) as exception:
                 raise KeyError("Given model_id does not exist!") from exception
             else:
@@ -129,8 +129,8 @@ class NEMatcher():
 
 
         Returns:
-        result_ids (dict): dictionary result[id] = confidence
-            Confidence that given contact id was in the user's input.
+        result_ids_with_values (dict): dictionary result[id] = {"confidence": conf, "value": val}
+            Confidence that given contact id was in the user's input and value corresponding to the id.
         """
         # get the entities from WA response, merge consecutive occurences into one
         ents = entities.parse_merge_same_entities(wa_response)["name"]
@@ -156,14 +156,18 @@ class NEMatcher():
         
         # try to match WA returned entities to the contact list
         result_ids = {}
+        num_ents_matching = sum([ent in self.contacts_dict for ent in ents])
         for entity in ents:
             wa_confidence = ents[entity]["confidence"]
             # exact match
             if entity in self.contacts_dict:
                 ids = self.contacts_dict[entity]
                 for id in ids:
-                    confidence = wa_confidence * (1 / len(ids))
+                    confidence = wa_confidence * (1 / num_ents_matching) * (1 / len(ids))
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
+                    # at least using the higher one now
+                    if id in result_ids:
+                        confidence = max(confidence, result_ids[id])
                     result_ids[id] = round(confidence, 2)
             
             # not matched, try split by space and match parts
@@ -175,6 +179,8 @@ class NEMatcher():
                         for id in ids:
                             confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching)
                             # TODO same as above
+                            if id in result_ids:
+                                confidence = max(confidence, result_ids[id])
                             result_ids[id] = round(confidence, 2)
 
         # Add corresponding contact names to ids
