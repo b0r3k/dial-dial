@@ -157,6 +157,8 @@ class NEMatcher():
         # try to match WA returned entities to the contact list
         result_ids = {}
         num_ents_matching = sum([ent in self.contacts_dict for ent in ents])
+        # avoid dividing by zero
+        num_ents_matching = max(num_ents_matching, 1)
         for entity in ents:
             wa_confidence = ents[entity]["confidence"]
             # exact match
@@ -173,6 +175,8 @@ class NEMatcher():
             # not matched, try split by space and match parts
             elif len(parts := entity.split()) > 1:
                 num_parts_matching = sum([part in self.contacts_dict for part in parts])
+                # avoid dividing by zero
+                num_parts_matching = max(num_parts_matching, 1)
                 for part in parts:
                     if part in self.contacts_dict:
                         ids = self.contacts_dict[part]
