@@ -1,5 +1,6 @@
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from copy import deepcopy
+from typing import Tuple
 
 # example response to work with
 def return_test_response():
@@ -89,7 +90,7 @@ def return_test_response():
 
 # response = return_test_response()
 
-def parse_merge_entities(response: dict) -> dict:
+def parse_merge_same_entities(response: dict) -> dict:
     """
     Parses entities from Watson response into more usable dict.
     If one entity is found in consecutive intervals, the intervals are merged 
@@ -142,7 +143,7 @@ def get_entity_char_mapping(entities: dict) -> dict:
 
     Parameters:
     entities (dict): The dict as return from parse_merge_entities,
-    i.e. entities[entity_type][value] = {Given entity information in dict}
+        i.e. entities[entity_type][value] = {Given entity information in dict}
 
 
     Returns:
@@ -177,10 +178,10 @@ def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
 
     Parameters:
     entities (dict): The dict of entities of given type,
-    i.e. entities[value] = {Given entity information in dict}
+        i.e. entities[value] = {Given entity information in dict}
 
     mapping (dict): The dict of mapping of entities of given type, 
-    i.e. mapping[char_index] = [List of entity values of the type mapped to this index]
+        i.e. mapping[char_index] = [List of entity values of the type mapped to this index]
 
 
     Returns:
@@ -188,28 +189,28 @@ def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
     """
     # create a copy to be able to manipulate the other dict
     entities_copy = deepcopy(entities)
-    for entity, entity_dict in entities_copy.items():
-        entity_start, entity_end = entity_dict["location"][0], entity_dict["location"][1]
+    for entity, entity_dict in entities.items():
+        entity_start, entity_end = entity_dict["location"]
         possible_conc = set()
         # check all indices to which this entity is mapped
         for i in range(entity_start, entity_end):
             # add entities mapped to this index as possible concurrents
             for possible in mapping[i]:
-                if (possible in entities) and (not possible in possible_conc):
+                if (possible in entities_copy) and (not possible in possible_conc):
                     possible_conc.add(possible)
         # check all possible concurrents, delete if one is subset
         for possible in possible_conc:
-            if possible in entities:
-                possible_start, possible_end = entities[possible]["location"][0], entities[possible]["location"][1]
+            if possible in entities_copy:
+                possible_start, possible_end = entities_copy[possible]["location"]
                 # the possible is subset of this
                 if (possible_start >= entity_start and possible_end < entity_end) or (possible_start > entity_start and possible_end <= entity_end):
-                    del entities[possible]
+                    del entities_copy[possible]
                     continue
                 # this is subset of the possible
                 elif (entity_start >= possible_start and entity_end < possible_end) or (entity_start > possible_start and entity_end <= possible_end):
-                    del entities[entity]
+                    del entities_copy[entity]
 
-    return entities
+    return entities_copy
         
 # try on the example response
 # entities_name = drop_subsets_of_type(entities["name"], char_ents_mapping["name"])
@@ -217,19 +218,119 @@ def drop_subsets_of_type(entities: dict, mapping: dict) -> dict:
 
 
 
-# def select_biggest_matched(entities, mapping):
-#     to_resolve = set()
-#     for char_index in mapping:
-#         matched_ents = mapping[char_index]
-#         if len(matched_ents) == 1:
-#             # only one entity corresponding to index -> add if not there yet
-#             if not (value := matched_ents[0]) in to_resolve:
-#                 to_resolve.add(value)
-#         else:
-#             # more entities corresponding to index -> find biggest
-#             longest_match = None
-#             for value in matched_ents:
-#                 if value in entities:
-#                     if not longest_match:
-#                         longest_match = value
-#                     else:
+def get_entity_starts_ends_mapping(entities: dict) -> Tuple(dict, dict):
+    """
+    Maps entities to their start and end indices.
+
+    Parameters:
+    entities (dict): The dict of entities of given type,
+        i.e. entities[value] = {Given entity information in dict}
+
+
+    Returns:
+    starts (dict): Dict starts[index] = [entities_starting_here].
+
+    ends (dict): Dict ends[index] = [entities_ending_here]
+    """
+    starts, ends = defaultdict(dict), defaultdict(dict)
+    for entity in entities:
+        entity_start, entity_end = entities[entity]["location"]
+        if not entity_start in starts:
+            starts[entity_start] = []
+        starts[entity_start].append(entity)
+        if not entity_end in ends:
+            ends[entity_end] = []
+        ends[entity_end].append(entity)
+
+    return starts, ends
+
+
+
+def drop_subsets(entities: dict, starts: dict, ends: dict) -> dict:
+    """
+    Drops entities, which map to a subset of indices of another entity.
+    When in the input string is "name surname", the first entity matches only the "name" and 
+    the second entity matches the whole "name surname", we can drop the first one.
+
+    Parameters:
+    entities (dict): The dict of entities of given type,
+        i.e. entities[value] = {Given entity information in dict}
+
+    starts (dict): Dict starts[index] = [entities_starting_here].
+
+    ends (dict): Dict ends[index] = [entities_ending_here]
+
+
+    Returns:
+    entities_copy (dict): Dict in the same form as input with subset entities dropped.
+    """
+    current = OrderedDict()
+    entities_copy = deepcopy(entities)
+    # go through input indices
+    for i in range(0, max(ends, key=ends.get)):
+        # check what ends on this index
+        if i in ends:
+            ended = ends[i]
+            # compare location with everything currently started
+            for ent in ended:
+                del current[ent]
+                ent_start, ent_end = entities[ent]["location"]
+                for conc in current:
+                    conc_start, conc_end = entities[conc]["location"]
+                    # first currently started was after this, no subset possible
+                    if conc_start > ent_start:
+                        break
+                    # this is a subset of something, delete it
+                    elif (ent_end < conc_end) or (ent_start > conc_start and ent_end <= conc_end):
+                        if ent in entities_copy:
+                            del entities_copy[ent]
+
+        # check what starts on this index, add to currently started
+        if i in starts:
+            started = starts[i]
+            for ent in started:
+                current[ent] = True
+        
+    return entities_copy
+
+
+
+def merge_different_consecutive(entities: dict, starts: dict, ends: dict) -> dict:
+    """
+    Merges different entities with consecutive occurences. In pseudo:
+    [(“Jan”, [10,13]), (“Novák”, [14,19])] is merged into [(“Jan Novák”, [10,19])]
+
+    Parameters:
+    entities (dict): The dict of entities of given type,
+        i.e. entities[value] = {Given entity information in dict}
+
+    starts (dict): Dict starts[index] = [entities_starting_here].
+
+    ends (dict): Dict ends[index] = [entities_ending_here]
+
+
+    Returns:
+    entities_copy (dict): Dict in the same form as input with subset entities dropped.
+    """
+    entities_copy = deepcopy(entities)
+    # go through ending indices
+    for end in ends:
+        # if something start on next index
+        if (cons_start := end + 1) in starts:
+            # find all combinations of stuff that ended and stuff that starts, but only one-word (without ' ')
+            combinations = [(entities[first], entities[second]) for first in ends[end] for second in starts[cons_start] if (' ' not in first) and (' ' not in second)]
+            for first, second in combinations:
+                # remove the individual occurences
+                if first["value"] in entities:
+                    del entities_copy[first["value"]]
+                if second["value"] in entities:
+                    del entities_copy[second["value"]]
+                # create the combination occurence
+                new_value = first["value"] + ' ' + second["value"]
+                new_location = (first["location"][0], second["location"][1])
+                # compute the confidence as average
+                new_confidence = round((first["confidence"] + second["confidence"]) / 2, 2)
+                # save it
+                entities_copy[new_value] = {"value": new_value, "location": new_location, "confidence": new_confidence}
+    
+    return entities_copy
