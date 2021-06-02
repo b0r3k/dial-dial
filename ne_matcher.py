@@ -146,57 +146,81 @@ class NEMatcher():
             except (JSONDecodeError, KeyError) as exception:
                 raise KeyError("Given model_id does not exist or it doesn't have contacts assigned!") from exception
 
+
         # get the entities from WA response, merge consecutive occurences into one
         ents = entities.parse_merge_same_entities(wa_response)["name"]
-        # look around those entities and try to match previous/next word to contact list
-        ents = find_contacts_around(wa_response["input"], ents, self.contacts_dict, self.contacts_list, edit_limit=3)
         # get the starts and ends dictionaries
         starts, ends = entities.get_entity_starts_ends_mapping(ents)
         # merge different consecutive entitites
         ents = entities.merge_different_consecutive(ents, starts, ends)
-        # get the new mapping
-        starts, ends = entities.get_entity_starts_ends_mapping(ents)
-        # if more entities match same segment, use only the biggest match
-        ents = entities.drop_subsets(ents, starts, ends)
-        
-        # try to match WA returned entities to the contact list
-        result_ids = {}
-        num_ents_matching = sum([ent in self.contacts_dict for ent in ents])
-        # avoid dividing by zero
-        num_ents_matching = max(num_ents_matching, 1)
+
+     
+        # try to match WA returned entities to the contact list, return as entities again
+        matched_to_contacts = {}
         for entity in ents:
             wa_confidence = ents[entity]["confidence"]
             # exact match
             if entity in self.contacts_dict:
                 ids = self.contacts_dict[entity]
                 for id in ids:
-                    confidence = wa_confidence * (1 / num_ents_matching) * (1 / len(ids))
+                    value = self.contacts_list[id]
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
                     # at least using the higher one now
-                    if id in result_ids:
-                        confidence = max(confidence, result_ids[id])
-                    result_ids[id] = round(confidence, 2)
+                    if value in matched_to_contacts:
+                        matched_to_contacts[value]["confidence"] = max(wa_confidence, matched_to_contacts[value])
+                        this_start, this_end = ents[entity]["location"]
+                        old_start, old_end = matched_to_contacts[value]["location"]
+                        if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
+                            # matches the same entity, but bigger location -> update
+                            matched_to_contacts[value]["location"] = ents[entity]["location"]
+                    else:
+                        matched_to_contacts[value] = {}
+                        matched_to_contacts[value]["confidence"] = wa_confidence
+                        matched_to_contacts[value]["value"] = value
+                        matched_to_contacts[value]["location"] = ents[entity]["location"]
             
             # not matched, try split by space and match parts
             elif len(parts := entity.split()) > 1:
-                num_parts_matching = sum([part in self.contacts_dict for part in parts])
-                # avoid dividing by zero
-                num_parts_matching = max(num_parts_matching, 1)
                 for part in parts:
                     if part in self.contacts_dict:
                         ids = self.contacts_dict[part]
                         for id in ids:
-                            confidence = wa_confidence * (1 / len(ids)) * (1 / num_parts_matching) * (1 / num_ents_matching)
+                            value = self.contacts_list[id]
                             # TODO same as above
-                            if id in result_ids:
-                                confidence = max(confidence, result_ids[id])
-                            result_ids[id] = round(confidence, 2)
+                            if value in matched_to_contacts:
+                                matched_to_contacts[value]["confidence"] = max(wa_confidence, matched_to_contacts[value])
+                                this_start, this_end = ents[entity]["location"]
+                                old_start, old_end = matched_to_contacts[value]["location"]
+                                if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
+                                    # matches the same entity, but bigger location -> update
+                                    matched_to_contacts[value]["location"] = ents[entity]["location"]
+                            else:
+                                matched_to_contacts[value] = {}
+                                matched_to_contacts[value]["confidence"] = wa_confidence
+                                matched_to_contacts[value]["value"] = value
+                                ent_start, _ = ents[entity]["location"]
+                                part_start = ent_start + entity.find(part)
+                                matched_to_contacts[value]["location"] = part_start, part_start + len(part) + 1 
 
-        # Add corresponding contact names to ids
+        # look around matched entities and try to match previous/next word to contact list
+        matched_to_contacts = find_contacts_around(wa_response["input"], matched_to_contacts, self.contacts_dict, self.contacts_list, edit_limit=3)
+        # get the new mapping
+        starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
+        # if more entities match same segment, use only the biggest match
+        matched_to_contacts = entities.drop_subsets(matched_to_contacts, starts, ends)
+
+
+        # get the new mapping
+        starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
+        # make final result
         result_ids_with_values = defaultdict(dict)
-        for id in result_ids:
-            result_ids_with_values[id]["confidence"] = result_ids[id]
-            result_ids_with_values[id]["value"] = self.contacts_list[id]
+        for start_idx in starts:
+            entities_starting = starts[start_idx]
+            for entity in entities_starting:
+                id = self.contacts_dict[entity][0]
+                result_ids_with_values[id]["value"] = entity
+                # if more entities match the same location (i.e. have same start), split the confidence
+                result_ids_with_values[id]["confidence"] = round((matched_to_contacts[entity]["confidence"] / len(entities_starting)), 2)
 
         return result_ids_with_values
 
