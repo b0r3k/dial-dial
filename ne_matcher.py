@@ -263,7 +263,7 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                     orig_start, orig_end = entities[match]["location"]
                     entities[match]["location"] = orig_start - len(previous_word) - 1, orig_end 
                     # new confidence is average
-                    new_confidence = (entities[match]["confidence"] + matches[match]) / 2
+                    new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
                     entities[match]["confidence"] = new_confidence
         # do the same for the next word
         if (next_start := ent_end + 1) in starts:
@@ -276,7 +276,7 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                     orig_start, orig_end = entities[match]["location"]
                     entities[match]["location"] = orig_start, orig_end + len(next_word) + 1
                     # new confidence is average
-                    new_confidence = (entities[match]["confidence"] + matches[match]) / 2
+                    new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
                     entities[match]["confidence"] = new_confidence
 
     return entities
