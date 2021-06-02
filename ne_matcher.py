@@ -256,7 +256,7 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                 if match in entities:
                     # match is already in entities, widen the span of given entity
                     orig_start, orig_end = entities[match]["location"]
-                    entities[match]["location"] = orig_start, orig_end + len(next_word)
+                    entities[match]["location"] = orig_start, orig_end + len(next_word) + 1
                     # new confidence is average
                     new_confidence = (entities[match]["confidence"] + matches[match]) / 2
                     entities[match]["confidence"] = new_confidence
@@ -264,7 +264,7 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                     # add the new match
                     entities[match] = {}
                     entities[match]["value"] = match
-                    entities[match]["location"] = next_start, next_start + len(next_word)
+                    entities[match]["location"] = next_start, next_start + len(next_word) + 1
                     entities[match]["confidence"] = matches[match]
 
     return entities
