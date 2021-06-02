@@ -307,13 +307,13 @@ def fuzzy_match_word_to_contacts(word: str, contact_dict: dict, contact_list: li
         if distance <= edit_limit:
             matched = contact_dict[contact_nick]
             for id in matched:
+                confidence = round((0.5 + 0.5*((edit_limit - distance) / edit_limit)), 2)
                 if not id in matched_ids:
                     # add to the matched_ids with confidence the higher the smaller the distance
-                    confidence = round((0.5 + 0.5*((edit_limit - distance) / edit_limit)), 2)
                     matched_ids[id] = confidence
                 else:
-                    # already match, higher the confidence, but not higher than 1
-                    matched_ids[id] = round((min(1, matched_ids[id] + 0.05)), 2)
+                    # already matched, take the higher confidence
+                    matched_ids[id] = max(matched_ids[id], confidence)
 
     # translate the ids to contact names
     matches = {}
