@@ -240,3 +240,23 @@ def test_find_contacts_around_previous():
 
     # matches also the name not recognized before
     assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.815}}
+
+def test_get_match_whole_with_fuzzy():
+    id = "0"
+    model = "test0"
+    with open("models.json", encoding="utf-8", mode="w+") as models_file:
+        models = {  "_last_id": 0, 
+        id: { "model": model, 
+            "contacts_dict": {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
+            "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
+        json.dump(models, models_file)
+    response = {"entities": [ 
+        { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.9 },
+        ], 
+        "input": "Pošli 300 Petru Noskovi" }
+    nematch = ne_matcher.NEMatcher()
+    assert nematch.get_match(id, response, None, None) == {4: {'confidence': 0.95, 'value': 'Petr Nosek'}}
