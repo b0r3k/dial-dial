@@ -149,7 +149,7 @@ class NEMatcher():
         # get the entities from WA response, merge consecutive occurences into one
         ents = entities.parse_merge_same_entities(wa_response)["name"]
         # look around those entities and try to match previous/next word to contact list
-        ents = find_contacts_around(wa_response["input"], ents, self.contacts_dict, self.contacts_list, edit_limit=4)
+        ents = find_contacts_around(wa_response["input"], ents, self.contacts_dict, self.contacts_list, edit_limit=3)
         # get the starts and ends dictionaries
         starts, ends = entities.get_entity_starts_ends_mapping(ents)
         # merge different consecutive entitites
@@ -241,12 +241,13 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                     # new confidence is average
                     new_confidence = (entities[match]["confidence"] + matches[match]) / 2
                     entities[match]["confidence"] = new_confidence
-                else:
-                    # add the new match
-                    entities[match] = {}
-                    entities[match]["value"] = match
-                    entities[match]["location"] = previous_end - len(previous_word) - 1, previous_end
-                    entities[match]["confidence"] = matches[match]
+                # commented out - it probably does not make sense to match completely new entities next to existing ones
+                # else:
+                #     # add the new match
+                #     entities[match] = {}
+                #     entities[match]["value"] = match
+                #     entities[match]["location"] = previous_end - len(previous_word) - 1, previous_end
+                #     entities[match]["confidence"] = matches[match]
         # do the same for the next word
         if (next_start := ent_end + 1) in starts:
             next_word = words[starts[next_start]]
@@ -260,12 +261,13 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
                     # new confidence is average
                     new_confidence = (entities[match]["confidence"] + matches[match]) / 2
                     entities[match]["confidence"] = new_confidence
-                else:
-                    # add the new match
-                    entities[match] = {}
-                    entities[match]["value"] = match
-                    entities[match]["location"] = next_start, next_start + len(next_word) + 1
-                    entities[match]["confidence"] = matches[match]
+                # commented out - it probably does not make sense to match completely new entities next to existing ones
+                # else:
+                #     # add the new match
+                #     entities[match] = {}
+                #     entities[match]["value"] = match
+                #     entities[match]["location"] = next_start, next_start + len(next_word) + 1
+                #     entities[match]["confidence"] = matches[match]
 
     return entities
 
