@@ -220,13 +220,11 @@ def test_find_contacts_around_next():
     contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
     edit_limit = 3
 
-    # Jan matches 300.. maybe it would be better to save it only if it matches the same entity as same/next previous word.
+    # Nosek was not recognized by WA, added by the function, location widened and confidence highered
     assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Petr Svoboda': 
                                                                                                                 {'value': 'Petr Svoboda', 'location': (10, 15), 'confidence': 0.9}, 
                                                                                                             'Petr Nosek': 
-                                                                                                                {'value': 'Petr Nosek', 'location': (10, 23), 'confidence': 0.95}, 
-                                                                                                            'Jan Novák': 
-                                                                                                                {'value': 'Jan Novák', 'location': (3, 9), 'confidence': 0.5}}
+                                                                                                                {'value': 'Petr Nosek', 'location': (10, 23), 'confidence': 0.95}}
 
 def test_find_contacts_around_previous():
     input = "Pošli 300 Řehoři Peříškovi"
