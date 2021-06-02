@@ -153,7 +153,6 @@ class NEMatcher():
         starts, ends = entities.get_entity_starts_ends_mapping(ents)
         # merge different consecutive entitites
         ents = entities.merge_different_consecutive(ents, starts, ends)
-        print("Parsed & merged:", ents)
      
         # try to match WA returned entities to the contact list, return as entities again
         matched_to_contacts = {}
@@ -202,16 +201,16 @@ class NEMatcher():
                                 part_start = ent_start + entity.find(part)
                                 matched_to_contacts[value]["location"] = part_start, part_start + len(part) + 1 
 
-        print("Matched:", matched_to_contacts)
-
+        
+        # get the new mapping
+        starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
         # look around matched entities and try to match previous/next word to contact list
-        matched_to_contacts = find_contacts_around(wa_response["input"], matched_to_contacts, self.contacts_dict, self.contacts_list, edit_limit=3)
-        print("With fuzzy:", matched_to_contacts)
+        matched_to_contacts = find_contacts_around(wa_response["input"], matched_to_contacts, starts, ends, self.contacts_dict, self.contacts_list, edit_limit=3)
+        
         # get the new mapping
         starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
         # if more entities match same segment, use only the biggest match
         matched_to_contacts = entities.drop_subsets(matched_to_contacts, starts, ends)
-        print("Dropped:", matched_to_contacts)
         
         # drop the entities with confidence lower than 0.5
         for ent in deepcopy(matched_to_contacts):
@@ -232,17 +231,20 @@ class NEMatcher():
 
         return result_ids_with_values
 
-def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
+def find_contacts_around(input: str, entities: dict, ent_starts: dict, ent_ends: dict, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
     """
-        Looks at previous+next word of each already matched entity and tries to fuzzy-match given word to each nick in 
-        contact_dict. If it matches the same entity, location of that entity is widened and confidence is averaged. 
-        If it maches a new entity, it is added.
+        Goes through words, if next/previous belongs to some entity, fuzzy-matches the word to each nick in contact_dict, 
+        if it matches the same entity, location of that entity is widened and confidence is averaged. 
 
 
         Parameters:
         input (str): The user input.
 
         entities (dict): Pre-parsed entities with locations and confidences.
+
+        starts (dict): Dict starts[index] = [entities_starting_here].
+
+        ends (dict): Dict ends[index] = [entities_ending_here].
 
         contact_dict (dict): Dictionary contact_dict["Contact Nick"] = contact_id = index to the contact_list.
 
@@ -257,42 +259,39 @@ def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact
     # split the input
     words, starts, ends = split_input_starts_ends(input)
 
-    # look around each entity
-    # TODO do for words in input, not entities
-    for entity in deepcopy(entities):
-        ent_start, ent_end = entities[entity]["location"]
-        print(f"Processing {entity} at {ent_start}, {ent_end}")
-        # look at the previous word (if any)
-        if (previous_end := ent_start - 1) in ends:
-            previous_word = words[ends[previous_end]]
-            print(f"\tLooking at previous word {previous_word}")
-            # fuzzy match against each contact, return as match if under edit_limit
-            matches = fuzzy_match_word_to_contacts(previous_word, contact_dict, contact_list, edit_limit)           
-            print(f"\tMatches are: {matches}")
-            for match in matches:
-                if match in entities:
-                    # match is already in entities, widen the span of given entity
-                    orig_start, orig_end = entities[match]["location"]
-                    entities[match]["location"] = orig_start - len(previous_word) - 1, orig_end 
-                    # new confidence is average
-                    new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
-                    entities[match]["confidence"] = new_confidence
-        # do the same for the next word
-        if (next_start := ent_end + 1) in starts:
-            next_word = words[starts[next_start]]
-            print(f"\tLooking at next word {next_word}")
-            # fuzzy match against each contact, return as match if under edit_limit
-            matches = fuzzy_match_word_to_contacts(next_word, contact_dict, contact_list, edit_limit)     
-            print(f"\tMatches are: {matches}")      
-            for match in matches:
-                if match in entities:
-                    # match is already in entities, widen the span of given entity
-                    orig_start, orig_end = entities[match]["location"]
-                    entities[match]["location"] = orig_start, orig_end + len(next_word) + 1
-                    # new confidence is average
-                    new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
-                    entities[match]["confidence"] = new_confidence
+    # for each word around entity, check if it can widen the entity
+    for word, start, end in zip(words, starts, ends):
+        ents_starting, ents_ending = [], []
+        # check if next word is entity
+        if end + 1 in ent_starts:
+            ents_starting = ent_starts[end + 1]
+        # check if the previous word is entity
+        if start - 1 in ent_ends:
+            ents_ending = ent_ends[start - 1]
 
+        matches = []
+        if ents_starting or ents_ending:
+            # fuzzy match the word against each contact, return as match if under edit_limit
+            matches = fuzzy_match_word_to_contacts(word, contact_dict, contact_list, edit_limit)
+
+        # go through matches, check corresponds to the entity around
+        for match in matches:
+            if match in ents_starting:
+                # match is same as entity in next word, widen the span of given entity
+                orig_start, orig_end = entities[match]["location"]
+                entities[match]["location"] = orig_start - len(word) - 1, orig_end 
+                # new confidence is average
+                new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
+                entities[match]["confidence"] = new_confidence
+
+            if match in ents_ending:
+                # match is the same as entity in the previous word, widen the span of given entity
+                orig_start, orig_end = entities[match]["location"]
+                entities[match]["location"] = orig_start, orig_end + len(word) + 1
+                # new confidence is average
+                new_confidence = round(((entities[match]["confidence"] + matches[match]) / 2), 2)
+                entities[match]["confidence"] = new_confidence
+    
     return entities
 
 def fuzzy_match_word_to_contacts(word: str, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
