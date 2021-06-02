@@ -184,10 +184,10 @@ def test_get_match_merging_different_split():
         "input": "" }
     nematch = ne_matcher.NEMatcher()
 
-    # merging occurances of different entities -> confidence is averaged
-    # no id matches "Petr Nový" -> split again and trying parts, only one part matches, so confidence is kept
-    # but two ids match this one part -> confidence is split
-    assert nematch.get_match(id, response, None, None) == {1: {"confidence": 0.38, "value": "Petr Svoboda"}, 4: {'confidence': 0.38, 'value': 'Petr Nosek'}}
+    # merging occurances of different entities -> confidence is averaged = 0.76
+    # closest are "Petrovi" and "Petr Nosek" both with distance 3 -> both get confidence 0.38, which is lower than 0.4 and are dropped
+    # that is probably right, since we have no Petr Nový in contacts
+    assert nematch.get_match(id, response, None, None) == dict()
 
 def test_split_input_starts_ends():
     input = "Nějaký testovací string obsahující slova."
@@ -197,7 +197,7 @@ def test_split_input_starts_ends():
     assert ne_matcher.split_input_starts_ends(input) == (words, starts, ends)
 
 def test_fuzzy_match_word_to_contacts():
-    word = "Petrovi"
+    word = "Jiřímu"
     contacts_dict = {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
                                                             'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
                                                             'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
@@ -206,8 +206,8 @@ def test_fuzzy_match_word_to_contacts():
     contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
     edit_limit = 4
 
-    # Nosek has higher probability since distance("Petrovi", "Noskovi") == 4, so it matches here also. Limit 4 is probably too high.
-    assert ne_matcher.fuzzy_match_word_to_contacts(word, contacts_dict, contacts_list, edit_limit) == {'Petr Svoboda': 0.72, 'Petr Nosek': 0.77}
+    # Finds "Jiří" with distance 2 -> confidence is 0.5*(4-2/4)*0.5 = 0.75
+    assert ne_matcher.fuzzy_match_word_to_contacts(word, contacts_dict, contacts_list, edit_limit) == {'Jiří Novotný': 0.75}
 
 def test_find_contacts_around_next():
     input = "Pošli 300 Petru Noskovi"
@@ -239,7 +239,7 @@ def test_find_contacts_around_previous():
     edit_limit = 3
 
     # matches also the name not recognized before
-    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.815}}
+    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.81}}
 
 def test_get_match_whole_with_fuzzy():
     id = "0"
