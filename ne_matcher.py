@@ -153,7 +153,7 @@ class NEMatcher():
         starts, ends = entities.get_entity_starts_ends_mapping(ents)
         # merge different consecutive entitites
         ents = entities.merge_different_consecutive(ents, starts, ends)
-
+        print("Parsed & merged:", ents)
      
         # try to match WA returned entities to the contact list, return as entities again
         matched_to_contacts = {}
@@ -163,6 +163,7 @@ class NEMatcher():
             if (matches := fuzzy_match_word_to_contacts(entity, self.contacts_dict, self.contacts_list, edit_limit=3)):
                 for value in matches:
                     confidence = round((matches[value] * wa_confidence), 2)
+                    print(f"In wholes: {value} has confidence {confidence}")
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
                     # at least using the higher one now
                     if value in matched_to_contacts:
@@ -178,12 +179,14 @@ class NEMatcher():
                         matched_to_contacts[value]["value"] = value
                         matched_to_contacts[value]["location"] = ents[entity]["location"]
             
-            # not matched, try split by space and match parts
-            elif len(parts := entity.split()) > 1:
+            # try split by space and match parts
+            if len(parts := entity.split()) > 1:
                 for part in parts:
-                    if (matches := fuzzy_match_word_to_contacts(entity, self.contacts_dict, self.contacts_list, edit_limit=3)):
+                    if (matches := fuzzy_match_word_to_contacts(part, self.contacts_dict, self.contacts_list, edit_limit=3)):
+                        print(f"In parts: matches {matches}")
                         for value in matches:
                             confidence = round((matches[value] * wa_confidence), 2)
+                            print(f"In parts: {value} has confidence {confidence}")
                             # TODO same as above
                             if value in matched_to_contacts:
                                 matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value]["confidence"])
@@ -202,12 +205,15 @@ class NEMatcher():
                                 part_start = ent_start + entity.find(part)
                                 matched_to_contacts[value]["location"] = part_start, part_start + len(part) + 1 
 
+        print("Matched:", matched_to_contacts)
+
         # look around matched entities and try to match previous/next word to contact list
         matched_to_contacts = find_contacts_around(wa_response["input"], matched_to_contacts, self.contacts_dict, self.contacts_list, edit_limit=3)
         # get the new mapping
         starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
         # if more entities match same segment, use only the biggest match
         matched_to_contacts = entities.drop_subsets(matched_to_contacts, starts, ends)
+        print("Dopped:", matched_to_contacts)
         
         # drop the entities with confidence lower than 0.5
         for ent in deepcopy(matched_to_contacts):
@@ -308,8 +314,10 @@ def fuzzy_match_word_to_contacts(word: str, contact_dict: dict, contact_list: li
     matched_ids = {}
     for contact_nick in contact_dict:
         distance = editdistance.eval(word, contact_nick)
+        print(f"Distance from {contact_nick} to {word} is {distance}")
         if distance <= edit_limit:
             matched = contact_dict[contact_nick]
+            print(f"Ids matched are {matched}")
             for id in matched:
                 confidence = round((0.5 + 0.5*((edit_limit - distance) / edit_limit)), 2)
                 if not id in matched_ids:
