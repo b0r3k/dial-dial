@@ -3,6 +3,8 @@ import json
 from json.decoder import JSONDecodeError
 from typing import Tuple
 import entities
+import editdistance
+from copy import deepcopy
 
 class NEMatcher():
     """
@@ -199,13 +201,114 @@ class NEMatcher():
         return result_ids_with_values
 
 def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
-    print(entities)
-    
+    """
+        Looks at previous+next word of each already matched entity and tries to fuzzy-match given word to each nick in 
+        contact_dict. If it matches the same entity, location of that entity is widened and confidence is averaged. 
+        If it maches a new entity, it is added.
 
-    for entity in entities:
+
+        Parameters:
+        input (str): The user input.
+
+        entities (dict): Pre-parsed entities with locations and confidences.
+
+        contact_dict (dict): Dictionary contact_dict["Contact Nick"] = contact_id = index to the contact_list.
+
+        contact_list (list): List of contacts, where index = ids.
+
+        edit_limit (int): Maximum distance considered as match, corresponds confidence 0.5.
+
+
+        Returns:
+        entities (dict): Form same as original, but with fuzzy-matched words around already matched entities.
+    """
+    # split the input
+    words, starts, ends = split_input_starts_ends(input)
+
+    # look around each entity
+    for entity in deepcopy(entities):
         ent_start, ent_end = entities[entity]["location"]
+        # look at the previous word (if any)
+        if (previous_end := ent_start - 1) in ends:
+            previous_word = words[ends[previous_end]]
+            # fuzzy match against each contact, return as match if under edit_limit
+            matches = fuzzy_match_word_to_contacts(previous_word, contact_dict, contact_list, edit_limit)           
+            for match in matches:
+                if match in entities:
+                    # match is already in entities, widen the span of given entity
+                    orig_start, orig_end = entities[match]["location"]
+                    entities[match]["location"] = orig_start - len(previous_word), orig_end 
+                    # new confidence is average
+                    new_confidence = (entities[match]["confidence"] + matches[match]) / 2
+                    entities[match]["confidence"] = new_confidence
+                else:
+                    # add the new match
+                    entities[match] = {}
+                    entities[match]["value"] = match
+                    entities[match]["location"] = previous_end - len(previous_word), previous_end
+                    entities[match]["confidence"] = matches[match]
+        # do the same for the next word
+        if (next_start := ent_end + 1) in starts:
+            next_word = words[starts[next_start]]
+            # fuzzy match against each contact, return as match if under edit_limit
+            matches = fuzzy_match_word_to_contacts(next_word, contact_dict, contact_list, edit_limit)           
+            for match in matches:
+                if match in entities:
+                    # match is already in entities, widen the span of given entity
+                    orig_start, orig_end = entities[match]["location"]
+                    entities[match]["location"] = orig_start, orig_end + len(next_word)
+                    # new confidence is average
+                    new_confidence = (entities[match]["confidence"] + matches[match]) / 2
+                    entities[match]["confidence"] = new_confidence
+                else:
+                    # add the new match
+                    entities[match] = {}
+                    entities[match]["value"] = match
+                    entities[match]["location"] = next_start, next_start + len(next_word)
+                    entities[match]["confidence"] = matches[match]
 
     return entities
+
+def fuzzy_match_word_to_contacts(word: str, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
+    """
+        Tries to match each nick in contact_dict against the word, if Levenshtein distance is <= edit_limit, returns 
+        as match with confidence 0.5 + 0.5*(edit_limit - distance / edit_limit). If already matched before, widens 
+        the saved location and averages the confidence.
+
+
+        Parameters:
+        word (str): Word that should be matched.
+
+        contact_dict (dict): Dictionary contact_dict["Contact Nick"] = contact_id = index to the contact_list.
+
+        contact_list (list): List of contacts, where index = ids.
+
+        edit_limit (int): Maximum distance considered as match, corresponds confidence 0.5.
+
+
+        Returns:
+        matches (dict): Dictionary matches["Contact Name"] = confidence it matches given word.
+    """
+    matched_ids = {}
+    for contact_nick in contact_dict:
+        distance = editdistance.eval(word, contact_nick)
+        if distance <= edit_limit:
+            matched = contact_dict[contact_nick]
+            for id in matched:
+                if not id in matched_ids:
+                    # add to the matched_ids with confidence the higher the smaller the distance
+                    confidence = 0.5 + 0.5*(edit_limit - distance / edit_limit)
+                    matched_ids[id] = confidence
+                else:
+                    # already match, higher the confidence, but not higher than 1
+                    matched_ids[id] = max(1, matched_ids[id] + 0.05)
+
+    # translate the ids to contact names
+    matches = {}
+    for id in matched_ids:
+        matches[contact_list[id]] = matched_ids[id]
+
+    return matches
 
 def split_input_starts_ends(input: str) -> Tuple[list, dict, dict]:
     """
@@ -219,9 +322,9 @@ def split_input_starts_ends(input: str) -> Tuple[list, dict, dict]:
         Returns:
         words (list): List of words found in the input.
 
-        starts (dict): Dictionary starts[idx] = {Index to the list words to the word starting at idx}
+        starts (dict): Dictionary starts[idx] = Index to the list words to the word starting at idx
 
-        ends (dict): Dictionary ends[idx] = {Index to the list words to the word ending at idx}
+        ends (dict): Dictionary ends[idx] = Index to the list words to the word ending at idx
     """
     words, starts, ends = [], {}, {}
     word = []
