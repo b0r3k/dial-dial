@@ -166,7 +166,7 @@ class NEMatcher():
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
                     # at least using the higher one now
                     if value in matched_to_contacts:
-                        matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value])
+                        matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value]["confidence"])
                         this_start, this_end = ents[entity]["location"]
                         old_start, old_end = matched_to_contacts[value]["location"]
                         if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
@@ -186,7 +186,7 @@ class NEMatcher():
                             confidence = round((matches[value] * wa_confidence), 2)
                             # TODO same as above
                             if value in matched_to_contacts:
-                                matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value])
+                                matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value]["confidence"])
                                 ent_start, _ = ents[entity]["location"]
                                 part_start = ent_start + entity.find(part)
                                 part_end = part_start + len(part) + 1
@@ -208,7 +208,11 @@ class NEMatcher():
         starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
         # if more entities match same segment, use only the biggest match
         matched_to_contacts = entities.drop_subsets(matched_to_contacts, starts, ends)
-
+        
+        # drop the entities with confidence lower than 0.5
+        for ent in deepcopy(matched_to_contacts):
+            if matched_to_contacts[ent]["confidence"] < 0.5:
+                del matched_to_contacts[ent]
 
         # get the new mapping
         starts, ends = entities.get_entity_starts_ends_mapping(matched_to_contacts)
