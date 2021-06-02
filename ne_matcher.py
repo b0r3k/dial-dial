@@ -160,14 +160,13 @@ class NEMatcher():
         for entity in ents:
             wa_confidence = ents[entity]["confidence"]
             # exact match
-            if entity in self.contacts_dict:
-                ids = self.contacts_dict[entity]
-                for id in ids:
-                    value = self.contacts_list[id]
+            if (matches := fuzzy_match_word_to_contacts(entity, self.contacts_dict, self.contacts_list, edit_limit=3)):
+                for value in matches:
+                    confidence = round((matches[value] * wa_confidence), 2)
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
                     # at least using the higher one now
                     if value in matched_to_contacts:
-                        matched_to_contacts[value]["confidence"] = max(wa_confidence, matched_to_contacts[value])
+                        matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value])
                         this_start, this_end = ents[entity]["location"]
                         old_start, old_end = matched_to_contacts[value]["location"]
                         if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
@@ -175,20 +174,19 @@ class NEMatcher():
                             matched_to_contacts[value]["location"] = ents[entity]["location"]
                     else:
                         matched_to_contacts[value] = {}
-                        matched_to_contacts[value]["confidence"] = wa_confidence
+                        matched_to_contacts[value]["confidence"] = confidence
                         matched_to_contacts[value]["value"] = value
                         matched_to_contacts[value]["location"] = ents[entity]["location"]
             
             # not matched, try split by space and match parts
             elif len(parts := entity.split()) > 1:
                 for part in parts:
-                    if part in self.contacts_dict:
-                        ids = self.contacts_dict[part]
-                        for id in ids:
-                            value = self.contacts_list[id]
+                    if (matches := fuzzy_match_word_to_contacts(entity, self.contacts_dict, self.contacts_list, edit_limit=3)):
+                        for value in matches:
+                            confidence = round((matches[value] * wa_confidence), 2)
                             # TODO same as above
                             if value in matched_to_contacts:
-                                matched_to_contacts[value]["confidence"] = max(wa_confidence, matched_to_contacts[value])
+                                matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value])
                                 this_start, this_end = ents[entity]["location"]
                                 old_start, old_end = matched_to_contacts[value]["location"]
                                 if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
@@ -196,7 +194,7 @@ class NEMatcher():
                                     matched_to_contacts[value]["location"] = ents[entity]["location"]
                             else:
                                 matched_to_contacts[value] = {}
-                                matched_to_contacts[value]["confidence"] = wa_confidence
+                                matched_to_contacts[value]["confidence"] = confidence
                                 matched_to_contacts[value]["value"] = value
                                 ent_start, _ = ents[entity]["location"]
                                 part_start = ent_start + entity.find(part)
