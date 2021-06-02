@@ -90,7 +90,7 @@ def test_get_match_base():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
             "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
         json.dump(models, models_file)
-    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 } ] }
+    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 } ], "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     assert nematch.get_match(id, response, None, None) == {4: {"confidence": 0.83, "value": "Petr Nosek"}}
@@ -108,7 +108,7 @@ def test_get_match_simple_ambg():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
             "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
         json.dump(models, models_file)
-    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 } ] }
+    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 } ], "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # two matches -> confidence is split in halves
@@ -131,7 +131,8 @@ def test_get_match_merging_same_drop():
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr Svoboda", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Petr Svoboda", "confidence": 0.7 }
-        ] }
+        ], 
+        "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # when merging occurances of same entity, confidence is the higher one
@@ -155,7 +156,8 @@ def test_get_match_merging_different():
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Svoboda", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Nosek", "confidence": 0.7 }
-        ] }
+        ], 
+        "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # when merging occurances of different entities, confidence is averaged
@@ -178,10 +180,18 @@ def test_get_match_merging_different_split():
     response = {"entities": [ 
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 21 ], "value": "Nový", "confidence": 0.7 }, 
-        ] }
+        ], 
+        "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # merging occurances of different entities -> confidence is averaged
     # no id matches "Petr Nový" -> split again and trying parts, only one part matches, so confidence is kept
     # but two ids match this one part -> confidence is split
     assert nematch.get_match(id, response, None, None) == {1: {"confidence": 0.38, "value": "Petr Svoboda"}, 4: {'confidence': 0.38, 'value': 'Petr Nosek'}}
+
+def test_split_input_starts_ends():
+    input = "Nějaký testovací string obsahující slova."
+    words = ['Nějaký', 'testovací', 'string', 'obsahující', 'slova.']
+    starts = {0: 0, 7: 1, 17: 2, 24: 3, 35: 4}
+    ends = {6: 0, 16: 1, 23: 2, 34: 3, 41: 4}
+    assert ne_matcher.split_input_starts_ends(input) == (words, starts, ends)

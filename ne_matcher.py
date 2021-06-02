@@ -1,6 +1,7 @@
 from collections import defaultdict
 import json
 from json.decoder import JSONDecodeError
+from typing import Tuple
 import entities
 
 class NEMatcher():
@@ -132,17 +133,6 @@ class NEMatcher():
         result_ids_with_values (dict): dictionary result[id] = {"confidence": conf, "value": val}
             Confidence that given contact id was in the user's input and value corresponding to the id.
         """
-        # get the entities from WA response, merge consecutive occurences into one
-        ents = entities.parse_merge_same_entities(wa_response)["name"]
-        # get the starts and ends dictionaries
-        starts, ends = entities.get_entity_starts_ends_mapping(ents)
-        # merge different consecutive entitites
-        ents = entities.merge_different_consecutive(ents, starts, ends)
-        # get the new mapping
-        starts, ends = entities.get_entity_starts_ends_mapping(ents)
-        # if more entities match same segment, use only the biggest match
-        ents = entities.drop_subsets(ents, starts, ends)
-
         # load the model and contacts
         with open("models.json", encoding="utf-8", mode="r") as models_file:
             try:
@@ -153,6 +143,19 @@ class NEMatcher():
                 self.model = models[model_id]["model"]
             except (JSONDecodeError, KeyError) as exception:
                 raise KeyError("Given model_id does not exist or it doesn't have contacts assigned!") from exception
+
+        # get the entities from WA response, merge consecutive occurences into one
+        ents = entities.parse_merge_same_entities(wa_response)["name"]
+        # look around those entities and try to match previous/next word to contact list
+        ents = find_contacts_around(wa_response["input"], ents, self.contacts_dict, self.contacts_list, edit_limit=4)
+        # get the starts and ends dictionaries
+        starts, ends = entities.get_entity_starts_ends_mapping(ents)
+        # merge different consecutive entitites
+        ents = entities.merge_different_consecutive(ents, starts, ends)
+        # get the new mapping
+        starts, ends = entities.get_entity_starts_ends_mapping(ents)
+        # if more entities match same segment, use only the biggest match
+        ents = entities.drop_subsets(ents, starts, ends)
         
         # try to match WA returned entities to the contact list
         result_ids = {}
@@ -194,3 +197,45 @@ class NEMatcher():
             result_ids_with_values[id]["value"] = self.contacts_list[id]
 
         return result_ids_with_values
+
+def find_contacts_around(input: str, entities: dict, contact_dict: dict, contact_list: list, edit_limit: int) -> dict:
+    print(entities)
+    
+
+    for entity in entities:
+        ent_start, ent_end = entities[entity]["location"]
+
+    return entities
+
+def split_input_starts_ends(input: str) -> Tuple[list, dict, dict]:
+    """
+        Splits the input strings on spaces, remembering the mapping from indices to words which start/end there.
+
+
+        Parameters:
+        input (str): Some string, usually a sentence.
+
+
+        Returns:
+        words (list): List of words found in the input.
+
+        starts (dict): Dictionary starts[idx] = {Index to the list words to the word starting at idx}
+
+        ends (dict): Dictionary ends[idx] = {Index to the list words to the word ending at idx}
+    """
+    words, starts, ends = [], {}, {}
+    word = []
+    for index, char in enumerate(input):
+        if char == ' ':
+            words.append(''.join(word))
+            word = []
+            ends[index] = len(words) - 1
+        elif not word:
+            word.append(char)
+            starts[index] = len(words)
+        else:
+            word.append(char)
+    words.append(''.join(word))
+    ends[len(input)] = len(words) - 1
+
+    return words, starts, ends
