@@ -187,9 +187,11 @@ class NEMatcher():
                             # TODO same as above
                             if value in matched_to_contacts:
                                 matched_to_contacts[value]["confidence"] = max(confidence, matched_to_contacts[value])
-                                this_start, this_end = ents[entity]["location"]
+                                ent_start, _ = ents[entity]["location"]
+                                part_start = ent_start + entity.find(part)
+                                part_end = part_start + len(part) + 1
                                 old_start, old_end = matched_to_contacts[value]["location"]
-                                if (this_start < old_start and this_end >= old_end) or (this_start <= old_start and this_end > old_end):
+                                if (part_start < old_start and part_end >= old_end) or (part_start <= old_start and part_end > old_end):
                                     # matches the same entity, but bigger location -> update
                                     matched_to_contacts[value]["location"] = ents[entity]["location"]
                             else:
