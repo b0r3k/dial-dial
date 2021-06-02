@@ -1,5 +1,4 @@
 import ne_matcher
-import entities as ent_lib
 import json, pytest
 
 def test_set_user_model_empty():
@@ -219,10 +218,9 @@ def test_find_contacts_around_next():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}
     contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
     edit_limit = 3
-    ents_starts, ents_ends = ent_lib.get_entity_starts_ends_mapping(entities)
 
     # Nosek was not recognized by WA, added by the function, location widened and confidence highered
-    assert ne_matcher.find_contacts_around(input, entities, ents_starts, ents_ends, contacts_dict, contacts_list, edit_limit) == {'Petr Svoboda': 
+    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Petr Svoboda': 
                                                                                                                 {'value': 'Petr Svoboda', 'location': (10, 15), 'confidence': 0.9}, 
                                                                                                             'Petr Nosek': 
                                                                                                                 {'value': 'Petr Nosek', 'location': (10, 23), 'confidence': 0.95}}
@@ -238,10 +236,9 @@ def test_find_contacts_around_previous():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}
     contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
     edit_limit = 3
-    ents_starts, ents_ends = ent_lib.get_entity_starts_ends_mapping(entities)
 
     # matches also the name not recognized before
-    assert ne_matcher.find_contacts_around(input, entities, ents_starts, ents_ends, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.81}}
+    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.81}}
 
 def test_get_match_whole_with_fuzzy():
     id = "0"

@@ -81,7 +81,7 @@ def get_entity_starts_ends_mapping(entities: dict) -> Tuple[dict, dict]:
 
 
 
-def drop_subsets(entities: dict, starts: dict, ends: dict) -> dict:
+def drop_subsets(entities: dict, starts: dict = None, ends: dict = None) -> dict:
     """
     Drops entities, which map to a subset of indices of another entity.
     When in the input string is "name surname", the first entity matches only the "name" and 
@@ -91,14 +91,17 @@ def drop_subsets(entities: dict, starts: dict, ends: dict) -> dict:
     entities (dict): The dict of entities of given type,
         i.e. entities[value] = {Given entity information in dict}
 
-    starts (dict): Dict starts[index] = [entities_starting_here].
+    starts (dict) (optional): Dict starts[index] = [entities_starting_here]. If not provided, it is computed.
 
-    ends (dict): Dict ends[index] = [entities_ending_here]
+    ends (dict) (optional): Dict ends[index] = [entities_ending_here]. If not provided, it is computed.
 
 
     Returns:
     entities_copy (dict): Dict in the same form as input with subset entities dropped.
     """
+    if starts == None or ends == None:
+        # get the starts and ends mapping
+        starts, ends = get_entity_starts_ends_mapping(entities)
     current = OrderedDict()
     entities_copy = deepcopy(entities)
     # go through input indices
@@ -133,7 +136,7 @@ def drop_subsets(entities: dict, starts: dict, ends: dict) -> dict:
 
 
 
-def merge_different_consecutive(entities: dict, starts: dict, ends: dict) -> dict:
+def merge_different_consecutive(entities: dict, starts: dict = None, ends: dict = None) -> dict:
     """
     Merges different entities with consecutive occurences. In pseudo:
     [(“Jan”, [10,13]), (“Novák”, [14,19])] is merged into [(“Jan Novák”, [10,19])]
@@ -142,14 +145,17 @@ def merge_different_consecutive(entities: dict, starts: dict, ends: dict) -> dic
     entities (dict): The dict of entities of given type,
         i.e. entities[value] = {Given entity information in dict}
 
-    starts (dict): Dict starts[index] = [entities_starting_here].
+    starts (dict) (optional): Dict starts[index] = [entities_starting_here]. If not provided, it is computed.
 
-    ends (dict): Dict ends[index] = [entities_ending_here]
+    ends (dict) (optional): Dict ends[index] = [entities_ending_here]. If not provided, it is computed.
 
 
     Returns:
     entities_copy (dict): Dict in the same form as input with subset entities dropped.
     """
+    if starts == None or ends == None:
+        # get the starts and ends mapping
+        starts, ends = get_entity_starts_ends_mapping(entities)
     entities_copy = deepcopy(entities)
     # go through ending indices
     for end in ends:
