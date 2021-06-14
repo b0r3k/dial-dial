@@ -90,7 +90,7 @@ def test_get_match_base():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
             "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
         json.dump(models, models_file)
-    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 } ] }
+    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 } ], "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     assert nematch.get_match(id, response, None, None) == {4: {"confidence": 0.83, "value": "Petr Nosek"}}
@@ -108,7 +108,7 @@ def test_get_match_simple_ambg():
                                                             'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
             "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
         json.dump(models, models_file)
-    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 } ] }
+    response = {"entities": [ { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 } ], "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # two matches -> confidence is split in halves
@@ -131,7 +131,8 @@ def test_get_match_merging_same_drop():
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr Nosek", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr Svoboda", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Petr Svoboda", "confidence": 0.7 }
-        ] }
+        ], 
+        "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # when merging occurances of same entity, confidence is the higher one
@@ -155,7 +156,8 @@ def test_get_match_merging_different():
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Svoboda", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 25 ], "value": "Nosek", "confidence": 0.7 }
-        ] }
+        ], 
+        "input": "" }
     nematch = ne_matcher.NEMatcher()
 
     # when merging occurances of different entities, confidence is averaged
@@ -178,10 +180,129 @@ def test_get_match_merging_different_split():
     response = {"entities": [ 
         { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.83 }, 
         { "entity": "name", "location": [ 16, 21 ], "value": "Nový", "confidence": 0.7 }, 
-        ] }
+        ], 
+        "input": "" }
+    nematch = ne_matcher.NEMatcher()
+    # merging occurances of different entities -> confidence is averaged = 0.76
+    # closest are "Petrovi" and "Petr Nosek" both with distance 3 -> both get confidence 0.38, which is lower than 0.4 and are dropped
+    # that is probably right, since we have no Petr Nový in contacts
+    assert nematch.get_match(id, response, None, None) == dict()
+
+def test_split_input_starts_ends():
+    input = "Nějaký testovací string obsahující slova."
+    words = ['Nějaký', 'testovací', 'string', 'obsahující', 'slova.']
+    starts = {0: 0, 7: 1, 17: 2, 24: 3, 35: 4}
+    ends = {6: 0, 16: 1, 23: 2, 34: 3, 41: 4}
+    assert ne_matcher.split_input_starts_ends(input) == (words, starts, ends)
+
+def test_fuzzy_match_word_to_contacts():
+    word = "Jiřímu"
+    contacts_dict = {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}
+    contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
+    edit_limit = 4
+
+    # Finds "Jiří" with distance 2 -> confidence is 0.5*(4-2/4)*0.5 = 0.75
+    assert ne_matcher.fuzzy_match_word_to_contacts(word, contacts_dict, contacts_list, edit_limit) == {'Jiří Novotný': 0.75}
+
+def test_find_contacts_around_next():
+    input = "Pošli 300 Petru Noskovi"
+    entities = {'Petr Svoboda': {'value': 'Petr Svoboda', 'location': (10, 15), 'confidence': 0.9}, 'Petr Nosek': {'value': 'Petr Nosek', 'location': (10, 15), 'confidence': 0.9}}
+    contacts_dict = {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}
+    contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
+    edit_limit = 3
+
+    # Nosek was not recognized by WA, added by the function, location widened and confidence highered
+    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Petr Svoboda': 
+                                                                                                                {'value': 'Petr Svoboda', 'location': (10, 15), 'confidence': 0.9}, 
+                                                                                                            'Petr Nosek': 
+                                                                                                                {'value': 'Petr Nosek', 'location': (10, 23), 'confidence': 0.95}}
+
+def test_find_contacts_around_previous():
+    input = "Pošli 300 Řehoři Peříškovi"
+    # WA recognized from surname
+    entities = {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (17, 27), 'confidence': 0.8}}
+    contacts_dict = {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}
+    contacts_list = ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová']
+    edit_limit = 3
+
+    # matches also the name not recognized before
+    assert ne_matcher.find_contacts_around(input, entities, contacts_dict, contacts_list, edit_limit) == {'Řehoř Peříšek': {'value': 'Řehoř Peříšek', 'location': (10, 27), 'confidence': 0.81}}
+
+def test_get_match_whole_with_fuzzy_around():
+    id = "0"
+    model = "test0"
+    with open("models.json", encoding="utf-8", mode="w+") as models_file:
+        models = {  "_last_id": 0, 
+        id: { "model": model, 
+            "contacts_dict": {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
+            "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
+        json.dump(models, models_file)
+    response = {"entities": [ 
+        { "entity": "name", "location": [ 10, 15 ], "value": "Petr", "confidence": 0.9 },
+        ], 
+        "input": "Pošli 300 Petru Noskovi" }
     nematch = ne_matcher.NEMatcher()
 
-    # merging occurances of different entities -> confidence is averaged
-    # no id matches "Petr Nový" -> split again and trying parts, only one part matches, so confidence is kept
-    # but two ids match this one part -> confidence is split
-    assert nematch.get_match(id, response, None, None) == {1: {"confidence": 0.38, "value": "Petr Svoboda"}, 4: {'confidence': 0.38, 'value': 'Petr Nosek'}}
+    # WA returned only "Petr", it matched to "Petr" two times ("Petr Svoboda" and "Petr Nosek"), we fuzzy-matched the next word "Noskovi" to "Nosek" (and so "Petr Nosek") -> we return only that
+    assert nematch.get_match(id, response, None, None) == {4: {'confidence': 0.95, 'value': 'Petr Nosek'}}
+
+def test_get_match_whole_with_fuzzy_from_WA():
+    id = "0"
+    model = "test0"
+    with open("models.json", encoding="utf-8", mode="w+") as models_file:
+        models = {  "_last_id": 0, 
+        id: { "model": model, 
+            "contacts_dict": {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
+            "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
+        json.dump(models, models_file)
+    response = {"entities": [ 
+        { "entity": "name", "location": [ 16, 23 ], "value": "Norek", "confidence": 0.9 },
+        ], 
+        "input": "Pošli 300 Petru Norkovi" }
+    nematch = ne_matcher.NEMatcher()
+
+    # WA returned only "Norek", we fuzzy-matched that to "Nosek" -> "Petr Nosek" and "Novák" -> "Jan Novák", 
+    # then we fuzzy matched the previous word "Petr" to "Petr Nosek" also -> only that is returned and the confidence is much higher
+    assert nematch.get_match(id, response, None, None) == {4: {'confidence': 0.88, 'value': 'Petr Nosek'}}
+
+def test_get_match_whole_with_fuzzy_show_last():
+    id = "0"
+    model = "test0"
+    with open("models.json", encoding="utf-8", mode="w+") as models_file:
+        models = {  "_last_id": 0, 
+        id: { "model": model, 
+            "contacts_dict": {'Řehoř Peříšek': [0], 'Řehoř': [0], 'Peříšek': [0], 'Řepa': [0], 'Petr Svoboda': [1], 'Peťa': [1], 'Petr': [1, 4], 
+                                                            'Svoboda': [1], 'Petru': [1, 4], 'Petrovi': [1, 4], 'Svobodovi': [1], 'Marie Dvořáková': [2], 'Máňa': [2], 'Marie': [2], 
+                                                            'Dvořáková': [2], 'Jiří Novotný': [3], 'Jirka': [3], 'Jiří': [3], 'Novotný': [3], 'Petr Nosek': [4], 'Nosek': [4], 
+                                                            'Noskovi': [4], 'Jan Novák': [5], 'Honza': [5], 'Jenda': [5], 'Jan': [5], 'Novák': [5], 'Jana Černá': [6], 'Jana': [6], 
+                                                            'Černá': [6], 'Karolína Machová': [7], 'Kája': [7], 'Karolína': [7], 'Machová': [7]}, 
+            "contacts_list":  ['Řehoř Peříšek', 'Petr Svoboda', 'Marie Dvořáková', 'Jiří Novotný', 'Petr Nosek', 'Jan Novák', 'Jana Černá', 'Karolína Machová'] }    }
+        json.dump(models, models_file)
+    response = {"entities": [ 
+        { "entity": "name", "location": [ 16, 23 ], "value": "Norek", "confidence": 0.9 },
+        ], 
+        "input": "Pošli 300 1235 Norkovi" }
+    nematch = ne_matcher.NEMatcher()
+
+    # this test is here to show how it looks if we do not match the previous word to "Petr"
+    assert nematch.get_match(id, response, None, None) == {4: {'confidence': 0.38, 'value': 'Petr Nosek'}, 5: {'confidence': 0.3, 'value': 'Jan Novák'}}

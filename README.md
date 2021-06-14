@@ -1,5 +1,5 @@
 # Named Entities matching
-This component tries to match NEs returned in WA response to some user contact list.
+This component tries to match NEs returned in WA response to some user-defined contact list.
 
 The main part of code is `ne_matcher.py`, helping functions are in `entities.py` and `contacts.py`; 
 tests are in `test_*_pytest.py`.
@@ -18,16 +18,17 @@ Functions from `entities.py` are used to:
 - parse the `wa_response` into dict
 - merge consecutive occurances of same entity into one (useful when some entity is recognized both from name and surname), the higher confidence is kept - this maybe won't be used in the end though, because the WA will maybe return name and surname separately
 - merge consecutive occurances of different entities in all combinations (useful when name and surname are recognized separately), the confidence is averaged
-- drop entities with location which is a subset of another location (useful when some entity is recognized only from name and some from both name and surname)
 
-These preprocessed entities are then matched to the dictionary of contacts. The confidence is counted as follows:
+These preprocessed entities are then fuzzy-matched using Levenshtein editdistance in function `fuzzy_match_word_to_contacts` to the dictionary of contacts. The function has a parameter `edit_limit` (anything further than that is considered not matching), for each element in dictionary of contacts the edit `distance` is computed. If no match is found, the original entity is splitted on spaces and partial matching is tried. The confidence is counted as follows:
 
-- `num_ents_matching` is number of preprocessed entities that match some contact exactly
-- for each entity in `wa_response`:
-    - if exact match is found, we get `ids` to which it matches
-        - we save them to the result with confidence `wa_confidence * (1 / num_ents_matching) * (1 / len(ids))`
-    - if exact match is not found, we try to split the entity on spaces and count `num_parts_matching` (how many parts matched something)
-        - we try to match each part, if successfull, we get `ids` 
-        - we save them with confidence `wa_confidence * (1 / len(ids)) * (1 / num_parts_matching) * (1 / num_ents_matching)` - this confidence may get really low, but probably not, since if the entity did not match exactly as a whole, it is not in the `num_ents_matching`
+- confidence returned by the function is `0.5 + 0.5*((edit_limit - distance) / edit_limit)`, so the contact with zero edit distance has confidence one
+- this confidence is averaged with the WA confidence
+- if two WA-returned entities match the same contact, the one with higher confidence is kept
 
-In the end we add corresponding contact names to the `ids` and return the result in dict `{id: {"confidence": confidence, "value": name}}`.
+Then the look-around is done. Basically for each word in input it is checked if before/after it is some contact matched and if yes, if this word could match the same contact (again using fuzzy-matching). If yes, the location is widened and the confidence is averaged.
+
+Then each entity that matches only a substring of another entity is dropped (i.e. if we have some contact matching only a surname and then another matching also the word before it - presumably the name - we drop the shorter one).
+
+Then the matches with confidence lower than `0.5` are dropped.
+
+In the end corresponding `ids` are added to the matched contacts and if more contacts match the same segment of input, the confidence is split. The result is returned in dict `{id: {"confidence": confidence, "value": name}}`.
