@@ -1,0 +1,7 @@
+.gradle
+/local.properties
+/build
+/captures
+.externalNativeBuild
+# Ignore Gradle build output directory
+build
