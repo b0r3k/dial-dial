@@ -1,0 +1,2 @@
+rootProject.name = "Dialog Dialer"
+include ':app'
