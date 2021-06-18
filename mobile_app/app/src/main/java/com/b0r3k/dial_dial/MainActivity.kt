@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun checkPermissions(): Boolean {
-        val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.READ_CONTACTS)
+        val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
         when {
             permissions.all { ActivityCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED } -> {
                 return true
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
-            setMessage("Abychom vás mohli slyšet, potřebujeme přístup k mikrofonu. Abychom mohli zavolat lidem, potřebujeme přístup ke kontaktům.")
+            setMessage("Abychom vás mohli slyšet, potřebujeme přístup k mikrofonu. Abychom mohli zavolat lidem, potřebujeme přístup ke kontaktům a správě hovorů.")
             setTitle("Potřebujeme povolení!")
             setPositiveButton("OK") { _, _ ->
                 requestPermissionLauncher.launch(permissions)
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
-            setMessage("Bohužel, bez přístupu k mikrofonu a kontaktům nemůžeme fungovat. Pokud chcete, přejděte do nastavení a udělte povolení.")
+            setMessage("Bohužel, bez přístupu k mikrofonu, kontaktům a správě hovorů nemůžeme fungovat. Pokud chcete, přejděte do nastavení a udělte povolení.")
             setTitle("Potřebujeme povolení!")
             setPositiveButton("OK") { _, _ -> }
         }
