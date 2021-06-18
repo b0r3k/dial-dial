@@ -12,12 +12,11 @@ import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
 
-    val requestPermissionLauncher =
+    private val requestPermissionLauncher =
         registerForActivityResult(RequestMultiplePermissions()
         ) { results: Map<String, Boolean> ->
             if (results.values.all { it }) {
                 Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT).show()
-                // Call pipeline
             } else {
                 showUnavailableDialog()
             }
@@ -29,7 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         mainActBinding.ivSpeak.setOnClickListener {
             if (checkPermissions()) {
-                // Call pipeline
+                mainActBinding.ivSpeak.setImageResource(R.drawable.ic_mic_full_red)
+                DialogHandler(this, mainActBinding).process()
             }
         }
         setContentView(mainActBinding.root)
