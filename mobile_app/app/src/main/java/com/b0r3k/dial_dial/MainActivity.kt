@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
 
-        mainActBinding?.ivSpeak?.setOnClickListener {
+        mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
                 mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
                 requestSpeechRecognition.launch(speechRecognizerIntent)
