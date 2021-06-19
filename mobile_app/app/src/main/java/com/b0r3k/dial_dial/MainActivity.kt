@@ -1,38 +1,62 @@
 package com.b0r3k.dial_dial
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.b0r3k.dial_dial.databinding.ActivityMainBinding
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(RequestMultiplePermissions()
-        ) { results: Map<String, Boolean> ->
-            if (results.values.all { it }) {
-                Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT).show()
-            } else {
-                showUnavailableDialog()
-            }
-        }
+    private val SPEECH_REC: Int = 101
+    private var mainActBinding: ActivityMainBinding? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mainActBinding = ActivityMainBinding.inflate(layoutInflater)
+        val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
 
         mainActBinding.ivSpeak.setOnClickListener {
             if (checkPermissions()) {
                 mainActBinding.ivSpeak.setImageResource(R.drawable.ic_mic_full_red)
-                DialogHandler(this, mainActBinding).process()
+                requestSpeechRecognition.launch(speechRecognizerIntent)
             }
         }
         setContentView(mainActBinding.root)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
+            results: Map<String, Boolean> ->
+        if (results.values.all { it }) {
+            Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT).show()
+        } else {
+            showUnavailableDialog()
+        }
+    }
+
+    private val requestSpeechRecognition = registerForActivityResult(StartActivityForResult()) {
+            activityResult ->
+        if (activityResult.resultCode == SPEECH_REC) {
+            val result = activityResult.data?.getStringArrayExtra(RecognizerIntent.EXTRA_RESULTS)
+            Toast.makeText(applicationContext, result.toString(), Toast.LENGTH_SHORT).show()
+            if (result!!.isNotEmpty()) {
+                mainActBinding!!.ivSpeak.setImageResource(R.drawable.ic_mic_empty)
+                mainActBinding!!.tvTranscript.text = result.toString()
+            }
+        }
     }
 
 
