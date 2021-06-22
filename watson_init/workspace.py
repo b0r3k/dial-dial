@@ -7,8 +7,8 @@ assistant = AssistantV1(version='2021-06-22')
 assistant.set_service_url('https://api.eu-de.assistant.watson.cloud.ibm.com')
 
 # Data
-name = "dial_dial"
-description = ""
+name = "dial_dial_cz"
+description = "Skill for dialing in Czech language."
 language = "cs"
 
 # Create empty workspace only with data above
@@ -19,7 +19,8 @@ response = assistant.create_workspace(
     intents=[],
     entities=[],
     counterexamples=[],
-    metadata={})\
+    metadata={},
+    learning_opt_out=True)\
         .get_result()
 
 # Print response
