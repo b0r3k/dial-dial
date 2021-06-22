@@ -25,4 +25,4 @@ create_entities = [CreateEntity(entity="name", description="Name of a person.", 
 response = assistant.update_workspace(workspace_id=workspace_id, entities=create_entities)
 
 # Print response
-# print(response)
+print(response)
