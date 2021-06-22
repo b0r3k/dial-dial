@@ -1,6 +1,6 @@
 from os import name
 from ibm_watson import AssistantV1
-from ibm_watson.assistant_v1 import CreateEntity, CreateValue, Example
+from ibm_watson.assistant_v1 import CreateEntity, CreateValue
 import json
 
 # Credentials need to be in a separate `ibm-credentials.env` file
