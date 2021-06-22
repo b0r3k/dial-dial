@@ -1,8 +1,6 @@
 from ibm_watson import AssistantV1
 from ibm_watson.assistant_v1 import CreateIntent, Example
-import json
-
-from requests.models import DecodeError
+# import json
 
 # Credentials need to be in a separate `ibm-credentials.env` file
 # as described in https://github.com/watson-developer-cloud/python-sdk#credential-file
@@ -58,3 +56,6 @@ create_intents.append(CreateIntent(intent=intent, description=description, examp
 
 # Update the workspace
 response = assistant.update_workspace(workspace_id=workspace_id, intents=create_intents)
+
+# Print response
+# print(json.dumps(response, indent=2, ensure_ascii=False))

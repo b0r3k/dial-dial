@@ -1,5 +1,5 @@
 from ibm_watson import AssistantV1
-import json
+# import json
 
 # Credentials need to be in a separate `ibm-credentials.env` file
 # as described in https://github.com/watson-developer-cloud/python-sdk#credential-file
@@ -24,8 +24,8 @@ response = assistant.create_workspace(
         .get_result()
 
 # Print response
-print(json.dumps(response, indent=2, ensure_ascii=False))
+# print(json.dumps(response, indent=2, ensure_ascii=False))
 
 # Get the workspace id for further use
-workspace_id = response['workspace_id']
-print('Workspace id {0}'.format(workspace_id))
+# workspace_id = response['workspace_id']
+# print('Workspace id {0}'.format(workspace_id))
