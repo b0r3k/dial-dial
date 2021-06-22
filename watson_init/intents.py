@@ -1,5 +1,8 @@
 from ibm_watson import AssistantV1
+from ibm_watson.assistant_v1 import CreateIntent, Example
 import json
+
+from requests.models import DecodeError
 
 # Credentials need to be in a separate `ibm-credentials.env` file
 # as described in https://github.com/watson-developer-cloud/python-sdk#credential-file
@@ -9,57 +12,49 @@ assistant.set_service_url('https://api.eu-de.assistant.watson.cloud.ibm.com')
 # ID of workspace to put the intents to
 workspace_id = "41dca07d-9323-4372-8be3-ceaf4f6fad3c"
 
+# List of CreateIntent for update_workspace method
+create_intents = []
+
 # Dialing intent
 intent = "dial"
 description = "User wants to call someone."
-examples = [{"text": "zavolej pepovi"}, 
-            {"text": "chci zavolat petrovi"}, 
-            {"text": "vytoč číslo 123"}, 
-            {"text": "zavolej na číslo 456"}, 
-            {"text": "vytoč janu"}, 
-            {"text": "spoj mě s katkou"}, 
-            {"text": "chci spojit s karlem"}, 
-            {"text": "chci vytočit lenku"}, 
-            {"text": "chci zavolat na číslo 789"}, 
-            {"text": "volej petře"}, 
-            {"text": "chci volat petrovi"}]
-response = assistant.create_intent(
-    workspace_id=workspace_id,
-    intent=intent,
-    description=description,
-    examples=examples)\
-    .get_result()
+examples = [Example(text="zavolej pepovi"), 
+            Example(text="chci zavolat petrovi"), 
+            Example(text="vytoč číslo 123"), 
+            Example(text="zavolej na číslo 456"), 
+            Example(text="vytoč janu"), 
+            Example(text="spoj mě s katkou"), 
+            Example(text="chci spojit s karlem"), 
+            Example(text="chci vytočit lenku"), 
+            Example(text="chci zavolat na číslo 789"), 
+            Example(text="volej petře"), 
+            Example(text="chci volat petrovi")]
+create_intents.append(CreateIntent(intent=intent, description=description, examples=examples))
 
 # Greeting intent
 intent = "greet"
 description = "User greets."
-examples = [{"text": "ahoj"}, 
-            {"text": "čau"}, 
-            {"text": "nazdar"}, 
-            {"text": "dobrý den"}, 
-            {"text": "dobré ráno"}, 
-            {"text": "dobrý večer"}, 
-            {"text": "dobré odpoledne"}, 
-            {"text": "zdarec"}]
-response = assistant.create_intent(
-    workspace_id=workspace_id,
-    intent=intent,
-    description=description,
-    examples=examples)\
-    .get_result()
+examples = [Example(text="ahoj"), 
+            Example(text="čau"), 
+            Example(text="nazdar"), 
+            Example(text="dobrý den"), 
+            Example(text="dobré ráno"), 
+            Example(text="dobrý večer"), 
+            Example(text="dobré odpoledne"), 
+            Example(text="zdarec")]
+create_intents.append(CreateIntent(intent=intent, description=description, examples=examples))
 
 # Bye intent
 intent = "bye"
 description = "User says bye."
-examples = [{"text": "nashledanou"}, 
-            {"text": "hezký den"}, 
-            {"text": "mějte se"}, 
-            {"text": "měj se"}, 
-            {"text": "zatím se měj"}, 
-            {"text": "hezký zbytek dne"}]
-response = assistant.create_intent(
-    workspace_id=workspace_id,
-    intent=intent,
-    description=description,
-    examples=examples)\
-    .get_result()
+examples = [Example(text="nashledanou"), 
+            Example(text="hezký den"), 
+            Example(text="mějte se"), 
+            Example(text="měj se"), 
+            Example(text="zatím se měj"), 
+            Example(text="hezký zbytek dne")]
+create_intents.append(CreateIntent(intent=intent, description=description, examples=examples))
+
+
+# Update the workspace
+response = assistant.update_workspace(workspace_id=workspace_id, intents=create_intents)
