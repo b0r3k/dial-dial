@@ -18,8 +18,8 @@ node["dialog_node"] = "Contacts"
 node["title"] = "Přijmout kontakty"
 node["conditions"] = "@contacts"
 node["type"] = "standard"
-# context = { "contacts": "<? input.text ?>"}
-# node["context"] = DialogNodeContext(context)
+context = { "contacts": "<? input.text ?>"}
+node["context"] = DialogNodeContext(**context)
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
@@ -41,8 +41,8 @@ node["title"] = "Připravit údaje pro webhook"
 node["type"] = "frame"
 node["parent"] = "Dial"
 node["next_step"] = DialogNodeNextStep(behavior="jump_to", dialog_node="Choose_person", selector="condition")
-# context = {"input": "<? input.text ?>", "entities": "<? entities.toJson() ?>"}
-# node["context"] = DialogNodeContext(context)
+context = {"input": "<? input.text ?>", "entities": "<? entities.toJson() ?>"}
+node["context"] = DialogNodeContext(**context)
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
