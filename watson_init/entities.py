@@ -1,4 +1,3 @@
-from os import name
 from ibm_watson import AssistantV1
 from ibm_watson.assistant_v1 import CreateEntity, CreateValue
 import json
