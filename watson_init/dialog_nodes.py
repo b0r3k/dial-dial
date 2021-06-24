@@ -11,12 +11,22 @@ workspace_id = "41dca07d-9323-4372-8be3-ceaf4f6fad3c"
 
 dialog_nodes = []
 
+# Empty welcome node, so that there's nothing at the beginning
+node = {}
+node["dialog_node"] = "Welcome_empty"
+node["title"] = "Úvod prázdný"
+node["conditions"] = "welcome"
+node["type"] = "standard"
+node = DialogNode(**node)
+dialog_nodes.append(node)
+
 # Node for accepting contacts, then nothing
 node = {}
 node["dialog_node"] = "Contacts"
 node["title"] = "Přijmout kontakty"
 node["conditions"] = "@contacts"
 node["type"] = "standard"
+node["previous_sibling"] = "Welcome_empty"
 context = { "contacts": "<? input.text ?>"}
 node["context"] = DialogNodeContext(**context)
 node = DialogNode(**node)
