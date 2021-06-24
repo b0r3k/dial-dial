@@ -53,7 +53,6 @@ node = {}
 node["dialog_node"] = "Slot_name"
 node["type"] = "slot"
 node["parent"] = "Prepare_webhook"
-node["conditions"] = "@name"
 node["variable"] = "$name"
 node["previous_sibling"] = "Choose_person"
 node = DialogNode(**node)
