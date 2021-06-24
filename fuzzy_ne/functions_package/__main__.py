@@ -2,6 +2,7 @@ from collections import defaultdict, OrderedDict
 from copy import deepcopy
 from typing import Tuple
 import editdistance
+import json
 
 
 """
@@ -21,7 +22,7 @@ def main(parameters: dict) -> dict:
         { "entities" : matched_contacts (list) } (dict): dict with single key "entities" with value list of contacts that best match given entities
         """
         # parse the contacts
-        contacts_list = parameters["contacts"]["__contacts__"]
+        contacts_list = json.loads(parameters["contacts"])["__contacts__"]
         contacts_dict = contacts_to_dict(contacts_list)
 
         # get the entities, merge consecutive occurences into one
