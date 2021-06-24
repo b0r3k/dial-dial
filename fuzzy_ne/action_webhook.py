@@ -34,7 +34,9 @@ def main(parameters: dict) -> dict:
         for entity in ents:
             wa_confidence = ents[entity]["confidence"]
             # exact match
-            if (matches := fuzzy_match_word_to_contacts(entity, contacts_dict, contacts_list, edit_limit=3)):
+            matches = fuzzy_match_word_to_contacts(entity, contacts_dict, contacts_list, edit_limit=3)
+            parts = entity.split()
+            if matches:
                 for value in matches:
                     confidence = round((matches[value] * wa_confidence), 2)
                     # TODO what if id is already in result? The confidence should probably be higher then - can't multiply and can't sum - maybe sum and normalize?
@@ -53,9 +55,10 @@ def main(parameters: dict) -> dict:
                         matched_to_contacts[value]["location"] = ents[entity]["location"]
             
             # nothing matches, try split by space and match parts
-            elif len(parts := entity.split()) > 1:
+            elif len(parts) > 1:
                 for part in parts:
-                    if (matches := fuzzy_match_word_to_contacts(part, contacts_dict, contacts_list, edit_limit=3)):
+                    matches = fuzzy_match_word_to_contacts(part, contacts_dict, contacts_list, edit_limit=3)
+                    if matches:
                         for value in matches:
                             confidence = round((matches[value] * wa_confidence), 2)
                             # TODO same as above
@@ -261,7 +264,8 @@ def contacts_to_dict(contacts: list):
     cont_id_dict = defaultdict(list)
     for id, contact in enumerate(contacts):
         contact_names = [contact]
-        if (len(parts := contact.split())) > 1:
+        parts = contact.split()
+        if len(parts) > 1:
             contact_names += parts
         [cont_id_dict[name].append(id) for name in contact_names]
     return cont_id_dict
@@ -420,7 +424,8 @@ def merge_different_consecutive(entities: dict, starts: dict = None, ends: dict 
     # go through ending indices
     for end in ends:
         # if something start on next index
-        if (cons_start := end + 1) in starts:
+        cons_start = end + 1
+        if cons_start in starts:
             # find all combinations of stuff that ended and stuff that starts, but only one-word (without ' ')
             combinations = [(entities[first], entities[second]) for first in ends[end] for second in starts[cons_start] if (' ' not in first) and (' ' not in second)]
             for first, second in combinations:
