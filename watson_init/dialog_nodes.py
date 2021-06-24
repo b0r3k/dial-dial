@@ -101,7 +101,7 @@ dialog_nodes.append(node)
 node = {}
 node["dialog_node"] = "Call_person"
 node["title"] = "Zavolat osobě"
-node["conditions"] = "($webhook_result_1.ents).length == 1"
+node["conditions"] = "($webhook_result_1?.entities)?.length == 1"
 node["type"] = "response_condition"
 node["parent"] = "Choose_person"
 node["output"] = DialogNodeOutput(generic=
@@ -118,15 +118,15 @@ dialog_nodes.append(node)
 node = {}
 node["dialog_node"] = "Multiple_people_found"
 node["title"] = "Nalezeno více osob, upřesnit"
-node["conditions"] = "($webhook_result_1.ents).length > 1"
+node["conditions"] = "($webhook_result_1?.entities)?.length > 1"
 node["type"] = "response_condition"
 node["parent"] = "Choose_person"
 node["previous_sibling"] = "Call_person"
 node["output"] = DialogNodeOutput(generic=
                     [DialogNodeOutputGenericDialogNodeOutputResponseTypeText(response_type="text", selection_policy="random", values=
-                        [DialogNodeOutputTextValuesElement(text="Povedlo se mi najít následující: <? context['webhook_result_1'].ents.join(\", \") ?>. Koho z nich myslíte?"),
-                        DialogNodeOutputTextValuesElement(text="Tomuto zadání odpovídá: <? context['webhook_result_1'].ents.join(\", \") ?>. Koho z nich myslíte?"),
-                        DialogNodeOutputTextValuesElement(text="V kontaktech byli nalezeni následující: <? context['webhook_result_1'].ents.join(\", \") ?>. Koho z nich myslíte?")])])
+                        [DialogNodeOutputTextValuesElement(text="Povedlo se mi najít následující: <? context['webhook_result_1'].entities.join(\", \") ?>. Koho z nich myslíte?"),
+                        DialogNodeOutputTextValuesElement(text="Tomuto zadání odpovídá: <? context['webhook_result_1'].entities.join(\", \") ?>. Koho z nich myslíte?"),
+                        DialogNodeOutputTextValuesElement(text="V kontaktech byli nalezeni následující: <? context['webhook_result_1'].entities.join(\", \") ?>. Koho z nich myslíte?")])])
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
