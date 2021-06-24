@@ -98,8 +98,12 @@ def main(parameters: dict) -> dict:
         matched_contacts = []
         for start_idx in starts:
             entities_starting = starts[start_idx]
+            # find maximal confidence assign to an entity
+            max_confidence = max(matched_to_contacts[entity]["confidence"] for entity in entities_starting)
             for entity in entities_starting:
-                matched_contacts.append(entity)
+                # save only if its confidence is close to the maximal one
+                if max_confidence - matched_to_contacts[entity]["confidence"] <= 0.1:
+                    matched_contacts.append(entity)
 
         return { "entities": matched_contacts }
 
