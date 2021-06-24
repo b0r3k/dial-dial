@@ -51,6 +51,7 @@ node["dialog_node"] = "Prepare_webhook"
 node["title"] = "Připravit údaje pro webhook"
 node["type"] = "standard"
 node["parent"] = "Dial"
+node["conditions"] = "1 == 1"
 node["previous_sibling"] = "Slot_name"
 node["next_step"] = DialogNodeNextStep(behavior="jump_to", dialog_node="Choose_person", selector="condition")
 context = {"input": "<? input.text ?>", "entities": "<? entities.toJson() ?>"}
