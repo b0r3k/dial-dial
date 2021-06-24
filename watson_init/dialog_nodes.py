@@ -38,7 +38,7 @@ node = {}
 node["dialog_node"] = "Dial"
 node["title"] = "Zavolat někomu"
 node["conditions"] = "#dial"
-node["type"] = "standard"
+node["type"] = "frame"
 node["previous_sibling"] = "Contacts"
 node["next_step"] = DialogNodeNextStep(behavior="jump_to", dialog_node="Prepare_webhook", selector="body")
 node = DialogNode(**node)
@@ -49,8 +49,9 @@ dialog_nodes.append(node)
 node = {}
 node["dialog_node"] = "Prepare_webhook"
 node["title"] = "Připravit údaje pro webhook"
-node["type"] = "frame"
+node["type"] = "standard"
 node["parent"] = "Dial"
+node["previous_sibling"] = "Slot_name"
 node["next_step"] = DialogNodeNextStep(behavior="jump_to", dialog_node="Choose_person", selector="condition")
 context = {"input": "<? input.text ?>", "entities": "<? entities.toJson() ?>"}
 node["context"] = DialogNodeContext(**context)
@@ -62,9 +63,8 @@ dialog_nodes.append(node)
 node = {}
 node["dialog_node"] = "Slot_name"
 node["type"] = "slot"
-node["parent"] = "Prepare_webhook"
+node["parent"] = "Dial"
 node["variable"] = "$name"
-node["previous_sibling"] = "Choose_person"
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
@@ -73,6 +73,8 @@ node["dialog_node"] = "Slot_name_condition"
 node["type"] = "event_handler"
 node["parent"] = "Slot_name"
 node["conditions"] = "@name"
+context = {"name": "@name"}
+node["context"] = DialogNodeContext(**context)
 node["event_name"] = "input"
 node = DialogNode(**node)
 dialog_nodes.append(node)
