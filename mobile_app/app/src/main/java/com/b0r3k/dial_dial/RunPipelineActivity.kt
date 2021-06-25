@@ -7,19 +7,18 @@ import android.speech.RecognizerIntent
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import com.b0r3k.dial_dial.databinding.ActivityMainBinding
+import com.ibm.watson.assistant.v2.Assistant
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 class RunPipelineActivity : AppCompatActivity() {
-
-    private var mainActBinding: ActivityMainBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        val speechRecognizerIntent = Json.decodeFromString<Intent>(intent.getStringExtra("EXTRA_RECOGNIZER")!!)
+        val assistant = Json.decodeFromString<Assistant>(intent.getStringExtra("EXTRA_ASSISTANT")!!)
+        val sessionId = intent.getStringExtra("EXTRA_SESSION_ID")
 
         speechRecognitionLauncher.launch(speechRecognizerIntent)
 
@@ -31,7 +30,6 @@ class RunPipelineActivity : AppCompatActivity() {
             val result = activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (result != null && result.isNotEmpty()) {
                 Log.i("tag", result[0].toString())
-                mainActBinding?.tvTranscript?.text = result[0].toString()
             }
         }
         finish()
