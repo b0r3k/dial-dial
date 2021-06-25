@@ -1,10 +1,8 @@
 package com.b0r3k.dial_dial
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,18 +21,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mainActBinding = ActivityMainBinding.inflate(layoutInflater)
 
-        val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
+                val runPipelineActivityIntent = Intent(this, RunPipelineActivity::class.java)
                 mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
-                requestSpeechRecognition.launch(speechRecognizerIntent)
+                runPipelineActivityLauncher.launch(runPipelineActivityIntent)
             }
         }
         setContentView(mainActBinding?.root)
+    }
+
+    private val runPipelineActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+        it ->
+        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
     }
 
     private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
@@ -45,19 +44,6 @@ class MainActivity : AppCompatActivity() {
             showUnavailableDialog()
         }
     }
-
-    private val requestSpeechRecognition = registerForActivityResult(StartActivityForResult()) {
-        activityResult ->
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            val result = activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
-            if (result != null && result.isNotEmpty()) {
-                Log.i("tag", result[0].toString())
-                mainActBinding?.tvTranscript?.text = result[0].toString()
-            }
-        }
-    }
-
 
     private fun checkPermissions(): Boolean {
         val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
