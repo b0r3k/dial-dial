@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.b0r3k.dial_dial.databinding.ActivityMainBinding
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 class MainActivity : AppCompatActivity() {
 
     private var mainActBinding: ActivityMainBinding? = null
+    private val runPipelineActivityIntent = Intent(this, RunPipelineActivity::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,17 +25,21 @@ class MainActivity : AppCompatActivity() {
 
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
-                val runPipelineActivityIntent = Intent(this, RunPipelineActivity::class.java)
-                mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
-                runPipelineActivityLauncher.launch(runPipelineActivityIntent)
+                launchRunPipelineActivityLauncher()
             }
         }
         setContentView(mainActBinding?.root)
     }
 
-    private val runPipelineActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-        it ->
+    private val runPipelineActivityLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+            it ->
         mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
+        launchRunPipelineActivityLauncher()
+    }
+
+    private fun launchRunPipelineActivityLauncher() {
+        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
+        runPipelineActivityLauncher.launch(runPipelineActivityIntent)
     }
 
     private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
