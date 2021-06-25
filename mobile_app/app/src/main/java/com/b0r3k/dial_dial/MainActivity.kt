@@ -45,32 +45,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun preparePipeline() {
-        val authenticator = IamAuthenticator(getString(R.string.watson_assistant_apikey))
-        val assistant: Assistant = Assistant("2021-06-22", authenticator).apply {
-            serviceUrl = getString(R.string.watson_assistant_url)
-        }
-        val options =
-            CreateSessionOptions.Builder(getString(R.string.waston_assistant_id)).build()
-        val response = assistant.createSession(options).execute().result
-        val sessionId = response.sessionId
+        withContext(IO) {
+            val authenticator = IamAuthenticator(getString(R.string.watson_assistant_apikey))
+            val assistant: Assistant = Assistant("2021-06-22", authenticator).apply {
+                serviceUrl = getString(R.string.watson_assistant_url)
+            }
+            val options =
+                CreateSessionOptions.Builder(getString(R.string.waston_assistant_id)).build()
+            val response = assistant.createSession(options).execute().result
+            val sessionId = response.sessionId
 
-        val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-        }
+            val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                putExtra(
+                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                )
+                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
+                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            }
 
-        runPipelineActivityIntent = Intent(this, RunPipelineActivity::class.java).apply {
-            putExtra("EXTRA_ASSISTANT", Json.encodeToString(assistant))
-            putExtra("EXTRA_SESSION_ID", sessionId)
-            putExtra("EXTRA_RECOGNIZER", Json.encodeToString(speechRecognizerIntent))
+            runPipelineActivityIntent = Intent(applicationContext, RunPipelineActivity::class.java).apply {
+                //putExtra("EXTRA_ASSISTANT", Json.encodeToString(assistant))
+                putExtra("EXTRA_SESSION_ID", sessionId)
+                //putExtra("EXTRA_RECOGNIZER", Json.encodeToString(speechRecognizerIntent))
+            }
         }
     }
 
     private val runPipelineActivityLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
             it ->
-        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
         CoroutineScope(Main).launch {
+            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
             launchRunPipelineActivityOnMainThread()
         }
     }

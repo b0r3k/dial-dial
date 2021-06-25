@@ -16,11 +16,11 @@ class RunPipelineActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val speechRecognizerIntent = Json.decodeFromString<Intent>(intent.getStringExtra("EXTRA_RECOGNIZER")!!)
-        val assistant = Json.decodeFromString<Assistant>(intent.getStringExtra("EXTRA_ASSISTANT")!!)
+        //val speechRecognizerIntent = Json.decodeFromString<Intent>(intent.getStringExtra("EXTRA_RECOGNIZER")!!)
+        //val assistant = Json.decodeFromString<Assistant>(intent.getStringExtra("EXTRA_ASSISTANT")!!)
         val sessionId = intent.getStringExtra("EXTRA_SESSION_ID")
 
-        speechRecognitionLauncher.launch(speechRecognizerIntent)
+        //speechRecognitionLauncher.launch(speechRecognizerIntent)
 
     }
 
