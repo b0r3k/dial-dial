@@ -1,19 +1,21 @@
 package com.b0r3k.dial_dial
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.speech.RecognizerIntent
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import com.b0r3k.dial_dial.databinding.ActivityMainBinding
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.b0r3k.dial_dial.databinding.ActivityMainBinding
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
 import com.ibm.watson.assistant.v2.Assistant
 import com.ibm.watson.assistant.v2.model.CreateSessionOptions
@@ -24,18 +26,16 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.serializer
-import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
-    private var watsonReady: Boolean? = null
     private var mainActBinding: ActivityMainBinding? = null
-    private var runPipelineActivityIntent: Intent? = null
     private var sessionId : String? = null
     private var assistant: Assistant? = null
     private var speechRecognizerIntent: Intent? = null
     private var watsonReadyDeferred: Deferred<Boolean>? = null
+    private var watsonReady: Boolean? = null
+    private var contacts: Map<String, String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                 // If not ready, prepare watson
                 if ((watsonReady == null) or (watsonReady == false)) {
                     watsonReadyDeferred = CoroutineScope(IO).async {
+                        loadContacts()
                         return@async tryPrepareWatson()
                     }
                 }
@@ -105,8 +106,11 @@ class MainActivity : AppCompatActivity() {
         return response.output.generic[0].text().toString()
     }
 
-    private fun tryPrepareWatson(): Boolean {
+    private suspend fun tryPrepareWatson(): Boolean {
         try {
+            val contactsReadyDeferred = CoroutineScope(IO).async {
+                return@async loadContacts()
+            }
             val authenticator =
                 IamAuthenticator(getString(R.string.watson_assistant_apikey))
             assistant = Assistant("2021-06-22", authenticator).apply {
@@ -117,9 +121,38 @@ class MainActivity : AppCompatActivity() {
                     .build()
             val response = assistant!!.createSession(options).execute().result
             sessionId = response.sessionId
+            val contactsReady = contactsReadyDeferred.await()
+            if (contactsReady) {
+                getWatsonResponse(Json.encodeToString(mapOf("__contacts__" to contacts!!.keys)))
+            }
         } catch (e: Exception) {
             return false
         }
+        return true
+    }
+
+    private fun loadContacts(): Boolean {
+        var result: MutableMap<String, String> = mutableMapOf()
+        val URI: Uri = Phone.CONTENT_URI
+        val PROJECTION: Array<out String> = arrayOf(
+            Phone.CONTACT_ID,
+            Phone.DISPLAY_NAME,
+            /*Data._ID,
+            // The primary display name
+            Data.DISPLAY_NAME_PRIMARY,
+            // The contact's _ID, to construct a content URI*/
+            Phone.NUMBER
+        )
+        /* val SELECTION: String = "${Data.MIMETYPE} = '${CommonDataKinds.Phone.CONTENT_ITEM_TYPE}' AND "+
+                "${Data.IS_PRIMARY} != 0" */
+        val contentResolver: ContentResolver = applicationContext.contentResolver
+        val cursor = contentResolver.query(URI, PROJECTION, null, null, null)
+        while ((cursor != null) and (cursor!!.moveToNext())) {
+            val name: String = cursor.getString(1)
+            val number: String = cursor.getString(2)
+            result[name] = number
+        }
+        contacts = result
         return true
     }
 
