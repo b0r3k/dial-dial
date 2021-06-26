@@ -1,5 +1,6 @@
 package com.b0r3k.dial_dial
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -16,53 +17,102 @@ import androidx.appcompat.app.AlertDialog
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
 import com.ibm.watson.assistant.v2.Assistant
 import com.ibm.watson.assistant.v2.model.CreateSessionOptions
+import com.ibm.watson.assistant.v2.model.MessageInput
+import com.ibm.watson.assistant.v2.model.MessageOptions
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import kotlinx.serialization.serializer
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
-
+    private var watsonReady: Boolean? = null
     private var mainActBinding: ActivityMainBinding? = null
     private var runPipelineActivityIntent: Intent? = null
     private var sessionId : String? = null
+    private var assistant: Assistant? = null
+    private var speechRecognizerIntent: Intent? = null
+    private var watsonReadyDeferred: Deferred<Boolean>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainActBinding = ActivityMainBinding.inflate(layoutInflater)
 
+        speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        }
+
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
-                CoroutineScope(IO).launch {
-                    prepareRunPipeline()
+                // If not ready, prepare watson
+                if ((watsonReady == null) or (watsonReady == false)) {
+                    watsonReadyDeferred = CoroutineScope(IO).async {
+                        return@async tryPrepareWatson()
+                    }
                 }
+                // Launch speech recognition, on result watson is contacted
+                speechRecognitionLauncher.launch(speechRecognizerIntent)
             }
         }
         setContentView(mainActBinding?.root)
     }
 
-    private suspend fun prepareRunPipeline() {
-        withContext(IO) {
-            if (sessionId.isNullOrBlank() or (runPipelineActivityIntent == null)) {
-                val authenticator = IamAuthenticator(getString(R.string.watson_assistant_apikey))
-                val assistant: Assistant = Assistant("2021-06-22", authenticator).apply {
-                    serviceUrl = getString(R.string.watson_assistant_url)
-                }
-                val options =
-                    CreateSessionOptions.Builder(getString(R.string.waston_assistant_id)).build()
-                val response = assistant.createSession(options).execute().result
-                sessionId = response.sessionId
-
-                runPipelineActivityIntent =
-                    Intent(applicationContext, RunPipelineActivity::class.java).apply {
-                        putExtra("EXTRA_SESSION_ID", sessionId)
+    private val speechRecognitionLauncher = registerForActivityResult(StartActivityForResult()) {
+            activityResult ->
+        if (activityResult.resultCode == Activity.RESULT_OK) {
+            val result =
+                activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (!result.isNullOrEmpty()) {
+                val textResult = result[0].toString()
+                Log.i("tag", textResult)
+                CoroutineScope(IO).launch {
+                    var response = ""
+                    watsonReady = watsonReadyDeferred!!.await()
+                    if (watsonReady!!) {
+                        response = getWatsonResponse(textResult)
                     }
+                    else {
+                        response = "Bohužel, nepodařilo se nám kontaktovat server."
+                    }
+                    withContext(Main) {
+                        Log.i("tag", response)
+                    }
+                }
             }
-            launchRunPipelineActivityOnMainThread()
         }
+    }
+
+    private fun getWatsonResponse(message: String): String {
+        val messageInput = MessageInput.Builder().messageType("text").text(message).build()
+        val messageOptions = MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId).input(messageInput).build()
+        val response = assistant!!.message(messageOptions).execute().result
+        return response.output.generic[0].text().toString()
+    }
+
+    private fun tryPrepareWatson(): Boolean {
+        try {
+            val authenticator =
+                IamAuthenticator(getString(R.string.watson_assistant_apikey))
+            assistant = Assistant("2021-06-22", authenticator).apply {
+                serviceUrl = getString(R.string.watson_assistant_url)
+            }
+            val options =
+                CreateSessionOptions.Builder(getString(R.string.waston_assistant_id))
+                    .build()
+            val response = assistant!!.createSession(options).execute().result
+            sessionId = response.sessionId
+        } catch (e: Exception) {
+            return false
+        }
+        return true
     }
 
     private val runPipelineActivityLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
