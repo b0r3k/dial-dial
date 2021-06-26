@@ -21,13 +21,14 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlin.coroutines.coroutineContext
+import kotlinx.serialization.serializer
 
 
 class MainActivity : AppCompatActivity() {
 
     private var mainActBinding: ActivityMainBinding? = null
     private var runPipelineActivityIntent: Intent? = null
+    private var sessionId : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,39 +37,31 @@ class MainActivity : AppCompatActivity() {
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
                 CoroutineScope(IO).launch {
-                    preparePipeline()
-                    launchRunPipelineActivityOnMainThread()
+                    prepareRunPipeline()
                 }
             }
         }
         setContentView(mainActBinding?.root)
     }
 
-    private suspend fun preparePipeline() {
+    private suspend fun prepareRunPipeline() {
         withContext(IO) {
-            val authenticator = IamAuthenticator(getString(R.string.watson_assistant_apikey))
-            val assistant: Assistant = Assistant("2021-06-22", authenticator).apply {
-                serviceUrl = getString(R.string.watson_assistant_url)
-            }
-            val options =
-                CreateSessionOptions.Builder(getString(R.string.waston_assistant_id)).build()
-            val response = assistant.createSession(options).execute().result
-            val sessionId = response.sessionId
+            if (sessionId.isNullOrBlank() or (runPipelineActivityIntent == null)) {
+                val authenticator = IamAuthenticator(getString(R.string.watson_assistant_apikey))
+                val assistant: Assistant = Assistant("2021-06-22", authenticator).apply {
+                    serviceUrl = getString(R.string.watson_assistant_url)
+                }
+                val options =
+                    CreateSessionOptions.Builder(getString(R.string.waston_assistant_id)).build()
+                val response = assistant.createSession(options).execute().result
+                sessionId = response.sessionId
 
-            val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-                putExtra(
-                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                )
-                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
-                putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                runPipelineActivityIntent =
+                    Intent(applicationContext, RunPipelineActivity::class.java).apply {
+                        putExtra("EXTRA_SESSION_ID", sessionId)
+                    }
             }
-
-            runPipelineActivityIntent = Intent(applicationContext, RunPipelineActivity::class.java).apply {
-                //putExtra("EXTRA_ASSISTANT", Json.encodeToString(assistant))
-                putExtra("EXTRA_SESSION_ID", sessionId)
-                //putExtra("EXTRA_RECOGNIZER", Json.encodeToString(speechRecognizerIntent))
-            }
+            launchRunPipelineActivityOnMainThread()
         }
     }
 
