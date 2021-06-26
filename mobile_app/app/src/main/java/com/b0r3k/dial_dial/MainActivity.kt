@@ -59,14 +59,20 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 // Launch speech recognition, on result watson is contacted
-                speechRecognitionLauncher.launch(speechRecognizerIntent)
+                launchPipeline()
             }
         }
         setContentView(mainActBinding?.root)
     }
 
-    private val speechRecognitionLauncher = registerForActivityResult(StartActivityForResult()) {
+    private fun launchPipeline() {
+        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
+        pipelineLauncher.launch(speechRecognizerIntent)
+    }
+
+    private val pipelineLauncher = registerForActivityResult(StartActivityForResult()) {
             activityResult ->
+        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
         if (activityResult.resultCode == Activity.RESULT_OK) {
             val result =
                 activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
@@ -82,8 +88,10 @@ class MainActivity : AppCompatActivity() {
                     else {
                         response = "Bohužel, nepodařilo se nám kontaktovat server."
                     }
+                    delay(3000)
                     withContext(Main) {
                         Log.i("tag", response)
+                        launchPipeline()
                     }
                 }
             }
@@ -113,21 +121,6 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         return true
-    }
-
-    private val runPipelineActivityLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
-            it ->
-        CoroutineScope(Main).launch {
-            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
-            launchRunPipelineActivityOnMainThread()
-        }
-    }
-
-    private suspend fun launchRunPipelineActivityOnMainThread() {
-        withContext(Main) {
-            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
-            runPipelineActivityLauncher.launch(runPipelineActivityIntent)
-        }
     }
 
     private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
