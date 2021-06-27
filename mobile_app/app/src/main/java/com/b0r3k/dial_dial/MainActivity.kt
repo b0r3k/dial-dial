@@ -92,7 +92,19 @@ class MainActivity : AppCompatActivity() {
                     delay(3000)
                     withContext(Main) {
                         Log.i("tag", response)
-                        launchPipeline()
+                        val tokens = response.split('\n')
+                        if (tokens.size > 1 && tokens[0] == "[call]") {
+                            val contact = tokens[1]
+                            val number = contacts!![contact]
+                            Log.i("tag", "Calling contact $contact with number $number")
+                            val callIntent: Intent = Intent(Intent.ACTION_CALL).apply {
+                                data = Uri.parse("tel:$number")
+                            }
+                            startActivity(callIntent)
+                        }
+                        else {
+                            launchPipeline()
+                        }
                     }
                 }
             }
