@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
@@ -26,6 +28,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +39,8 @@ class MainActivity : AppCompatActivity() {
     private var watsonReadyDeferred: Deferred<Boolean>? = null
     private var watsonReady: Boolean? = null
     private var contacts: Map<String, String>? = null
+    private var textToSpeech: TextToSpeech? = null
+    private var launchAgain: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,30 @@ class MainActivity : AppCompatActivity() {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "cs-CZ")
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
         }
+
+        textToSpeech = TextToSpeech(this, TextToSpeech.OnInitListener {
+            if (it == TextToSpeech.SUCCESS) {
+                Log.i("TTS", "Initialization success")
+                textToSpeech!!.language = Locale("cs_CZ")
+                textToSpeech!!.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) { }
+
+                    override fun onDone(utteranceId: String?) {
+                        CoroutineScope(Main).launch {
+                            if (launchAgain) {
+                                launchPipeline()
+                            }
+                        }
+                    }
+
+                    override fun onError(utteranceId: String?) { }
+                })
+            }
+            else {
+                Log.i("TTS", "Initialization failed")
+                Toast.makeText(applicationContext, "Text to speech initialization failed.", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
@@ -89,11 +118,13 @@ class MainActivity : AppCompatActivity() {
                     else {
                         response = "Bohužel, nepodařilo se nám kontaktovat server."
                     }
-                    delay(3000)
                     withContext(Main) {
                         Log.i("tag", response)
                         val tokens = response.split('\n')
+                        var textToRead = tokens[0]
                         if (tokens.size > 1 && tokens[0] == "[call]") {
+                            textToRead = tokens[2]
+                            launchAgain = false
                             val contact = tokens[1]
                             val number = contacts!![contact]
                             Log.i("tag", "Calling contact $contact with number $number")
@@ -102,9 +133,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             startActivity(callIntent)
                         }
-                        else {
-                            launchPipeline()
-                        }
+                        textToSpeech!!.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "WATSON_TTS")
                     }
                 }
             }
@@ -137,6 +166,7 @@ class MainActivity : AppCompatActivity() {
                     .build()
             val response = assistant!!.createSession(options).execute().result
             sessionId = response.sessionId
+
             val contactsReady = contactsReadyDeferred.await()
             if (contactsReady) {
                 val contactsJson = Json.encodeToString(contacts!!.keys)
