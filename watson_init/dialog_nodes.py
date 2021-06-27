@@ -118,10 +118,10 @@ node["type"] = "response_condition"
 node["parent"] = "Choose_person"
 node["output"] = DialogNodeOutput(generic=
                     [DialogNodeOutputGenericDialogNodeOutputResponseTypeText(response_type="text", selection_policy="random", values=
-                        [DialogNodeOutputTextValuesElement(text="[call] Zavolám <? context['webhook_result_1'].response.result.entities[0] ?>."),
-                        DialogNodeOutputTextValuesElement(text="[call] Vytáčím <? context['webhook_result_1'].response.result.entities[0] ?>."),
-                        DialogNodeOutputTextValuesElement(text="[call] Volám <? context['webhook_result_1'].response.result.entities[0] ?>."),
-                        DialogNodeOutputTextValuesElement(text="[call] Zahajuji hovor s <? context['webhook_result_1'].response.result.entities[0] ?>.")])])
+                        [DialogNodeOutputTextValuesElement(text="[call]\n<? context['webhook_result_1'].response.result.entities[0] ?>\nZavolám <? context['webhook_result_1'].response.result.entities[0] ?>."),
+                        DialogNodeOutputTextValuesElement(text="[call]\n<? context['webhook_result_1'].response.result.entities[0] ?>\nVytáčím <? context['webhook_result_1'].response.result.entities[0] ?>."),
+                        DialogNodeOutputTextValuesElement(text="[call]\n<? context['webhook_result_1'].response.result.entities[0] ?>\nVolám <? context['webhook_result_1'].response.result.entities[0] ?>."),
+                        DialogNodeOutputTextValuesElement(text="[call]\n<? context['webhook_result_1'].response.result.entities[0] ?>\nZahajuji hovor s <? context['webhook_result_1'].response.result.entities[0] ?>.")])])
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
