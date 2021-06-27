@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private var contacts: Map<String, String>? = null
     private var textToSpeech: TextToSpeech? = null
     private var launchAgain: Boolean = true
+    private var callIntent: Intent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +67,9 @@ class MainActivity : AppCompatActivity() {
                         CoroutineScope(Main).launch {
                             if (launchAgain) {
                                 launchPipeline()
+                            }
+                            else {
+                                startActivity(callIntent!!)
                             }
                         }
                     }
@@ -128,10 +132,9 @@ class MainActivity : AppCompatActivity() {
                             val contact = tokens[1]
                             val number = contacts!![contact]
                             Log.i("tag", "Calling contact $contact with number $number")
-                            val callIntent: Intent = Intent(Intent.ACTION_CALL).apply {
+                            callIntent = Intent(Intent.ACTION_CALL).apply {
                                 data = Uri.parse("tel:$number")
                             }
-                            startActivity(callIntent)
                         }
                         textToSpeech!!.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "WATSON_TTS")
                     }
