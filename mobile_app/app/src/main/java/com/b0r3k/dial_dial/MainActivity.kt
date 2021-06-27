@@ -103,7 +103,11 @@ class MainActivity : AppCompatActivity() {
         val messageInput = MessageInput.Builder().messageType("text").text(message).build()
         val messageOptions = MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId).input(messageInput).build()
         val response = assistant!!.message(messageOptions).execute().result
-        return response.output.generic[0].text().toString()
+        var textResponse: String = ""
+        if (response.output.generic.isNotEmpty()) {
+            textResponse = response.output.generic[0].text().toString()
+        }
+        return textResponse
     }
 
     private suspend fun tryPrepareWatson(): Boolean {
@@ -123,9 +127,12 @@ class MainActivity : AppCompatActivity() {
             sessionId = response.sessionId
             val contactsReady = contactsReadyDeferred.await()
             if (contactsReady) {
-                getWatsonResponse(Json.encodeToString(mapOf("__contacts__" to contacts!!.keys)))
+                val contactsJson = Json.encodeToString(contacts!!.keys)
+                Log.i("tag", contactsJson)
+                getWatsonResponse("{ \"__contacts__\" : $contactsJson }")
             }
         } catch (e: Exception) {
+            Log.i("tag", e.toString())
             return false
         }
         return true
@@ -137,14 +144,8 @@ class MainActivity : AppCompatActivity() {
         val PROJECTION: Array<out String> = arrayOf(
             Phone.CONTACT_ID,
             Phone.DISPLAY_NAME,
-            /*Data._ID,
-            // The primary display name
-            Data.DISPLAY_NAME_PRIMARY,
-            // The contact's _ID, to construct a content URI*/
             Phone.NUMBER
         )
-        /* val SELECTION: String = "${Data.MIMETYPE} = '${CommonDataKinds.Phone.CONTENT_ITEM_TYPE}' AND "+
-                "${Data.IS_PRIMARY} != 0" */
         val contentResolver: ContentResolver = applicationContext.contentResolver
         val cursor = contentResolver.query(URI, PROJECTION, null, null, null)
         while ((cursor != null) and (cursor!!.moveToNext())) {
