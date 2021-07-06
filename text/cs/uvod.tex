@@ -1,7 +1,38 @@
 \chapter*{Úvod}
 \addcontentsline{toc}{chapter}{Úvod}
 
-Následuje několik ukázkových kapitol, které doporučují, jak by se
-měla bakalářská práce sázet. Primárně popisují použití \TeX{}ové
-šablony, ale obecné rady poslouží dobře i~uživatelům jiných
-systémů.
+Mluvené slovo je pro člověka nejjednodušším způsobem komunikace. Je to
+způsob rychlý, efektivní a nevyžaduje použití hmatu či zraku. Tyto smysly
+tak zůstávají volné pro využití jiným způsobem, například můžeme zároveň
+řídit auto či vařit oběd. V případě mateřského jazyka je navíc použita
+syntaxe, kterou se učíme od narození, tedy taková komunikace nevyžaduje
+nějakou speciální znalost, jako seznam příkazů programu nebo funkce
+ovládacích prvků.
+
+Přirozený jazyk proto vypadá jako v mnoha směrech ideální médium pro výměnu
+informací mezi uživatelem a strojem. Proč ho tedy nepoužíváme víc už dávno?
+Extrahovat z něj význam tak, aby mohl být pochopen strojem, není vůbec
+jednoduché. Většího průlomu v tomto směru se podařilo dosáhnout až s příchodem
+technologií strojového učení, které jsou schopny se složité zákonitosti
+jazyka \uv{samy} naučit. Ani to však není samospásné, pro naučení modelu,
+který porozumí jazyku, je stále potřeba mnoho práce, dat a počítačového
+výkonu. Pomyslně na druhém konci komunkace pak leží problém vygenerovat
+odpověď zpět uživateli, který není o moc jednodušší.
+
+Pokrok v těchto směrech dal možnost vzniku a rozšíření
+\textit{hlasových asistentů}, které dnes již skoro každý nosí ve svém
+chytrém telefonu a mnozí je navíc mají doma v podobě \uv{chytrého}
+reproduktoru. Jak již bylo zmíněno, vývoj takové služby je náročný v mnoha
+směrech, proto jsou asistenti obvykle dostupní jen v nejpoužívanějších
+jazycích, jako je angličtina, španělština nebo němčina. Nakolik je autorům
+známo, jediným asistentem podporujícím češtinu je \textit{IBM Watson Assistant}
+(dále WA) a to pouze v textové podobě.
+
+Cílem této práce je vytvořit hlasového asistenta v češtině, který bude schopný
+odpovídat na pozdravy a především zavolat kontakty ze seznamu v telefonu.
+Toho bude dosaženo propojením WA s vlastní komponentou
+pro porovnání se seznamem kontaktů, \textit{Google STT/TTS}
+(rozpoznání a generování mluvené řeči) a funkcionalitou telefonu. Výhodou
+je relativně jednoduché rozšíření asistenta přidáním variant dialogu do WA
+a ošetřením speciálních odpovědí z WA v mobilní aplikaci, aby iniciovaly
+například otevření jiné aplikace nebo rozsvícení svítilny.
