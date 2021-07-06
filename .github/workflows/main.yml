@@ -30,4 +30,4 @@ jobs:
         with:
           name: Thesis
           path: |
-            *.pdf
+            text/cs/*.pdf
