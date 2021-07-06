@@ -1,0 +1,2 @@
+
+FROM aergus/latex:latest
