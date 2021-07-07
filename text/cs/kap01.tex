@@ -1,5 +1,5 @@
 
-\chapter{Dialogové systémy}
+\chapter{Dialogové systémy obecně}
 TODO definice
 
 \section{Dělení}
@@ -42,9 +42,47 @@ míry, některé zatím vůbec.
 
 TODO možná nějaká ukázka
 
+\subsection{Začátek a konec}
+
 Prvním problémem je jak vůbec zjistit, kdy uživatel dialog začal, kdy
 skončil svůj \textit{tah} a očekává odpověď, a kdy skončil celý dialog.
 Jako lidé většinou začátek dialogu jsme schopni rozpoznat tím, že se na
 nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
 detekovat schopni nejsme, oslovení dnešní technologie již dokáží. TODO
-wakewords, HMM a teď ML, třeba https://aclanthology.org/2020.nlposs-1.9.pdf
+wakewords, nízké energetické požadavky, HMM a teď ML,
+třeba https://aclanthology.org/2020.nlposs-1.9.pdf
+Běžným způsobem je ale stále zahájení dialogu stiskem tlačítka či něčím
+podobným.
+
+Zahájení jsme tedy detekovali, ale jak poznat konec? Za konec tahu je
+většinou považována delší pauza, v takovou chvíli systém vyhodnotí odpověď
+a začne odpovídat. Problém je, pokud jsme konec tahu detekovali špatně a
+v průběhu systémové odpovědi začne uživatel opět mluvit. V lidské konverzaci
+se to stává běžně a umíme se s tím jednoduše vypořádat, protože jsme schopni
+zároveň mluvit a poslouchat. U strojů to však problém je, běžnou praxí asistentů
+je proto začít znovu poslouchat až po ukončení jejich promluvy.
+
+Úplný konec dialogu většinou detekujeme buď explicitně, zvolenými klíčovými
+slovy (třeba \uv{konec}) či frázemi (rozloučení); nebo implicitně, pokud
+systém splní uživatelův cíl či uživatel již neodpoví.
+
+\subsection{Zpracování zvuku}
+
+Při převodu mluveného slova na text narážíme na problémy spousty nepřesností.
+Přepis nám ztěžuje okolní hluk, který dokážeme odfiltrovat jen do určité míry
+a obtížně. Navíc pokud dojde k chybě v nějakém slově, můžeme se ji sice snažit
+z kontextu nějak zpětně opravit, ale opět je to složitá práce navíc. Člověk
+tyto drobné opravy na základě kontextu dělá podvědomě a bravurně.
+
+Dále se potýkáme s různou výslovností různých lidí, přeřeky, opravami
+či výplňovými zvuky, kdy se mluvčí rozmýšlí, co chce říct dál. Zvláště
+pokud se něco takového vyskytne uprostřed slova, může být obtížné dát
+strojově dohromady výsledek promluvy.
+
+\subsection{Očekávané znalosti, domýšlení}
+
+Při běžné komunikaci člověk od druhého očekává určitou míru přehledu o světě
+-- minimálně fakta typu že Slunce je na obloze považujeme za samozřejmá.
+Systému však všechny tyto znalosti musíme nějakým způsobem předat, buď
+explicitně, nebo u pokročilých modelů strojového učení dodat potřebná
+data.
