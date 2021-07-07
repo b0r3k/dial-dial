@@ -1,2 +1,21 @@
 
 \chapter{Konstrukce dialogových systémů}
+
+Začneme popisem obecné terminologie, následovat bude krátké shrnutí dvou
+nejběžnějších přístupů ke konstrukci. Tradiční je přístup, který bychom
+mohli označit jako postupný. Taková konstrukce čítá několik komponent, kde
+každá zajišťuje část práce nutné k porozumění uživateli a zodpovězení jeho
+prohlášení. Ten uvedeme jako první, neboť dobře ilustruje, co všechno vlastně
+člověk podvědomě při komunikaci dělá. Dále uvedeme tzv. \textit{end-to-end}
+systémy využívající metod strojového učení, které umožňují nahrazení až
+několika komponent jedním modelem. Tento přístup první uvedený v mnohém
+předčil, ale je běžnou praxí obě konstrukce kombinovat.
+
+\section{Terminologie}
+
+Během dialogu se střídají promluvy dvou a více stran. Každou takovou promluvu
+budeme označovat jako \textit{tah}. Při snaze zaznamenat jednodušeji význam
+vysloveného obvykle používáme trojice
+\textit{úmysl}--\textit{slot}--\textit{hodnota}. Pro ilustraci například
+úryvek \uv{v deset hodin} bychom mohli přeložit na trojici
+informovat--čas--10:00.
