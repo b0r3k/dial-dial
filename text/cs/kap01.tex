@@ -48,9 +48,12 @@ Prvním problémem je jak vůbec zjistit, kdy uživatel dialog začal, kdy
 skončil svůj \textit{tah} a očekává odpověď, a kdy skončil celý dialog.
 Jako lidé většinou začátek dialogu jsme schopni rozpoznat tím, že se na
 nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
-detekovat schopni nejsme, oslovení dnešní technologie již dokáží. TODO
-wakewords, nízké energetické požadavky, HMM a teď ML,
-třeba https://aclanthology.org/2020.nlposs-1.9.pdf
+detekovat schopni nejsme, oslovení dnešní technologie již dokáží. Většinou
+definujeme jedno nebo několik slov, které stroj chápe jako začátek dialogu,
+tzv. \textit{wake words}. Součást systému detekující tato slova musí být velmi
+energeticky úsporná, protože musí běžet neustále. Dnes jsou obvykle
+využívány komponenty využívající hlubokého učení, jako třeba Howl
+\citep{tang_howl_2020}.
 Běžným způsobem je ale stále zahájení dialogu stiskem tlačítka či něčím
 podobným.
 
