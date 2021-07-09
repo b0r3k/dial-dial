@@ -1,8 +1,8 @@
 
 \chapter{Konstrukce dialogových systémů}
 
-Začneme popisem obecné terminologie, následovat bude krátké shrnutí dvou
-nejběžnějších přístupů ke konstrukci. Tradiční je přístup, který bychom
+Krátce shrneme dva
+nejběžnější přístupy ke konstrukci. Tradiční je přístup, který bychom
 mohli označit jako postupný. Taková konstrukce čítá několik komponent, kde
 každá zajišťuje část práce nutné k porozumění uživateli a zodpovězení jeho
 prohlášení. Ten uvedeme jako první, neboť dobře ilustruje, co všechno vlastně
@@ -11,11 +11,66 @@ systémy využívající metod strojového učení, které umožňují nahrazen�
 několika komponent jedním modelem. Tento přístup první uvedený v mnohém
 předčil, ale je běžnou praxí obě konstrukce kombinovat.
 
-\section{Terminologie}
+TODO možná terminologie? spíš ne
 
-Během dialogu se střídají promluvy dvou a více stran. Každou takovou promluvu
-budeme označovat jako \textit{tah}. Při snaze zaznamenat jednodušeji význam
-vysloveného obvykle používáme trojice
+\section{Tradiční inkrementální systémy}
+
+Již jsme zmínili, že takové systémy mají několik komponent, které na sebe
+navazují, jedna obvykle určitým způsobem využije výstup z předchozí jako svůj
+vstup.
+
+\subsection{Převod mluvené řeči na text}
+
+Zkráceně značíme nejčastěji \textit{STT} z anglického \textit{speech-to-text}.
+Jak název napovídá, úkolem této komponenty je převést zvukový projev na text.
+Dříve byly k tomuto účelu využívány především \textit{skryté
+    Markovovy modely (hidden Markov models, HMM)}. Tyto modely se nazývají skryté,
+protože jejich vnitřní stavy nemohou být pozorovány, vidíme pouze výstup.
+Jsou postaveny na \textit{Markovových řetězcích}, jejichž základním předpokladem
+je, že v sekvenci stavů pravděpodobnost příštího závisí jen na stavu aktuálním,
+nikoliv žádném předchozím, jak uvádí například \citet[strana 4]{brooks_handbook_2011}.
+Jejich výhodou je, že jsou poměrně jednoduché a nenáročné na výpočetní výkon.
+
+Jako v mnoha jiných odvětvích, i zde přišly ke slovu neuronové sítě, které HMM
+ve většině směrů překonaly. V dobrých podmínkách jsou schopny provést přepis
+téměř bezchybně. Opět však narážíme i na jejich slabé stránky,
+totiž vysokou náročnost na množství trénovacích dat a výpočetní výkon.
+
+O obecných problémech typu okolního hluku či různé výslovnosti jsme se
+již zmiňovali. Zde ještě dodáme, že komplikací může být i nedostatečná kvalita
+nahrávky. Mimo jiné z těchto důvodů výstupem často nebývá jen jedno
+slovo či věta, nýbrž několik spolu s \textit{jistotou}, kterou model této
+variantě přiřadil.
+
+\subsection{Extrakce významu}
+
+Nyní když máme textovou reprezentaci výpovědi, budeme se z ní snažit nějak
+jednoduššeji vyjádřit podstatné části. Této komponentě se obvykle říká
+\textit{porozumění jazyku (natural language understanding, NLU)}. V jistém
+smyslu je její úkol nejnáročnější, neboť jazyky mají mnoho nejasností,
+víceznačností a nuancí obecně. Výstupem této komponenty je často opět
+seznam reprezentací s hodnotou, nakolik si je systém tou konkrétní
+interpretací jistý.
+
+Jako onu jednodušší reprezentaci často používáme trojice
 \textit{úmysl}--\textit{slot}--\textit{hodnota}. Pro ilustraci například
 úryvek \uv{v deset hodin} bychom mohli přeložit na trojici
-informovat--čas--10:00.
+informovat--čas--10:00. K získání relevantních trojic můžeme využít ručně
+psané \textit{regulární výrazy} vyhledávající vzorce v textu, tento přístup
+je však dost náročný. Pro rozumnou funkcionalitu takových výrazů musíme napsat
+stovky. Dnes obvykle lepší alternativou jsou opět modely využívající strojové
+učení.
+
+\subsection{Zachování stavu}
+
+Od systému samozřejmě budeme vyžadovat určitou paměť. Pokud řekneme, že
+chceme někomu zavolat, pak dostaneme otázku komu, a pak ji zodpovíme, očekáváme,
+že systém si bude ještě pamatovat, že chceme volat. Tato komponenta je
+značena \textit{DST} z anglického \textit{Dialogue State Tracker}. V případě
+zmíněné reprezentace pomocí trojic paměti docílíme obvykle tak, že si pro každý
+slot pamatujeme hodnotu. Buď jednu, kterou v případě detekce jiné ihned přepíšeme,
+nebo si pro každý slot pamatujeme pravděpodobnostní rozložení více hodnot, které
+průběžně upravujeme. Téma hezky shrnují Williams, Raux a Handerson ve svém článku
+\citep{williams_dialog_2016}. Paměť nesmíme zapomenout v určitých případech
+resetovat, například když uživatel změní celý svůj cíl, jím dříve
+zmíněné hodnoty se stávají irelevantními.
