@@ -74,3 +74,53 @@ průběžně upravujeme. Téma hezky shrnují Williams, Raux a Handerson ve své
 \citep{williams_dialog_2016}. Paměť nesmíme zapomenout v určitých případech
 resetovat, například když uživatel změní celý svůj cíl, jím dříve
 zmíněné hodnoty se stávají irelevantními.
+
+\subsection{Rozhodnutí o dalším kroku}
+
+Máme uživatelovu aktuální výpověď a relevantní historii dialogu, nyní potřebujeme
+rozhodnout, jak zareagujeme. Můžeme ručně napsat pravidla, na základě kterých
+se rozhodneme o odpovědi. U systémů zaměřených na plnění úkolů je častou
+strategií snaha zjistit uživatelův cíl a následné získání informací potřebných
+k tomuto cíli (například pokud máme zarezervovat let, potřebujeme vědět kdy,
+odkud a kam), jinými slovy vyplnění potřebných slotů. Rozhodovacích pravidel
+však potřebujeme mnoho a zvláště u větších systémů může být výsledný proces dost
+zmatený. I zde jsou dnes využívány statistické modely a různé druhy strojového
+učení (hodí se zmínit především \textit{zpětnovazebné}). Výstupem této komponenty
+bývá opět určitý mezistupeň, jednodušší reprezentace nesoucí význam. Využít
+můžeme již zmíněné trojice úmysl--slot--hodnota.
+
+\subsection{Vytvoření odpovědi v přirozeném jazyce}
+
+Z interní reprezentace významu nyní potřebujeme vytvořit odpověď v přirozeném
+jazyce, kterou pochopí libovolný uživatel. Můžeme využít \textit{šablon}, do
+kterých doplníme vynechané části dle stavu dialogu (například
+\uv{Přejete si odlétat [zítra] v [10:00]?}). Přidáním více variant (ze kterých
+pak můžeme volit náhodně) pro každou šablonu dosáhneme i určité autentičnosti
+dialogu. Opět narážíme na pracnost tohoto přístupu, šablon totiž i pro
+jednotlivou doménu musíme vytvořit desítky a více. Přesto mohou posloužit až
+překvapivě dobře. Dalšími možnostmi je použít formálních gramatik či i zde
+strojového učení.
+
+\subsection{Převod textu na hlas}
+
+Obdobně jako u převodu opačným směrem, značíme \textit{TTS}. Důležitými pojmy
+při popisu řeči jsou \textit{fón}, což je v zásadě jakýkoliv zvuk nehledě na
+význam; a \textit{foném}, což je nejmenší část jazyka,
+pomocí které jsme schopni význam rozlišit. Především jejich analýza pomáhá
+při snaze o počítačovou syntézu hlasu.
+
+Důkazem může být například
+\textit{konkatenační} přístup ke generování hlasu, kdy nahrajeme mluvu člověka,
+nahrávku rozdělíme na \textit{difóny} (dva za sebou jdoucí fóny) a ty pak
+zpět \uv{slepíme} v požadovaném pořadí. V této základní variantě dostaneme
+hlas, který bude znít značně roboticky (mimo jiné kvůli absenci intonace či
+přízvuků), ale uživatel z něj dokáže pochopit význam. Při dostatečném množství
+vzorových dat a aplikaci dalších vylepšení však dostáváme již velmi dobré
+výsledky.
+
+Mezi další využíváné přístupy patří opět využití HMM nebo strojového učení. Modely
+využívající hluboké neuronové sítě jsou již pro některé jazyky téměř
+nerozeznatelné od lidského mluvčího, když velmi dobře zvládají výslovnost,
+intonaci i důrazy.
+
+\section{End-to-end modely}
