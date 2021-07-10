@@ -161,8 +161,10 @@ class MainActivity : AppCompatActivity() {
             }
             val authenticator =
                 IamAuthenticator(getString(R.string.watson_assistant_apikey))
+            val headers = mapOf("X-Watson-Learning-Opt-Out" to "true")
             assistant = Assistant("2021-06-22", authenticator).apply {
                 serviceUrl = getString(R.string.watson_assistant_url)
+                setDefaultHeaders(headers)
             }
             val options =
                 CreateSessionOptions.Builder(getString(R.string.waston_assistant_id))
