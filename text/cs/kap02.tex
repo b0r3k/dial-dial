@@ -44,6 +44,7 @@ variantě přiřadil.
 
 \subsection{Extrakce významu}
 
+\subsubsection{Obecný význam}
 Nyní když máme textovou reprezentaci výpovědi, budeme se z ní snažit nějak
 jednoduššeji vyjádřit podstatné části. Této komponentě se obvykle říká
 \textit{porozumění jazyku (natural language understanding, NLU)}. V jistém
@@ -60,6 +61,22 @@ psané \textit{regulární výrazy} vyhledávající vzorce v textu, tento pří
 je však dost náročný. Pro rozumnou funkcionalitu takových výrazů musíme napsat
 stovky. Dnes obvykle lepší alternativou jsou opět modely využívající strojové
 učení.
+
+\subsubsection{Jména a názvy}
+Důležitou součástí je \textit{rozpoznání jmenných entit} (anglicky
+\textit{named entity recognition, NER}),
+kde cílem je rozpoznat v textu názvy, které jako slova sama o sobě nemají
+význam, pokud nevíme, že jde o název. Zajímají nás jak jména lidí, tak
+geografických objektů či čehokoliv jiného, v závislosti na cílové doméně.
+
+K jejich nalezení se opět často používají modely strojového učení, pro češtinu
+jeden takový popsali \citet{ekstein_czech_2019}. Na pomoc či další zpracování
+můžeme využít metriky vzdálenosti mezi textovými řetězci,
+jako je \textit{Levenshteinova vzdálenost}, pravděpodobně představena autorem v
+článku roku 1965 \citep{Levenshtein1965BinaryCC} . Ta říká, kolik nejméně úprav
+musíme u jednoho řetězce udělat, abychom dostali druhý, tedy zjednoudšeně řečeno
+jak moc jsou si dva řetězce podobné. Trochu problém nastává u krátkých slov,
+protože u nich i velmi málo úpravami můžeme dostat slovo kompletně rozdílné.
 
 \subsection{Zachování stavu}
 
@@ -124,3 +141,4 @@ nerozeznatelné od lidského mluvčího, když velmi dobře zvládají výslovno
 intonaci i důrazy.
 
 \section{End-to-end modely}
+
