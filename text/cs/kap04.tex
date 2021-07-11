@@ -74,9 +74,9 @@ naráží na mnoho komplikací, tedy je především pro začátek silně nevhod
 Pro kopilaci využíváme běžně používáný \textit{gradle}.
 
 Aplikace musela vyřešit několik věcí: získání oprávnění ke všem operacím,
-vytvoření \textit{session} ve WA, získání jmen kontaktů uživatele a odeslání
-do WA, spuštění rozpoznání hlasu, po dokončení jeho výsledek odeslat jako
-zprávu do WA, po získání odpovědi spustit hlasový syntetizátor, po skončení
+získání kontaktů uživatele, vytvoření \textit{session} ve WA a odeslání
+jmen kontaktů, spuštění rozpoznání hlasu, po dokončení jeho výsledek odeslat
+jako zprávu do WA, po získání odpovědi spustit hlasový syntetizátor, po skončení
 jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
 hovor. Všemi součástmi se budeme zabývat v následujících podsekcích, začneme
 ale celkovou koncepcí a vzhledem.
@@ -115,3 +115,64 @@ tři jsou navíc oprávněními za času běhu, tedy o ně musíme explicitně
 požádat. Oprávnění k přístupu k internetu není tak zásadní (především
 protože neoperuje s uživatelovými daty), tedy je v Androidu automaticky
 uděleno při instalaci aplikace.
+
+Aktuálně oficiálně doporučeným postupem (který z toho důvodu využíváme), jak
+řešit oprávnění, je nejprve o ně požádat, pokud uživatel odmítne a pokusí se
+aplikaci znovu použít, zobrazit vysvětlení, k čemu jsou nutná a znovu o ně
+požádat, a pokud znovu odmítne, již jen ukazovat upozornění o nedostupnosti.
+
+Pro požádání o oprávnění potřebujeme spustit jinou aktivitu (pro získání
+oprávnění existuje jedna vestavěná), vyčkat na její výsledek a na základě
+něj rozhodnout o dalších krocích. K tomu využíváme opět aktuálně doporučenou
+metodu \texttt{registerForActivityResult}. Pro zobrazení vysvětlení potřeby
+oprávnění i upozornění o nedostupnosti využíváme třídu \texttt{AlertDialog}.
+
+\subsection{Získání kontaktů}
+
+Kontakty potřebujeme získat z úložiště telefonu, které se chová podobně jako
+databáze. Proto dotaz na ně začneme na začátku inicializace celé služby WA
+asynchronně jako koprogram. V rámci něj pak získáme jména a čísla kontaktů,
+které uložíme do slovníku (v Kotlinu relizovaný pomocí \texttt{MutableMap}).
+
+\subsection{Vytvoření session ve WA a odeslání jmen kontaktů}
+
+Po začátku dotazu na kontakty vyvoříme instanci třídy \texttt{Assistant}
+pro komunikaci s WA API, které předáme potřebné parametry a následně pošleme
+požadavek pro zahájení session. V Androidu není možné posílat síťové požadavky
+v hlavním vlákně (protože je potřeba udržovat ho volné pro UI), takže s výhodou
+opět použijeme běh jako koprogram. Následně pomocí \texttt{await} zajistíme
+kontrolu dokončení získávání kontaktů a předáme je jako \textit{kontext} do
+WA session. Pokud se v průběhu něco nepovede, vyjímku odchytíme a příště
+se pokusíme provést celou inicializaci znovu.
+
+\subsection{Spuštění rozpoznávání hlasu}
+
+Obdobně jako u získání
+oprávnění potřebujeme spustit nějakou aktivitu a získat její výsledek, tedy
+využijeme \texttt{registerForActivityResult}, tentokrát nejde o vestavěnou
+aktivitu, ale můžeme využít parametr \texttt{Intent} (úmysl) při spuštění.
+Protože ho potřebujeme používat často, vytvoříme ho jen jednou při otevření
+aplikace a předáme mu potřebné parametry (český jazyk, jeden výsledek, atp.).
+Když aktivita spuštěná s tímto úmyslem skončí, zkontrolujeme, že proběhla
+úspěšně a pokračujeme k dalšímu kroku.
+
+\subsection{Odeslání do WA a získání odpoědi}
+Opět pomocí \texttt{await} vyčkáme nachystání WA. Pokud je vše připraveno,
+pošleme v koprogramu (jedná se o síťový požadavek) text do WA a získáme odpověď.
+Tuto odpověď ještě zpracujeme, pokud je na prvním řádku \texttt{[call]}, jedná
+se o pokyn k hovoru, na druhém řádku najdeme jméno kontaktu a na třetím text k
+přečtení. Pomocí jména kontaktu zjistíme jeho číslo, vytvoříme \texttt{Intent}
+volání a nastavením proměnné \texttt{launchAgain} na \texttt{false} uložíme,
+že dialog skončil. V opačném případě pošleme celou odpověď k přečtení.
+
+\subsection{Spuštění hlasového syntetizátoru}
+
+Převod textu na řeč budeme také potřebovat používat často, proto instanci
+třídy \texttt{TextToSpeech} též vytvoříme při otevření programu. Nastavíme
+ji na český jazyk a přepíšeme v ní funkci \texttt{onDone}, která je spuštěna,
+když skončí přehrávání hlasu. Pokud dialog neskončil, spustíme celý běh
+od rozpoznání hlasu zabalený ve funkci \texttt{launchPipeline} znovu. Pokud
+skončil, jsme připraveni začít volat, vytočíme tedy číslo a ukončíme session ve
+WA i celou aplikaci.
+
+\section{Inicializace WA}
