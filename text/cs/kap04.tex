@@ -1,0 +1,63 @@
+\chapter{Vlastní vývoj}
+
+Na začátku této kapitoly rozebereme zvolenou platformu a programovací jazyky.
+Další části budou věnovány popisu komponent programu, konkrétně aplikaci pro
+mobilní telefony s operačním systémem Android, vytvoření instance WA pro řízení
+dialogu (s popisem získání nejběžnějších českých jmen pro trénink) a komponenty
+pro porovnání entit nalezených pomocí WA se seznamem kontaktů běžící v cloudu.
+
+\section{Platforma a programovací jazyky}
+
+\subsection{Platforma a jazyk mobilní aplikace}
+Pro mobilní aplikace máme v dnešní době v zásadě dvě možnosti, iOS nebo Android.
+Zvolili jsme Android, neboť je celkově otevřenější, autoři telefon s tímto
+operačním systémem vlastní a mají tedy alespoň uživatelské zkušenosti. IBM navíc
+poskytuje vývojový balíček (\textit{SDK}) pro použití WA v programovacím
+jazyku Java, který je použitelný i v Androidu.
+
+Z hlediska programovacího jazyka padla volba na Kotlin. Existují různé frameworky
+schopné zkompilovat pro Android program psaný téměř v libovolném programovacím
+jazyce, ale většina nakonec musí používat nějakou další překladovou vrstvu.
+Kotlin je jeden z jazyků, ve kterém lze psát nativní aplikace pro Android. Je
+totiž založený na Javě a dokonce umožňuje interoperabilitu s ní, což umožnilo
+využití zmíněného SDK. Jeho výhoda oproti Javě je, že je celkově modernější,
+psaní a čtení programů v něm je díky přehlednější syntaxi jednodušší a kratší,
+navíc je doporučený samotnou firmou Google jakožto vedoucím vývoje operačního
+systému Android. Další vlastností, na kterou při výběru nebyl brán tak velký
+zřetel, ale nakonec se ukázala jako relativně zásadní, je podpora koprogramů
+(pravděpodobně známější pod anglickým názvem \textit{coroutines}).
+
+\subsection{Volba asistenta a jeho inicializace}
+Asistentů existuje na trhu mnoho, jen jeden však aktuálně oficiálně plně
+podporuje český jazyk -- Watson Assistant od IBM. Proto zde volba jednoduše
+padla právě na něj.
+
+Inicializace WA lze provést v interaktivním prostředí v prohlížeči. Toto
+prostředí je však v mnohém omezené. V našem případě jsme například potřebovali
+vložit stovky entit pro trénování rozpoznání. Přenést je do WA přes prohlížeč
+by bylo absurdně náročné, navíc složitě replikovatelné. Sáhli jsme proto opět
+po SDK, pomocí kterého můžeme WA inciovat relativně krátkým skriptem. Na volbě
+konkrétního programovacího jazyka zde téměř nezáleželo (skript je krátký a běží
+jen jednou pro inicializaci), zvolili jsme proto Python jakožto dobře čitelný
+jazyk, se kterým máme mnoho zkušeností.
+
+\subsection{Jazyk a prostředí běhu porovnávací komponenty}
+
+Volba jazyka byla zde také jednoduchá, kolegové z MAMA AI totiž plánovali
+komponentu také využít a požadovaným jazykem byl Python. To bylo z naší
+strany naprosto v pořádku, protože k tomuto jazyku máme blízko a nepředstavoval
+pro toto použití žádné výraznější limitace.
+
+Dále bylo potřeba vyřešit, kde tato komponenta poběží. Původním nápadem bylo
+zprovoznění webového serveru, který by vyřizoval požadavky na tuto komponentu.
+To by však vyžadovalo další kód pro správu a především hardware, na kterém by
+tento server běžel. Při hledání alternativ jsme dostali doporučení na
+\textit{funkce poskytované jako služby} (\textit{function as a service, FaaS}),
+které nabízí většina větších poskytovatelů cloudů. Jednoduše řečeno, na daný
+server lze nahrát kód, který přijímá a vrací (obvykle) soubory formátu JSON a
+běží jen ve chvíli, kdy dostane nějaký požadavek. Liší se tak od standardních
+webových serverů, které musí \uv{poslouchat} neustále. Konkrétně byla vybrána
+služba IBM Cloud Functions především proto, že lze spravovat ze stejného účtu jako
+WA. Teoreticky může být výhoda využití stejného poskytovatele ještě v tom, že
+servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji,
+ale to jsme nezkoumali a tedy nemůžeme potvrdit, ani vyvrátit.
