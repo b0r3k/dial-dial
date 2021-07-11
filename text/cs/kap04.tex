@@ -61,3 +61,57 @@ služba IBM Cloud Functions především proto, že lze spravovat ze stejného �
 WA. Teoreticky může být výhoda využití stejného poskytovatele ještě v tom, že
 servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji,
 ale to jsme nezkoumali a tedy nemůžeme potvrdit, ani vyvrátit.
+
+\section{Mobilní aplikace}
+
+Pro vytvoření aplikace jsme využili integrované vývojové prostředí
+\textit{Android Studio}. Původním záměrem bylo využít \textit{Visual Studio Code}
+spolu s \textit{vývojovými kontejnery} za použití virtualizačního softwaru
+\textit{Docker}, především díky přenositelnosti a relativní nenáročnosti
+na výpočetní výkon. Ukázalo se však, že tato cesta není při vývoji aplikací
+pro Android v jazyce Kotlin pod operačním systémem Windows úplně běžná a
+naráží na mnoho komplikací, tedy je především pro začátek silně nevhodná.
+Pro kopilaci využíváme běžně používáný \textit{gradle}.
+
+Aplikace musela vyřešit několik věcí: získání oprávnění ke všem operacím,
+vytvoření \textit{session} ve WA, získání jmen kontaktů uživatele a odeslání
+do WA, spuštění rozpoznání hlasu, po dokončení jeho výsledek odeslat jako
+zprávu do WA, po získání odpovědi spustit hlasový syntetizátor, po skončení
+jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
+hovor. Všemi součástmi se budeme zabývat v následujících podsekcích, začneme
+ale celkovou koncepcí a vzhledem.
+
+\subsection{Celková koncepce a vzhled}
+
+Jednotlivé komponenty (obvykle reprezentované jednou obrazovkou)
+se v aplikacích
+pro Android nazývají \textit{Activity}. Protože primárním způsobem interakce
+s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující grafické
+rozhraní. Zvolili jsme modré tlačítko se symbolem mikrofonu na černém pozadí,
+které si můžete prohlédnout na obrázku TODO a které je definováno v souboru
+\texttt{activity\_main.xml}. Tímto tlačítkem je zahájen dialog (v případě
+dostatečných oprávnění, jejichž získání řešíme dále).
+
+TODO obrázek rozhraní
+
+Protože nám stačí jedna obrazovka, je celý kód umístěn v jednom souboru
+\texttt{MainActivity.kt}. Pro změnu grafického rozhraní z kódu je třeba
+jejich propojení, které zajišťuje instance třídy \texttt{ActivityMainBinding}.
+Toto je aktuálně oficiálně doporučený postup (na úkor dříve používaného
+vyhledání pomocí \texttt{id}), ale vygenerování propojovací třídy musíme
+povolit v souboru \texttt{build.gradle} na úrovni modulu.
+
+Tato instance je využita při otevření aplikace pro \uv{nafouknutí} grafického
+rozhraní a následně v kódu kdykoliv chceme k rozhraní přistupovat. To v našem
+případě znamená nastavení reakce na stisk tlačítka, případně jeho deaktivace
+či změna vzhledu pro indikaci probíhajích procesů.
+
+\subsection{Získání oprávnění}
+
+Pro svou správnou funkci potřebuje aplikace povolení nahrávat zvuk, číst
+kontakty, vykonávat hovory a přistupovat k internetu. Všechna požadovaná
+oprávnění musí být uvedena v souboru \texttt{AndroidManifest.xml}, první
+tři jsou navíc oprávněními za času běhu, tedy o ně musíme explicitně
+požádat. Oprávnění k přístupu k internetu není tak zásadní (především
+protože neoperuje s uživatelovými daty), tedy je v Androidu automaticky
+uděleno při instalaci aplikace.
