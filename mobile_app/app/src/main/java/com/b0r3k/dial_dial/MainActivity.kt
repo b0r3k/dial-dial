@@ -68,6 +68,16 @@ class MainActivity : AppCompatActivity() {
                             }
                             else {
                                 startActivity(callIntent!!)
+
+                                withContext(IO) {
+                                    val options = DeleteSessionOptions.Builder(
+                                        getString(R.string.waston_assistant_id),
+                                        sessionId
+                                    ).build()
+                                    assistant!!.deleteSession(options).execute()
+                                }
+
+                                finish()
                             }
                         }
                     }
