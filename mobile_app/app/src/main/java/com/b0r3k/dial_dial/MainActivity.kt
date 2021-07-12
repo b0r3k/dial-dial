@@ -20,9 +20,7 @@ import androidx.core.app.ActivityCompat
 import com.b0r3k.dial_dial.databinding.ActivityMainBinding
 import com.ibm.cloud.sdk.core.security.IamAuthenticator
 import com.ibm.watson.assistant.v2.Assistant
-import com.ibm.watson.assistant.v2.model.CreateSessionOptions
-import com.ibm.watson.assistant.v2.model.MessageInput
-import com.ibm.watson.assistant.v2.model.MessageOptions
+import com.ibm.watson.assistant.v2.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -88,7 +86,6 @@ class MainActivity : AppCompatActivity() {
                 // If not ready, prepare watson
                 if ((watsonReady == null) or (watsonReady == false)) {
                     watsonReadyDeferred = CoroutineScope(IO).async {
-                        loadContacts()
                         return@async tryPrepareWatson()
                     }
                 }
@@ -120,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         response = getWatsonResponse(textResult)
                     }
                     else {
-                        response = "Bohužel, nepodařilo se nám kontaktovat server."
+                        response = "Bohužel, při inicilaizaci se něco nepovedlo."
                     }
                     withContext(Main) {
                         Log.i("tag", response)
@@ -176,7 +173,21 @@ class MainActivity : AppCompatActivity() {
             if (contactsReady) {
                 val contactsJson = Json.encodeToString(contacts!!.keys)
                 Log.i("tag", contactsJson)
-                getWatsonResponse("{ \"__contacts__\" : $contactsJson }")
+                val contactsStringSend = "{ \"__contacts__\" : $contactsJson }"
+
+                val userDefinedContext: MutableMap<String, Any> = HashMap()
+                userDefinedContext["contacts"] = contactsStringSend
+                val dailSkillContext = MessageContextSkill.Builder().userDefined(userDefinedContext).build()
+                val skillsContext: MutableMap<String, MessageContextSkill> = HashMap()
+                skillsContext["main skill"] = dailSkillContext // name of the skill `dial_dial_cz` does not work!!
+
+                val context = MessageContext.Builder().skills(skillsContext).build()
+
+                val messageOptions = MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId).context(context).build()
+                assistant!!.message(messageOptions).execute()
+            }
+            else {
+                return false
             }
         } catch (e: Exception) {
             Log.i("tag", e.toString())
