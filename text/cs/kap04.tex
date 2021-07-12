@@ -106,6 +106,8 @@ rozhraní a následně v kódu kdykoliv chceme k rozhraní přistupovat. To v na
 případě znamená nastavení reakce na stisk tlačítka, případně jeho deaktivace
 či změna vzhledu pro indikaci probíhajích procesů.
 
+TODO texty v strings.xml
+
 \subsection{Získání oprávnění}
 
 Pro svou správnou funkci potřebuje aplikace povolení nahrávat zvuk, číst
@@ -145,6 +147,9 @@ kontrolu dokončení získávání kontaktů a předáme je jako \textit{kontext
 WA session. Pokud se v průběhu něco nepovede, vyjímku odchytíme a příště
 se pokusíme provést celou inicializaci znovu.
 
+Důležité je ještě zmínit, že parametry pro komunikaci s WA jsou uloženy
+zvlášť v souboru \texttt{credentials.html}.
+
 \subsection{Spuštění rozpoznávání hlasu}
 
 Obdobně jako u získání
@@ -176,3 +181,35 @@ skončil, jsme připraveni začít volat, vytočíme tedy číslo a ukončíme s
 WA i celou aplikaci.
 
 \section{Inicializace WA}
+
+Bohužel samotné vytvoření instance WA zatím není možné provést pomocí skriptů,
+musíme ho tedy vytvořit ve webovém rozhraní. Odsud také získáme soubor
+\texttt{ibm-credentials.env}, který budeme používat k autentizaci skriptů.
+
+Když toto uděláme, jako první musíme vytvořit \textit{workspace}
+(prostředí pro danou schopnost WA), což uděláme
+jednoduchým požadavkem, který bude obsahovat parametry jako jméno nebo jazyk.
+Zpět dostaneme odpověď, jejíž součástí bude \texttt{workspace\_id}, které budeme
+dál potřebovat k manipulaci s prostředím.
+
+Jako první do něj přidáme detekci uživatelových úmyslů (inents), jejichž využití
+jsme si představili v kapitole o konstrukci diaogových systémů. Zásadní je úmysl
+\texttt{dial}, pomocí kterého detekujeme, že uživatel chce někomu volat. Pro
+každý úmysl přidáme několik vzorových vět, na základě kterých by ho měl WA
+rozpoznat. Ty jsou interně použity pro trénink umělé modelu stojícího za WA.
+Obdobně vytvoříme zbývající úmysly \texttt{greet} a \texttt{bye}, aby náš
+asistent uměl slušně pozdravit. Nakonec použijeme metodu \texttt{update\_workspace},
+abychom vše tyto úmysly dostali do dříve vytvořeného prostředí.
+
+Jediné entity, které potřebujeme rozeznávat, jsou jména lidí, případně příjmení.
+Do WA je k tréninku dostaneme obdobně jako úmysly. Uvažovali jsme, jak ale tato
+data získat. Nakonec jsme využili data četnosti jmen a příjmení MVČR z roku 2017.
+Sice již přímo na stránkách MVČR nejsou dostupná, ale ve ve webových archivech
+existují. Tato data byla uložena ve formátu \texttt{xls} ve více listech, pro
+počítačové zpracování ne moc ideálním. Pomocí knihovny \texttt{pandas} jsme je
+tedy převedli do formátu \texttt{csv}, kde byla i výrazně menší. Následně jsme
+vybrali všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
+2000 (TODO check hranice) lidí a ta jsme nahráli do WA.
+
+Nejkomplikovanější částí bylo samotné sestavení průběhu dialogu s odesláním
+dat do porovnávací komponenty.
