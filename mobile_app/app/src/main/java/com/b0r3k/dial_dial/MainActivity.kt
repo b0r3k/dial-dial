@@ -31,7 +31,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private var mainActBinding: ActivityMainBinding? = null
-    private var sessionId : String? = null
+    private var sessionId: String? = null
     private var assistant: Assistant? = null
     private var speechRecognizerIntent: Intent? = null
     private var watsonReadyDeferred: Deferred<Boolean>? = null
@@ -43,8 +43,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Binding for communication with UI
         mainActBinding = ActivityMainBinding.inflate(layoutInflater)
 
+        // Intent to recognize speech in Czech
         speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -54,21 +57,23 @@ class MainActivity : AppCompatActivity() {
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
         }
 
+        // Component for speech synthesis in Czech, overriding OnDone function to trigger actions
+        // after TTS finishes
         textToSpeech = TextToSpeech(this, TextToSpeech.OnInitListener {
             if (it == TextToSpeech.SUCCESS) {
-                Log.i("TTS", "Initialization success")
                 textToSpeech!!.language = Locale("cs_CZ")
                 textToSpeech!!.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) { }
+                    override fun onStart(utteranceId: String?) {}
 
                     override fun onDone(utteranceId: String?) {
                         CoroutineScope(Main).launch {
                             if (launchAgain) {
+                                // Launch the STT and whole pipeline again
                                 launchPipeline()
-                            }
-                            else {
+                            } else {
+                                // Start call
                                 startActivity(callIntent!!)
-
+                                // End the WA session
                                 withContext(IO) {
                                     val options = DeleteSessionOptions.Builder(
                                         getString(R.string.waston_assistant_id),
@@ -76,25 +81,29 @@ class MainActivity : AppCompatActivity() {
                                     ).build()
                                     assistant!!.deleteSession(options).execute()
                                 }
-
+                                // End this app
                                 finish()
                             }
                         }
                     }
 
-                    override fun onError(utteranceId: String?) { }
+                    override fun onError(utteranceId: String?) {}
                 })
-            }
-            else {
-                Log.i("TTS", "Initialization failed")
-                Toast.makeText(applicationContext, "Text to speech initialization failed.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "Text to speech initialization failed.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
+        // Set the button click
         mainActBinding?.ivCircle?.setOnClickListener {
             if (checkPermissions()) {
-                // If not ready, prepare watson
+                // If not ready start asynchronously preparing Watson
                 if ((watsonReady == null) or (watsonReady == false)) {
+                    // Launch in IO, network request
                     watsonReadyDeferred = CoroutineScope(IO).async {
                         return@async tryPrepareWatson()
                     }
@@ -103,56 +112,75 @@ class MainActivity : AppCompatActivity() {
                 launchPipeline()
             }
         }
+
+        // Set the view in UI
         setContentView(mainActBinding?.root)
     }
 
     private fun launchPipeline() {
+        /**
+         * Launches the STT and on result the whole pipeline for communication with user.
+         */
         mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_full_red)
         pipelineLauncher.launch(speechRecognizerIntent)
     }
 
-    private val pipelineLauncher = registerForActivityResult(StartActivityForResult()) {
-            activityResult ->
-        mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
-        if (activityResult.resultCode == Activity.RESULT_OK) {
-            val result =
-                activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            if (!result.isNullOrEmpty()) {
-                val textResult = result[0].toString()
-                Log.i("tag", textResult)
-                CoroutineScope(IO).launch {
-                    var response = ""
-                    watsonReady = watsonReadyDeferred!!.await()
-                    if (watsonReady!!) {
-                        response = getWatsonResponse(textResult)
-                    }
-                    else {
-                        response = "Bohužel, při inicilaizaci se něco nepovedlo."
-                    }
-                    withContext(Main) {
-                        Log.i("tag", response)
-                        val tokens = response.split('\n')
-                        var textToRead = tokens[0]
-                        if (tokens.size > 1 && tokens[0] == "[call]") {
-                            textToRead = tokens[2]
-                            launchAgain = false
-                            val contact = tokens[1]
-                            val number = contacts!![contact]
-                            Log.i("tag", "Calling contact $contact with number $number")
-                            callIntent = Intent(Intent.ACTION_CALL).apply {
-                                data = Uri.parse("tel:$number")
-                            }
+    // Launcher with registered callback on activity end (when STT ends)
+    private val pipelineLauncher =
+        registerForActivityResult(StartActivityForResult()) { activityResult ->
+            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_mic_empty)
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                // Get result from STT, check if valid
+                val result =
+                    activityResult.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                if (!result.isNullOrEmpty()) {
+                    val textResult = result[0].toString()
+                    // Launch in IO, network request
+                    CoroutineScope(IO).launch {
+                        // Await Watson preparation, if ready get response
+                        var response = ""
+                        watsonReady = watsonReadyDeferred!!.await()
+                        if (watsonReady!!) {
+                            response = getWatsonResponse(textResult)
+                        } else {
+                            response = "Bohužel, při inicilaizaci se něco nepovedlo."
                         }
-                        textToSpeech!!.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "WATSON_TTS")
+                        withContext(Main) {
+                            // Check the response, decide what next
+                            val tokens = response.split('\n')
+                            var textToRead = tokens[0]
+                            if (tokens.size > 1 && tokens[0] == "[call]") {
+                                // We should call, prepare Intent, not launchAgain
+                                textToRead = tokens[2]
+                                launchAgain = false
+                                val contact = tokens[1]
+                                val number = contacts!![contact]
+                                callIntent = Intent(Intent.ACTION_CALL).apply {
+                                    data = Uri.parse("tel:$number")
+                                }
+                            }
+                            // Synthesise and play the response with TTS
+                            textToSpeech!!.speak(
+                                textToRead,
+                                TextToSpeech.QUEUE_FLUSH,
+                                null,
+                                "WATSON_TTS"
+                            )
+                        }
                     }
                 }
             }
         }
-    }
 
     private fun getWatsonResponse(message: String): String {
+        /**
+         * Returns Watson answer for given [message]. Uses sessionId from Activity and
+         * watson_assistant_id from resources. Must run in coroutine, because is network request!
+         */
         val messageInput = MessageInput.Builder().messageType("text").text(message).build()
-        val messageOptions = MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId).input(messageInput).build()
+        val messageOptions =
+            MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId)
+                .input(messageInput).build()
         val response = assistant!!.message(messageOptions).execute().result
         var textResponse: String = ""
         if (response.output.generic.isNotEmpty()) {
@@ -162,10 +190,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun tryPrepareWatson(): Boolean {
+        /**
+         * Returns whether Watson initialization was successful. Is suspend function, uses network
+         * request, so must run in coroutine.
+         * At the beginning calls loadContacts to retrieve contacts, then creates Watson session.
+         * Then awaits contacts and sends them as context to Watson.
+         */
         try {
             val contactsReadyDeferred = CoroutineScope(IO).async {
+                // Start asynchronously retrieving contacts
                 return@async loadContacts()
             }
+            // Initiate Watson session
             val authenticator =
                 IamAuthenticator(getString(R.string.watson_assistant_apikey))
             val headers = mapOf("X-Watson-Learning-Opt-Out" to "true")
@@ -179,34 +215,41 @@ class MainActivity : AppCompatActivity() {
             val response = assistant!!.createSession(options).execute().result
             sessionId = response.sessionId
 
+            // Await the contacts
             val contactsReady = contactsReadyDeferred.await()
             if (contactsReady) {
+                // If successfully retrieved contacts, send them to Watson as context
                 val contactsJson = Json.encodeToString(contacts!!.keys)
-                Log.i("tag", contactsJson)
                 val contactsStringSend = "{ \"__contacts__\" : $contactsJson }"
 
                 val userDefinedContext: MutableMap<String, Any> = HashMap()
                 userDefinedContext["contacts"] = contactsStringSend
-                val dailSkillContext = MessageContextSkill.Builder().userDefined(userDefinedContext).build()
+                val dailSkillContext =
+                    MessageContextSkill.Builder().userDefined(userDefinedContext).build()
                 val skillsContext: MutableMap<String, MessageContextSkill> = HashMap()
-                skillsContext["main skill"] = dailSkillContext // name of the skill `dial_dial_cz` does not work!!
+                skillsContext["main skill"] =
+                    dailSkillContext // name of the skill `dial_dial_cz` does not work!!
 
                 val context = MessageContext.Builder().skills(skillsContext).build()
 
-                val messageOptions = MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId).context(context).build()
+                val messageOptions =
+                    MessageOptions.Builder(getString(R.string.waston_assistant_id), sessionId)
+                        .context(context).build()
                 assistant!!.message(messageOptions).execute()
-            }
-            else {
+            } else {
                 return false
             }
         } catch (e: Exception) {
-            Log.i("tag", e.toString())
             return false
         }
         return true
     }
 
     private fun loadContacts(): Boolean {
+        /**
+         * Loads contacts (with telephone numbers) from Database-like Android storage. Saves them
+         * into a Map. Returns true after operation finish.
+         */
         var result: MutableMap<String, String> = mutableMapOf()
         val URI: Uri = Phone.CONTENT_URI
         val PROJECTION: Array<out String> = arrayOf(
@@ -225,25 +268,45 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
-        results: Map<String, Boolean> ->
-        if (results.values.all { it }) {
-            Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT).show()
-        } else {
-            showUnavailableDialog()
+    // Launcher with registered callback on activity end (when permission request ends)
+    private val requestPermissionLauncher =
+        registerForActivityResult(RequestMultiplePermissions()) { results: Map<String, Boolean> ->
+            if (results.values.all { it }) {
+                // All permissions granted, fine
+                Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                // Some permission not granted, show that app is unavailable
+                showUnavailableDialog()
+            }
         }
-    }
 
     private fun checkPermissions(): Boolean {
-        val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO, android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
+        /**
+         * Returns whether all necessary permissions are granted. If not, either shows explanation
+         * why we need permissions, or requests the permissions.
+         */
+        val permissions = arrayOf(
+            android.Manifest.permission.RECORD_AUDIO,
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.CALL_PHONE
+        )
         when {
-            permissions.all { ActivityCompat.checkSelfPermission(applicationContext, it) == PackageManager.PERMISSION_GRANTED } -> {
+            permissions.all {
+                ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                // All permissions granted
                 return true
             }
             permissions.any { shouldShowRequestPermissionRationale(it) } -> {
+                // Some permission already requested but not given, explain and request again
                 showRationaleDialog(permissions)
             }
             else -> {
+                // Some permission not granted and not requested, request
                 requestPermissionLauncher.launch(permissions)
             }
         }
@@ -251,20 +314,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRationaleDialog(permissions: Array<String>) {
+        /**
+         * Shows AlertDialog explaining why we need permissions, on OK requests permissions again.
+         */
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
             setMessage("Abychom vás mohli slyšet, potřebujeme přístup k mikrofonu. Abychom mohli zavolat lidem, potřebujeme přístup ke kontaktům a správě hovorů.")
             setTitle("Potřebujeme povolení!")
             setPositiveButton("OK") { _, _ ->
+                // Request permissions again
                 requestPermissionLauncher.launch(permissions)
             }
         }
         val dialog = builder.create()
+        // Show the dialog
         dialog.show()
     }
 
     private fun showUnavailableDialog() {
+        /**
+         * Shows AlertDialog explaining that without permissions we can't work.
+         */
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
@@ -273,6 +344,7 @@ class MainActivity : AppCompatActivity() {
             setPositiveButton("OK") { _, _ -> }
         }
         val dialog = builder.create()
+        // Show the dialog
         dialog.show()
     }
 }
