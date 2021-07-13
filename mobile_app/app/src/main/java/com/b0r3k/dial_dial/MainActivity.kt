@@ -110,8 +110,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 // Launch speech recognition, on result watson is contacted
                 launchPipeline()
+                // Disable the button
+                mainActBinding?.ivCircle?.isEnabled = false
             }
-            mainActBinding?.ivCircle?.isEnabled = false
         }
 
         // Set the view in UI
