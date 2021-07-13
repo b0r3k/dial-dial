@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     applicationContext,
-                    "Text to speech initialization failed.",
+                    getString(R.string.toast_tts_init_fail),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                         if (watsonReady!!) {
                             response = getWatsonResponse(textResult)
                         } else {
-                            response = "Bohužel, při inicilaizaci se něco nepovedlo."
+                            response = getString(R.string.watson_init_failed)
                         }
                         withContext(Main) {
                             // Check the response, decide what next
@@ -264,6 +264,7 @@ class MainActivity : AppCompatActivity() {
             val number: String = cursor.getString(2)
             result[name] = number
         }
+        cursor.close()
         contacts = result
         return true
     }
@@ -273,7 +274,7 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(RequestMultiplePermissions()) { results: Map<String, Boolean> ->
             if (results.values.all { it }) {
                 // All permissions granted, fine
-                Toast.makeText(applicationContext, "Permissions granted.", Toast.LENGTH_SHORT)
+                Toast.makeText(applicationContext, getString(R.string.toast_permissions_granted), Toast.LENGTH_SHORT)
                     .show()
             } else {
                 // Some permission not granted, show that app is unavailable
@@ -320,8 +321,8 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
-            setMessage("Abychom vás mohli slyšet, potřebujeme přístup k mikrofonu. Abychom mohli zavolat lidem, potřebujeme přístup ke kontaktům a správě hovorů.")
-            setTitle("Potřebujeme povolení!")
+            setMessage(getString(R.string.explain_why_permissions))
+            setTitle(getString(R.string.need_permissions))
             setPositiveButton("OK") { _, _ ->
                 // Request permissions again
                 requestPermissionLauncher.launch(permissions)
@@ -339,8 +340,8 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         builder.apply {
-            setMessage("Bohužel, bez přístupu k mikrofonu, kontaktům a správě hovorů nemůžeme fungovat. Pokud chcete, přejděte do nastavení a udělte povolení.")
-            setTitle("Potřebujeme povolení!")
+            setMessage(getString(R.string.explain_without_permissions))
+            setTitle(getString(R.string.need_permissions))
             setPositiveButton("OK") { _, _ -> }
         }
         val dialog = builder.create()

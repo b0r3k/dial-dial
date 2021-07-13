@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Dialog Dialer</string>
+
+    <string name="watson_init_failed">Bohužel, při inicilaizaci se něco nepovedlo.</string>
+
+    <string name="toast_tts_init_fail">Nepodařilo se inicializovat syntézu hlasu.</string>
+    <string name="toast_permissions_granted">Oprávnění udělena.</string>
+
+    <string name="need_permissions">Potřebujeme povolení!</string>
+    <string name="explain_why_permissions">Abychom vás mohli slyšet, potřebujeme přístup k mikrofonu. Abychom mohli zavolat lidem, potřebujeme přístup ke kontaktům a správě hovorů.</string>
+    <string name="explain_without_permissions">Bohužel, bez přístupu k mikrofonu, kontaktům a správě hovorů nemůžeme fungovat. Pokud chcete, přejděte do nastavení a udělte povolení.</string>
 </resources>
