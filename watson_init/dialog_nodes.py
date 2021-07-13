@@ -139,6 +139,8 @@ node["output"] = DialogNodeOutput(generic=
                         [DialogNodeOutputTextValuesElement(text="Povedlo se mi najít následující: <? context['webhook_result_1'].response.result.entities.join(\", \") ?>. Koho z nich myslíte?"),
                         DialogNodeOutputTextValuesElement(text="Tomuto zadání odpovídá: <? context['webhook_result_1'].response.result.entities.join(\", \") ?>. Koho z nich myslíte?"),
                         DialogNodeOutputTextValuesElement(text="V kontaktech byli nalezeni následující: <? context['webhook_result_1'].response.result.entities.join(\", \") ?>. Koho z nich myslíte?")])])
+context = {"contacts": "{ \"__contacts__\" : <? context['webhook_result_1'].response.result.entities ?> }"}
+node["context"] = DialogNodeContext(**context)
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
