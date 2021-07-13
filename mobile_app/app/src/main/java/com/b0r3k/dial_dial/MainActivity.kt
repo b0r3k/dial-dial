@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                 // Launch speech recognition, on result watson is contacted
                 launchPipeline()
             }
-            //mainActBinding?.ivCircle?.isEnabled = false
+            mainActBinding?.ivCircle?.isEnabled = false
         }
 
         // Set the view in UI
@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity() {
                                     data = Uri.parse("tel:$number")
                                 }
                             }
+                            mainActBinding?.ivSpeak?.setImageResource(R.drawable.ic_sound)
                             // Synthesise and play the response with TTS
                             textToSpeech!!.speak(
                                 textToRead,
