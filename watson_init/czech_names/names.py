@@ -36,7 +36,7 @@ common_names = []
 df_names = pd.read_csv('names-freq.csv')
 df_names.sort_values(by=[df_names.columns[-1]], inplace=True, ascending=False, ignore_index=True)
 for i in range(1, 1000):
-    if (df_names.loc[i, df_names.columns[-1]]) < 2000:
+    if (df_names.loc[i, df_names.columns[-1]]) < 500:
         break
     else:
         common_names.append(df_names.loc[i, "JMÉNO"].lower())
@@ -48,7 +48,7 @@ common_surnames = []
 df_surnames = pd.read_csv('surnames-freq.csv')
 df_surnames.sort_values(by=[df_surnames.columns[-1]], inplace=True, ascending=False, ignore_index=True)
 for i in range(1, 1000):
-    if (df_surnames.loc[i, df_surnames.columns[-1]]) < 2000:
+    if (df_surnames.loc[i, df_surnames.columns[-1]]) < 500:
         break
     else:
         common_surnames.append(df_surnames.loc[i, "PŘÍJMENÍ"].lower())
@@ -56,5 +56,5 @@ print(common_surnames)
 print(len(common_surnames))
 
 # Dump all the names to json
-with open('names.json', 'w+') as file:
+with open('names.json', 'w+', encoding='utf-8') as file:
     json.dump(common_names+common_surnames, file, indent=1, ensure_ascii=False)

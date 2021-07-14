@@ -20,18 +20,6 @@ node["type"] = "standard"
 node = DialogNode(**node)
 dialog_nodes.append(node)
 
-# Node for accepting contacts, then nothing
-node = {}
-node["dialog_node"] = "Contacts"
-node["title"] = "Přijmout kontakty"
-node["conditions"] = "@contacts"
-node["type"] = "standard"
-node["previous_sibling"] = "Welcome_empty"
-context = { "contacts": "<? input.text ?>"}
-node["context"] = DialogNodeContext(**context)
-node = DialogNode(**node)
-dialog_nodes.append(node)
-
 
 # Node that detects user wants to call someone, then calls forwarding to webhook
 node = {}
@@ -39,7 +27,7 @@ node["dialog_node"] = "Dial"
 node["title"] = "Zavolat někomu"
 node["conditions"] = "#dial"
 node["type"] = "frame"
-node["previous_sibling"] = "Contacts"
+node["previous_sibling"] = "Welcome_empty"
 node["next_step"] = DialogNodeNextStep(behavior="jump_to", dialog_node="Prepare_webhook", selector="body")
 node = DialogNode(**node)
 dialog_nodes.append(node)

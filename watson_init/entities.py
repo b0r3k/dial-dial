@@ -11,7 +11,7 @@ assistant.set_service_url('https://api.eu-de.assistant.watson.cloud.ibm.com')
 workspace_id = "41dca07d-9323-4372-8be3-ceaf4f6fad3c"
 
 # Get common names from prepared file
-with open('czech_names/names.json', 'r') as file:
+with open('czech_names/names.json', 'r', encoding='utf-8') as file:
     names = json.load(file)
 
 # Get rid of duplicates
