@@ -18,8 +18,7 @@ with open('czech_names/names.json', 'r', encoding='utf-8') as file:
 names = set(names)
 
 # List of CreateEntities for update_workspace method
-create_entities = [CreateEntity(entity="name", description="Name of a person.", fuzzy_match=True, values=[CreateValue(name) for name in names]), 
-                    CreateEntity(entity="contacts", description="Placeholder entity for sending contacts.", fuzzy_match=False, values=[CreateValue("__contacts__")])]
+create_entities = [CreateEntity(entity="name", description="Name of a person.", fuzzy_match=True, values=[CreateValue(name) for name in names])]
 
 # Update the workspace
 response = assistant.update_workspace(workspace_id=workspace_id, entities=create_entities)
