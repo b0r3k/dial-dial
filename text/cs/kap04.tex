@@ -48,6 +48,11 @@ komponentu také využít a požadovaným jazykem byl Python. To bylo z naší
 strany naprosto v pořádku, protože k tomuto jazyku máme blízko a nepředstavoval
 pro toto použití žádné výraznější limitace.
 
+Při implementaci jsme potřebovali počítat podobnost řetězců. Algoritmus
+pro tento výpočet je relativně komplikovaný a běžně používaný, nedávalo tedy
+smysl programovat jej znovu. Využili jsme modul \texttt{editdistance} (TODO
+možná zdroj?), protože je psaný v rychlejším jazyce C++ a má vhodnou licenci.
+
 Dále bylo potřeba vyřešit, kde tato komponenta poběží. Původním nápadem bylo
 zprovoznění webového serveru, který by vyřizoval požadavky na tuto komponentu.
 To by však vyžadovalo další kód pro správu a především hardware, na kterém by
@@ -218,12 +223,13 @@ existují. Tato data byla uložena ve formátu \texttt{xls} ve více listech, pr
 počítačové zpracování ne moc ideálním. Pomocí knihovny \texttt{pandas} jsme je
 tedy převedli do formátu \texttt{csv}, kde byla i výrazně menší. Následně jsme
 vybrali všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
-2000 (TODO check hranice) lidí a ta jsme nahráli do WA.
+200 (TODO check hranice) lidí a ta jsme nahráli do WA.
 
 \subsection{Stavba dialogu}
 
 Nejkomplikovanější částí bylo samotné sestavení průběhu dialogu s odesláním
-dat do porovnávací komponenty. (TODO možná přesunout do popisu WA?) WA využívá \textit{stromovou} reprezentaci dialogu,
+dat do porovnávací komponenty. (TODO možná přesunout do popisu WA?) WA využívá
+\textit{stromovou} reprezentaci dialogu,
 kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
 jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
 odpověď z něj a pokud nějaké má, zanoříme se do jeho synů. Ve webovém rozhraní je
@@ -256,3 +262,90 @@ TODO možná obrázek stromu?
 
 \section{Porovnávací komponenta}
 
+Tuto komponentu jsme implementovali pro obecné použití v dialogových systémech
+v rámci knihovny \texttt{mConversation} MAMA AI, součástí jsou desítky testů
+využívající frameworku \texttt{pytest}. Za účelem využití v aplikaci jsme komponentu
+drobně upravili pro kontext vybírání z telefonního seznamu. Proto zde první popíšeme
+obecnou část cílů a implementace, a pak konkrétní provedené úpravy.
+
+\subsection{Cíle}
+
+Vstupem komponenty jsou entity rozpoznané pomocí WA, původní textový vstup do něj
+a určitý (obvykle vázaný na uživatele) seznam entit. Cílem je vybrat entitu ze seznamu,
+která nejvíce odpovídá vstupu do WA. V úvahu přitom nejsou brány jen entity, které
+WA rozpoznal, ale i originální vstup. Pokud tak například uživatel zmíní běžné jméno a
+neběžné příjmení, a WA rozpozná jako entitu jen jméno, komponenta dokáže najít a využít
+i příjmení, takže pravděpodobně vrátí pouze jeden kontakt. Kdyby ho v úvahu nevzala,
+vrátí všechny kontakty odpovídající jménu (s jinými příjmeními).
+
+Součástí je i příprava pro určité rozšíření využívající strojového učení -- každý
+uživatel by měl mít uložený svůj model, který se naučí jeho preference a bude se
+průběžně zlepšovat využitím zpětné vazby. To je ale zatím jen koncept.
+
+\subsection{Předzpracování}
+
+K seznamu kontaktů si vytvoříme slovník,
+který jako klíče bude mít všechny části kontaktů a jako hodnoty indexy do původního
+seznamu. Tedy například pokud máme v seznamu na prvním místě kontakt \uv{Jan Novák},
+ve slovníku budou \uv{Jan} i \uv{Novák} odkazovat na index 1.
+
+Podobně předzpracujeme i rozpoznané entity, pro rychlý přístup k informacím o nich
+využijeme opět slovník. Navíc pokud WA rozpoznal dvě entity v navazujích úsesích vstupu,
+spojíme je dohromady, pravděpodobně se totiž jedná právě třeba o jméno a příjmení.
+Pokud WA v nějakém segmentu rozpoznal více entit a má dojít k tomuto spojování, spojíme
+je ve všech různých kombinacích (nějaká rozpoznaná je pravděpodobně chybná).
+
+\subsection{Vlastní porovnávání}
+
+Kdykoliv budeme porovnávat nějaké řetězce, využijeme tzv. \textit{fuzzy matching}.
+To znamená, že řetězce nebudeme porovnávat přímo, ale pomocí již zmíněné
+Levenshteinovy vzdálenosti. Tím umožníme přiřazení ke kontaktu i při nepřesné shodě,
+ať už není shoda úplná kvůli jinému tvaru slova (skloňování), chybě v rozpoznání
+hlasu, nebo chybě rozpoznání entity ve WA. Jako odpovídající pak označíme kontakty,
+jejichž vzdálenost je menší nebo rovna nějakému limitu. Jako limit maximálního počtu
+úprav jsme zvolili 3. Je dost vysoký na to, aby ještě přijal například slovo s příponou
+\uv{-ovi}, na druhou stranu vyšší limity způsobují přiřazení i řetězců neodpovídajích,
+zvláště u krátkých slov (i s tímto limitem můžeme ke slovu délky 3 přiřadit libovolné jiné
+stejné délky 3, protože nám stačí vyměnit 3 znaky). Pokud celé entitě nic neodpovídá,
+zkusíme ji rozdělit podle mezer a porovnat jednotlivé části.
+
+Každému přiřazenému kontaktu pak ještě určíme \textit{jistotu} (\textit{confidence}),
+s jakou jsme ho přiřadili. Tu jsme se rozhodli počítat jako
+\[ confidence = 0,5 + \frac{0,5*(edit\_limit - distance)}{edit\_limit} ,\]
+protože pak řetězce odpovídající přesně dostávají jistotu plnou, zatímco řetězce na
+hraně limitu poloviční.
+
+Poté ještě vezmeme v úvahu originální vstup, kdyby WA něco nerozpoznal. U každého
+úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na přechozí a následující
+slovo, zda neodpovídá stejnému kontaktu. Porovnání uděláme stejně jako v první fázi.
+Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu.
+
+Díle z rozpoznání vyřadíme kontakty, které odpovídají jen podúseku jiného
+přiřazeného kontaktu. To se může stát právě pokud jednomu úseku odpovídalo více
+kontaktů, ale jen jeden z nich jsme rozšířili kontrolou okolních slov. Vyřadíme také
+všechny přiřazené kontakty, jimž jsme udělili jistotu menší než 0,5.
+
+Nakonec vytvoříme finální výstup sestávající ze slovníku indexů přiřazených kontaktů
+do původního seznamu, kde jako hodnoty budou opět slovníky s názvem kontaktu (jen pro
+jednoduchost) a s jistotou přiřazení.
+
+\subsection{Provedené úpravy a integrace}
+
+Původně komponenta brala jako vstup seznam kontaktů ve formátu, v jakém jsou uložené
+entity ve WA. Pro toto použití ho však dostáváme na vstupu ve formátu JSON, proto
+jsme seznam uložili do slovníku pod klíč \texttt{\_\_contacts\_\_}.
+
+Druhou změnu jsme provedli na výstupu, protože potřebujeme, aby komponenta provedla
+celé rozhodnutí a vrátila něco, co může WA dobře zpracovat. Proto pokud u nějakého
+přiřazeného kontaktu vyjde jistota o více než 0,1 vyšší než u jiných, odpovídá asi
+výrazně více než jiné a vrátíme pouze
+ten, jinak vrátíme seznam přiřazených (bez indexů a jistot, jen názvy).
+
+Jak jsme již zmínili, celé porovnávání běží v IBM Cloud Functions. Tam je však možné
+importovat jen jeden soubor s hlavní metodou \texttt{main}, která se vykoná při
+příchodu požadavku a vrátí výsledek. Proto jsme celý relevantní kód umístili do
+jednoho souboru. Nakonec jsme však zjistili, že musíme přibalit ještě využívaný
+modul \texttt{editdistance}. Zde jsme jako nejjednodušší variantu získání importovatelného souboru
+zvolili vytvoření \textit{virtualenv} s instalovanými potřebnými moduly,
+který jsme zabalili spolu s vlastním kódem v souboru s názvem \texttt{\_\_main\_\_.py}
+(toto jméno je povinné) do jednoho ZIP archivu a ten jsme úspěšně nahráli.
