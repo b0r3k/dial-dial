@@ -1,4 +1,4 @@
-\chapter{Vlastní vývoj}
+\chapter{Implementace}
 
 Na začátku této kapitoly rozebereme zvolenou platformu a programovací jazyky.
 Další části budou věnovány popisu komponent programu, konkrétně aplikaci pro
@@ -10,7 +10,7 @@ pro porovnání entit nalezených pomocí WA se seznamem kontaktů běžící v 
 
 \subsection{Platforma a jazyk mobilní aplikace}
 Pro mobilní aplikace máme v dnešní době v zásadě dvě možnosti, iOS nebo Android.
-Zvolili jsme Android, neboť je celkově otevřenější, autoři telefon s tímto
+Zvolili jsme Android, neboť je celkově otevřenější, autor telefon s tímto
 operačním systémem vlastní a mají tedy alespoň uživatelské zkušenosti. IBM navíc
 poskytuje vývojový balíček (\textit{SDK}) pro použití WA v programovacím
 jazyku Java, který je použitelný i v Androidu.
@@ -18,25 +18,28 @@ jazyku Java, který je použitelný i v Androidu.
 Z hlediska programovacího jazyka padla volba na Kotlin. Existují různé frameworky
 schopné zkompilovat pro Android program psaný téměř v libovolném programovacím
 jazyce, ale většina nakonec musí používat nějakou další překladovou vrstvu.
-Kotlin je jeden z jazyků, ve kterém lze psát nativní aplikace pro Android. Je
-totiž založený na Javě a dokonce umožňuje interoperabilitu s ní, což umožnilo
+Kotlin je jeden z jazyků, ve kterém lze psát nativní aplikace pro Android. Programy
+v něm napsané lze totiž zkompilovat pro spuštění v \textit{JVM} (\textit{Java Virtual Machine}),
+toto prostředí popisuje \citet{prof_tejinder_singh_hotspot_2014}.
+Kotlin dokonce umožňuje interoperabilitu s Javou, což umožnilo
 využití zmíněného SDK. Jeho výhoda oproti Javě je, že je celkově modernější,
 psaní a čtení programů v něm je díky přehlednější syntaxi jednodušší a kratší,
 navíc je doporučený samotnou firmou Google jakožto vedoucím vývoje operačního
-systému Android. Další vlastností, na kterou při výběru nebyl brán tak velký
-zřetel, ale nakonec se ukázala jako relativně zásadní, je podpora koprogramů
-(pravděpodobně známější pod anglickým názvem \textit{coroutines}).
+systému Android \citep{android_blog}.
+Další vlastností, na kterou při výběru nebyl brán tak velký
+zřetel, ale nakonec se ukázala jako relativně zásadní, je podpora \textit{koprogramů}
+(\textit{coroutines}), jejichž možnou implementaci ukazují \citet{theory_practice_coroutines}.
 
 \subsection{Volba asistenta a jeho inicializace}
-Asistentů existuje na trhu mnoho, jen jeden však aktuálně oficiálně plně
+Frameworků pro tvorbu asistentů existuje na trhu mnoho, jen jeden však aktuálně oficiálně plně
 podporuje český jazyk -- Watson Assistant od IBM. Proto zde volba jednoduše
 padla právě na něj.
 
 Inicializace WA lze provést v interaktivním prostředí v prohlížeči. Toto
 prostředí je však v mnohém omezené. V našem případě jsme například potřebovali
 vložit stovky entit pro trénování rozpoznání. Přenést je do WA přes prohlížeč
-by bylo absurdně náročné, navíc složitě replikovatelné. Sáhli jsme proto opět
-po SDK, pomocí kterého můžeme WA inciovat relativně krátkým skriptem. Na volbě
+by bylo absurdně náročné, navíc složitě replikovatelné. Použili jsme proto opět
+po SDK, pomocí kterého můžeme WA iniciovat relativně krátkým skriptem. Na volbě
 konkrétního programovacího jazyka zde téměř nezáleželo (skript je krátký a běží
 jen jednou pro inicializaci), zvolili jsme proto Python jakožto dobře čitelný
 jazyk, se kterým máme mnoho zkušeností.
@@ -50,10 +53,12 @@ pro toto použití žádné výraznější limitace.
 
 Při implementaci jsme potřebovali počítat podobnost řetězců. Algoritmus
 pro tento výpočet je relativně komplikovaný a běžně používaný, nedávalo tedy
-smysl programovat jej znovu. Využili jsme modul \texttt{editdistance} (TODO
-možná zdroj?), protože je psaný v rychlejším jazyce C++ a má vhodnou licenci.
+smysl programovat jej znovu. Využili jsme modul
+\texttt{editdistance}\footnote{\url{https://pypi.org/project/editdistance/}},
+protože je psaný v rychlejším jazyce C++ a má vhodnou licenci.
 
-Dále bylo potřeba vyřešit, kde tato komponenta poběží. Původním nápadem bylo
+Dále bylo potřeba vyřešit, kde tato komponenta poběží. Nakonec jsme vybrali
+službu IBM Cloud Functions. Původním nápadem bylo
 zprovoznění webového serveru, který by vyřizoval požadavky na tuto komponentu.
 To by však vyžadovalo další kód pro správu a především hardware, na kterém by
 tento server běžel. Při hledání alternativ jsme dostali doporučení na
@@ -64,8 +69,7 @@ běží jen ve chvíli, kdy dostane nějaký požadavek. Liší se tak od standa
 webových serverů, které musí \uv{poslouchat} neustále. Konkrétně byla vybrána
 služba IBM Cloud Functions především proto, že lze spravovat ze stejného účtu jako
 WA. Teoreticky může být výhoda využití stejného poskytovatele ještě v tom, že
-servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji,
-ale to jsme nezkoumali a tedy nemůžeme potvrdit, ani vyvrátit.
+servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji.
 
 \section{Mobilní aplikace}
 
@@ -76,7 +80,7 @@ spolu s \textit{vývojovými kontejnery} za použití virtualizačního softwaru
 na výpočetní výkon. Ukázalo se však, že tato cesta není při vývoji aplikací
 pro Android v jazyce Kotlin pod operačním systémem Windows úplně běžná a
 naráží na mnoho komplikací, tedy je především pro začátek silně nevhodná.
-Pro kopilaci využíváme běžně používáný \textit{gradle}.
+Pro kompilaci využíváme běžně používaný \textit{gradle}.
 
 Aplikace musela vyřešit několik věcí: získání oprávnění ke všem operacím,
 získání kontaktů uživatele, vytvoření \textit{session} ve WA a odeslání
@@ -92,12 +96,15 @@ Jednotlivé komponenty (obvykle reprezentované jednou obrazovkou)
 se v aplikacích
 pro Android nazývají \textit{Activity}. Protože primárním způsobem interakce
 s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující grafické
-rozhraní. Zvolili jsme modré tlačítko se symbolem mikrofonu na černém pozadí,
-které si můžete prohlédnout na obrázku TODO a které je definováno v souboru
-\texttt{activity\_main.xml}. Tímto tlačítkem je zahájen dialog (v případě
+rozhraní. Zvolili jsme tlačítko se symbolem mikrofonu na černém pozadí,
+jak ukazuje obrázek~\ref{ui}. Tímto tlačítkem je zahájen dialog (v případě
 dostatečných oprávnění, jejichž získání řešíme dále).
 
-TODO obrázek rozhraní
+\begin{figure}[h]\label{ui}
+    \centering
+    \includegraphics[width=0.3\textwidth]{../img/ui.pdf}
+    \caption{Jednoduché uživatelské rozhraní}
+\end{figure}
 
 Protože nám stačí jedna obrazovka, je celý kód umístěn v jednom souboru
 \texttt{MainActivity.kt}. Pro změnu grafického rozhraní z kódu je třeba
@@ -109,9 +116,7 @@ povolit v souboru \texttt{build.gradle} na úrovni modulu.
 Tato instance je využita při otevření aplikace pro \uv{nafouknutí} grafického
 rozhraní a následně v kódu kdykoliv chceme k rozhraní přistupovat. To v našem
 případě znamená nastavení reakce na stisk tlačítka, případně jeho deaktivace
-či změna vzhledu pro indikaci probíhajích procesů.
-
-TODO texty v strings.xml
+či změna vzhledu pro indikaci probíhajících procesů.
 
 \subsection{Získání oprávnění}
 
@@ -139,7 +144,7 @@ oprávnění i upozornění o nedostupnosti využíváme třídu \texttt{AlertDi
 Kontakty potřebujeme získat z úložiště telefonu, které se chová podobně jako
 databáze. Proto dotaz na ně začneme na začátku inicializace celé služby WA
 asynchronně jako koprogram. V rámci něj pak získáme jména a čísla kontaktů,
-které uložíme do slovníku (v Kotlinu relizovaný pomocí \texttt{MutableMap}).
+které uložíme do slovníku.
 
 \subsection{Vytvoření session ve WA a odeslání jmen kontaktů}
 
@@ -171,7 +176,7 @@ aplikace a předáme mu potřebné parametry (český jazyk, jeden výsledek, at
 Když aktivita spuštěná s tímto úmyslem skončí, zkontrolujeme, že proběhla
 úspěšně a pokračujeme k dalšímu kroku.
 
-\subsection{Odeslání do WA a získání odpoědi}
+\subsection{Odeslání do WA a získání odpovědi}
 Opět pomocí \texttt{await} vyčkáme nachystání WA. Pokud je vše připraveno,
 pošleme v koprogramu (jedná se o síťový požadavek) text do WA a získáme odpověď.
 Tuto odpověď ještě zpracujeme, pokud je na prvním řádku \texttt{[call]}, jedná
@@ -208,7 +213,7 @@ počet požadavků.
 \subsection{Úmysly a entity}
 
 Jako první do něj přidáme detekci uživatelových úmyslů (intents), jejichž využití
-jsme si představili v kapitole o konstrukci diaogových systémů. Zásadní je úmysl
+jsme si představili v podsekci~\ref{nlu}. Zásadní je úmysl
 \texttt{dial}, pomocí kterého detekujeme, že uživatel chce někomu volat. Pro
 každý úmysl přidáme několik vzorových vět, na základě kterých by ho měl WA
 rozpoznat. Ty jsou interně použity pro trénink umělé modelu stojícího za WA.
@@ -268,8 +273,6 @@ využívající frameworku \texttt{pytest}. Za účelem využití v aplikaci jsm
 drobně upravili pro kontext vybírání z telefonního seznamu. Proto zde první popíšeme
 obecnou část cílů a implementace, a pak konkrétní provedené úpravy.
 
-\subsection{Cíle}
-
 Vstupem komponenty jsou entity rozpoznané pomocí WA, původní textový vstup do něj
 a určitý (obvykle vázaný na uživatele) seznam entit. Cílem je vybrat entitu ze seznamu,
 která nejvíce odpovídá vstupu do WA. V úvahu přitom nejsou brány jen entity, které
@@ -298,8 +301,8 @@ je ve všech různých kombinacích (nějaká rozpoznaná je pravděpodobně chy
 \subsection{Vlastní porovnávání}
 
 Kdykoliv budeme porovnávat nějaké řetězce, využijeme tzv. \textit{fuzzy matching}.
-To znamená, že řetězce nebudeme porovnávat přímo, ale pomocí již zmíněné
-Levenshteinovy vzdálenosti. Tím umožníme přiřazení ke kontaktu i při nepřesné shodě,
+To znamená, že řetězce nebudeme porovnávat přímo, ale pomocí Levenshteinovy vzdálenosti
+zmíněné v podsekci~\ref{nlu}. Tím umožníme přiřazení ke kontaktu i při nepřesné shodě,
 ať už není shoda úplná kvůli jinému tvaru slova (skloňování), chybě v rozpoznání
 hlasu, nebo chybě rozpoznání entity ve WA. Jako odpovídající pak označíme kontakty,
 jejichž vzdálenost je menší nebo rovna nějakému limitu. Jako limit maximálního počtu
@@ -311,16 +314,16 @@ zkusíme ji rozdělit podle mezer a porovnat jednotlivé části.
 
 Každému přiřazenému kontaktu pak ještě určíme \textit{jistotu} (\textit{confidence}),
 s jakou jsme ho přiřadili. Tu jsme se rozhodli počítat jako
-\[ confidence = 0,5 + \frac{0,5*(edit\_limit - distance)}{edit\_limit} ,\]
-protože pak řetězce odpovídající přesně dostávají jistotu plnou, zatímco řetězce na
-hraně limitu poloviční.
+\[ \text{confidence} = 0,5 + \frac{0,5 \cdot (\text{edit\_limit} - \text{distance})}{\text{edit\_limit}} ,\]
+protože pak řetězce odpovídající přesně dostávají plnou jistotu, zatímco řetězce na
+hraně limitu jistotu poloviční.
 
 Poté ještě vezmeme v úvahu originální vstup, kdyby WA něco nerozpoznal. U každého
 úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na přechozí a následující
 slovo, zda neodpovídá stejnému kontaktu. Porovnání uděláme stejně jako v první fázi.
 Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu.
 
-Díle z rozpoznání vyřadíme kontakty, které odpovídají jen podúseku jiného
+Dále z rozpoznání vyřadíme kontakty, které odpovídají jen podúseku jiného
 přiřazeného kontaktu. To se může stát právě pokud jednomu úseku odpovídalo více
 kontaktů, ale jen jeden z nich jsme rozšířili kontrolou okolních slov. Vyřadíme také
 všechny přiřazené kontakty, jimž jsme udělili jistotu menší než 0,5.

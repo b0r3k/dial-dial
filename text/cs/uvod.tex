@@ -14,30 +14,39 @@ informací mezi uživatelem a strojem. Proč ho tedy nepoužíváme víc už dá
 Extrahovat z něj význam tak, aby mohl být pochopen strojem, není vůbec
 jednoduché. Většího průlomu v tomto směru se podařilo dosáhnout až s příchodem
 technologií strojového učení, které jsou schopny se složité zákonitosti
-jazyka \uv{samy} naučit. Ani to však není samospásné, pro naučení modelu,
+jazyka \uv{samy} naučit. Dnes pravděpodobně nejvyspělejším modelem je
+ten nazvaný GPT-3, který představili \citet{brown_language_2020}.
+Ani to však není samospásné, pro naučení modelu,
 který porozumí jazyku, je stále potřeba mnoho práce, dat a počítačového
-výkonu. Pomyslně na druhém konci komunkace pak leží problém vygenerovat
+výkonu. Pomyslně na druhém konci komunikace pak leží problém vygenerovat
 odpověď zpět uživateli, který není o moc jednodušší.
 
 Pokrok v těchto směrech dal možnost vzniku a rozšíření
 \textit{hlasových asistentů}, které dnes již skoro každý nosí ve svém
 chytrém telefonu a mnozí je navíc mají doma v podobě \uv{chytrého}
-reproduktoru. Jak již bylo zmíněno, vývoj takové služby je náročný v mnoha
+reproduktoru. Grafické shrnutí důležitých milníků uvádí \citet{voicebotai_2021},
+podrobněji historii popisují \citet[strany 523-524]{jurafsky_slp_2020}.
+
+Jak již bylo zmíněno, vývoj takové služby je náročný v mnoha
 směrech, proto jsou asistenti obvykle dostupní jen v nejpoužívanějších
-jazycích, jako je angličtina, španělština nebo němčina. Nakolik je autorům
-známo, jediným asistentem podporujícím češtinu je \textit{IBM Watson Assistant}
-(dále WA) a to pouze v textové podobě.
+jazycích, jako je angličtina, španělština nebo němčina. Nakolik je autorovi
+známo, češtinu podporují asistenti \textit{IBM Watson Assistant}
+(dále WA), ten pouze v textové podobě, a \textit{Antelli}. Ten však sice
+umožňuje přidání funkcí do původní aplikace, ale ne vlastní stavbu dialogu.
 
 Cílem této práce je vytvořit hlasového asistenta v češtině, který bude schopný
 odpovídat na pozdravy a především zavolat kontakty ze seznamu v telefonu.
 Toho bude dosaženo propojením WA s vlastní komponentou
 pro porovnání se seznamem kontaktů, \textit{Google STT/TTS}
-(rozpoznání a generování mluvené řeči) a funkcionalitou telefonu. Výhodou
-je relativně jednoduché rozšíření asistenta přidáním variant dialogu do WA
-a ošetřením speciálních odpovědí z WA v mobilní aplikaci, aby iniciovaly
-například otevření jiné aplikace nebo rozsvícení svítilny.
+(rozpoznání a generování mluvené řeči) a funkcionalitou telefonu. Velkou výhodou
+je relativně jednoduché rozšíření asistenta. O řízení dialogu se totiž stará WA,
+takže zde můžeme přidat další pochopení uživatelových úmyslů a odpovědi na ně,
+případně speciální odpovědi, na které bude vnitřně reagovat aplikace v telefonu.
+Ošetřením těchto speciálních odpovědí z WA v mobilní aplikaci pak můžeme
+iniciovat například otevření jiné aplikace, rozsvícení svítilny, puštění
+hudby či cokoliv dalšího telefon umí.
 
 V příštích několika kapitolách je uvedeno shrnutí teorie související
 s tématem, následuje popis vlastní implementace a zkušenosti uživatelů,
 kteří aplikaci zkoušeli. V závěru je rozebrána úspěšnost splnění
-vytyčených cílů.
+vytyčených cílů. TODO popsat kapitoly
