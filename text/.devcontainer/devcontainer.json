@@ -15,12 +15,16 @@
 		"editor.formatOnSave": true,
 		"files.associations": {
 			"*.tex": "latex"
-		}
+		},
+		// Spell checking
+		"cSpell.language": "en,cs"
 	},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"james-yu.latex-workshop",
-		"yzhang.markdown-all-in-one"
+		"yzhang.markdown-all-in-one",
+		"streetsidesoftware.code-spell-checker",
+		"streetsidesoftware.code-spell-checker-czech"
 	]
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
