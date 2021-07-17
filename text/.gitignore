@@ -1,4 +1,5 @@
-*.pdf
+cs/*.pdf
+en/*.pdf
 *.xmpi
 *.synctex.gz
 *.aux
