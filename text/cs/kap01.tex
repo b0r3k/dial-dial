@@ -273,7 +273,19 @@ přízvuků), ale uživatel z něj dokáže pochopit význam. Při dostatečném
 vzorových dat a aplikaci dalších vylepšení však dostáváme již velmi dobré
 výsledky.
 
-Mezi další využívané přístupy patří opět využití HMM a jiných modelů strojového učení. Modely
-využívající hluboké neuronové sítě jsou již pro některé jazyky téměř
-nerozeznatelné od lidského mluvčího, když velmi dobře zvládají výslovnost,
-intonaci i důrazy.
+Dalším přístupem je opět využití HMM a jiných modelů strojového učení.
+Google TTS poskytuje několik hlasů využívajících různé technologie. Jak uvádí \citep{google_tts},
+jejich \textit{standardní} hlasy jsou založené na parametrickém přístupu,
+který používá \textit{vocodery}. Jeden
+nazvaný \textit{Vocaine} představuje \citet{vocaine_2015}. Zbylé nabízené
+hlasy jsou založené na modelu \textit{WaveNet} \citep{oord_wavenet_2016},
+který využívá hlubokou neuronovou síť. Zajímavé je srovnání posouzené
+přirozenosti řeči na obrázku~TODO, kde se WaveNet dostává velmi blízko
+lidskému hlasu. Za zmínku jistě stojí ještě \textit{Tacotron} \citep{wang2017tacotron},
+odkazy na další články ohledně jeho vylepšování shrnuje webová
+stránka \citep{google_github_tacotron}, kde můžeme najít i ukázky různých verzí.
+Bohužel se nám nepodařilo zjistit, který z těchto přístupů je využíván
+na Androidu, ale protože hlasy používající WaveNet nabízí Google jako svým
+způsobem prémiové, domníváme se, že půjde o hlasy standardní.
+
+TODO obrázek z https://cloud.google.com/text-to-speech/docs/wavenet
