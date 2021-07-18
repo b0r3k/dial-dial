@@ -142,7 +142,7 @@ Již jsme zmínili vícekrokové systémy mají několik komponent, které na se
 navazují, jedna obvykle určitým způsobem využije výstup z předchozí jako svůj
 vstup. Nejčastěji se používá rozdělení na šest částí, kterým se podrobněji
 budeme věnovat v následujících podsekcích. Jsou to: převod textu na řeč (v podsekci~\ref{stt}),
-extrakce významu (\ref{nlu}), zachování stavu (\ref{dst}), rozhodnutí o dalším kroku (\ref{dp}),
+extrakce významu (\ref{nlu}), udržování stavu (\ref{dst}), rozhodnutí o dalším kroku (\ref{dp}),
 vytvoření odpovědi v přirozeném jazyce (\ref{nlg}) a syntéza hlasu (\ref{tts}). První
 a poslední u textových systémů odpadají.
 
@@ -211,7 +211,7 @@ musíme u jednoho řetězce udělat, abychom dostali druhý, tedy zjednodušeně
 jak moc jsou si dva řetězce podobné. Trochu problém nastává u krátkých slov,
 protože u nich i velmi málo úpravami můžeme dostat slovo kompletně rozdílné.
 
-\subsection{Zachování stavu}\label{dst}
+\subsection{Udržování stavu}\label{dst}
 
 Od systému samozřejmě budeme vyžadovat určitou paměť. Pokud řekneme, že
 chceme někomu zavolat, pak dostaneme otázku komu, a pak ji zodpovíme, očekáváme,
@@ -243,13 +243,17 @@ můžeme již zmíněné trojice úmysl--slot--hodnota.
 
 Z interní reprezentace významu nyní potřebujeme vytvořit odpověď v přirozeném
 jazyce, kterou pochopí libovolný uživatel. Můžeme využít \textit{šablon}, do
-kterých doplníme vynechané části dle stavu dialogu (například
-\uv{Přejete si odlétat [zítra] v [10:00]?}). Přidáním více variant (ze kterých
-pak můžeme volit náhodně) pro každou šablonu dosáhneme i určité autentičnosti
-dialogu. Opět narážíme na pracnost tohoto přístupu, šablon totiž i pro
-jednotlivou doménu musíme vytvořit desítky a více. Přesto mohou posloužit až
-překvapivě dobře. Dalšími možnostmi je použít formálních gramatik \citep{teich_grammars_1999}
-či i zde strojového učení \citep{wen_stochastic_2015}.
+kterých doplníme vynechané části dle stavu dialogu. Například pokud bychom
+se zabývali rezervacemi letů, mohla by naše potvrzovací šablona vypadat jako
+\uv{Přejete si odlétat \{den\} v \{čas\} z \{letiště\}?} a dle stavu dialogu
+bychom ji doplnili na \uv{Přejete si odlétat zítra v 10:00 z Londýna Lutonu?}.
+Přidáním více variant pro každou šablonu dosáhneme i určité autenticity dialogu.
+Z variant pak můžeme volit náhodně, sekvenčně či heuristicky podle uživatelova
+vyjadřování, například pokud se vyjadřuje nespisovně, mohli bychom se také
+chtít vyjadřovat nespisovně. Opět narážíme na pracnost tohoto přístupu, šablon
+totiž i pro jednotlivou doménu musíme vytvořit desítky a více. Přesto mohou
+posloužit až překvapivě dobře. Dalšími možnostmi je použít formálních gramatik
+\citep{teich_grammars_1999} či i zde strojového učení \citep{wen_stochastic_2015}.
 
 \subsection{Převod textu na hlas}\label{tts}
 
