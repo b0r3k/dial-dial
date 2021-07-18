@@ -76,9 +76,7 @@ jazyk, se kterým máme mnoho zkušeností.
 \subsection{Jazyk a prostředí běhu porovnávací komponenty}
 
 Volba jazyka byla zde také jednoduchá, kolegové z MAMA AI totiž plánovali
-komponentu také využít a požadovaným jazykem byl Python. To bylo z naší
-strany naprosto v pořádku, protože k tomuto jazyku máme blízko a nepředstavoval
-pro toto použití žádné výraznější limitace.
+komponentu také využít a požadovaným jazykem byl Python.
 
 Při implementaci jsme potřebovali počítat podobnost řetězců. Algoritmus
 pro tento výpočet je relativně komplikovaný a běžně používaný, nedávalo tedy
@@ -103,13 +101,18 @@ servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat r
 \section{Mobilní aplikace}\label{app}
 
 Pro vytvoření aplikace jsme využili integrované vývojové prostředí
-\textit{Android Studio}. Původním záměrem bylo využít \textit{Visual Studio Code}
+\textit{Android Studio}, které pro kompilaci využívá \textit{gradle}.
+Původním záměrem bylo využít \textit{Visual Studio Code}
 spolu s \textit{vývojovými kontejnery} za použití virtualizačního softwaru
 \textit{Docker}, především díky přenositelnosti a relativní nenáročnosti
 na výpočetní výkon. Ukázalo se však, že tato cesta není při vývoji aplikací
 pro Android v jazyce Kotlin pod operačním systémem Windows úplně běžná a
-naráží na mnoho komplikací, tedy je především pro začátek silně nevhodná.
-Pro kompilaci využíváme běžně používaný \textit{gradle}.
+naráží na mnoho komplikací. Od ruční inicializace projektu a vytvoření všech
+potřebných souborů, přes design uživatelského
+prostředí nutný čistě v textovém editoru a složitou správu závislostí,
+až po problémy při kompilaci. Nakonec jsme tedy tuto cestu opustili a
+musíme konstatovat, že především pro vývojáře začínající s Androidem
+ji považujeme za silně nevhodnou.
 
 Aplikace musela vyřešit několik věcí: získání oprávnění ke všem operacím,
 získání kontaktů uživatele, vytvoření \textit{session} ve WA a odeslání
