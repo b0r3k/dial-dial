@@ -1,12 +1,20 @@
 \chapter{Implementace}
 
-Na začátku této kapitoly rozebereme zvolenou platformu a programovací jazyky.
-Další části budou věnovány popisu komponent programu, konkrétně aplikaci pro
-mobilní telefony s operačním systémem Android, vytvoření instance WA pro řízení
-dialogu (s popisem získání nejběžnějších českých jmen pro trénink) a komponenty
-pro porovnání entit nalezených pomocí WA se seznamem kontaktů běžící v cloudu.
+Na začátku této kapitoly (v sekci~\ref{analysis}) rozebereme zvolenou
+platformu a programovací jazyky.
+Další části budou věnovány popisu komponent, které jsme museli
+naimplementovat pro funkci celého systému. Konkrétně jde o aplikaci pro
+mobilní telefony s operačním systémem Android (\ref{app}), vytvoření instance WA pro řízení
+dialogu (s popisem získání nejběžnějších českých jmen pro trénink, \ref{wainit}) a komponenty
+pro porovnání entit nalezených pomocí WA se seznamem kontaktů (\ref{matching}).
 
-\section{Platforma a programovací jazyky}
+\begin{figure}[h]\label{app-flowchart}
+    \centering
+    \includegraphics[width=0.98\textwidth]{../img/app-flowchart.pdf}
+    \caption{Nákres fungování celého systému}
+\end{figure}
+
+\section{Platforma a programovací jazyky}\label{analysis}
 
 \subsection{Platforma a jazyk mobilní aplikace}
 Pro mobilní aplikace máme v dnešní době v zásadě dvě možnosti, iOS nebo Android.
@@ -71,7 +79,7 @@ služba IBM Cloud Functions především proto, že lze spravovat ze stejného �
 WA. Teoreticky může být výhoda využití stejného poskytovatele ještě v tom, že
 servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji.
 
-\section{Mobilní aplikace}
+\section{Mobilní aplikace}\label{app}
 
 Pro vytvoření aplikace jsme využili integrované vývojové prostředí
 \textit{Android Studio}. Původním záměrem bylo využít \textit{Visual Studio Code}
@@ -195,7 +203,7 @@ od rozpoznání hlasu zabalený ve funkci \texttt{launchPipeline} znovu. Pokud
 skončil, jsme připraveni začít volat, vytočíme tedy číslo a ukončíme session ve
 WA i celou aplikaci.
 
-\section{Inicializace WA}
+\section{Inicializace WA}\label{wainit}
 
 Bohužel samotné vytvoření instance WA zatím není možné provést pomocí skriptů,
 musíme ho tedy vytvořit ve webovém rozhraní. Odsud také získáme soubor
@@ -265,7 +273,7 @@ upřesnění.
 
 TODO možná obrázek stromu?
 
-\section{Porovnávací komponenta}
+\section{Porovnávací komponenta}\label{matching}
 
 Tuto komponentu jsme implementovali pro obecné použití v dialogových systémech
 v rámci knihovny \texttt{mConversation} MAMA AI, součástí jsou desítky testů
