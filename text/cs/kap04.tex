@@ -1,14 +1,35 @@
 \chapter{Implementace}
 
-Na začátku této kapitoly (v sekci~\ref{analysis}) rozebereme zvolenou
-platformu a programovací jazyky.
-Další části budou věnovány popisu komponent, které jsme museli
+V úvodu této kapitoly popíšeme koncepci programu, co kde
+běží a jakým způsobem spolu komunikuje. Následně v sekci~\ref{analysis}
+rozebereme zvolenou platformu a programovací jazyky,
+další sekce budou pak věnovány popisu komponent, které jsme museli
 naimplementovat pro funkci celého systému. Konkrétně jde o aplikaci pro
-mobilní telefony s operačním systémem Android (\ref{app}), vytvoření instance WA pro řízení
+mobilní telefony s operačním systémem Android (v sekci~\ref{app}), vytvoření instance WA pro řízení
 dialogu (s popisem získání nejběžnějších českých jmen pro trénink, \ref{wainit}) a komponenty
 pro porovnání entit nalezených pomocí WA se seznamem kontaktů (\ref{matching}).
 
-\begin{figure}[h]\label{app-flowchart}
+Jak jsme již uvedli, výsledkem je z uživatelského pohledu mobilní
+aplikace. Většina vnitřních procesů však probíhá v cloudu, aplikace
+je jen jakýmsi spojem a médiem pro komunikaci s uživatelem. Celý běh
+je znázorněn na obrázku~\ref{img-flowchart}. Stisknutím tlačítka v
+telefonu se
+inicializuje session ve WA běžícím v cloudu IBM a spustí rozpoznávání řeči,
+které běží na serverech Google. Po zahájení session ve WA jsou tam též
+odeslána jména kontaktů uložených v telefonu. Jakmile je z hlasu rozpoznán
+text, je vrácen zpět do aplikace a odtud odeslán jako zpráva do WA.
+Ten rozhodne, zda je potřeba volat
+porovnávací komponentu. Pokud ano, zavolá ji z jiné části IBM cloudu,
+předá jí relevantní data a získá od ní odpověď. V každém případě
+WA vygeneruje odpověď na zaslanou zprávu a odešle ji zpět do telefonu.
+Tam je odpověď z WA zpracována (mj. je rozhodnuto, zda by měl být
+zahájen hovor) a odeslána do syntetizátoru řeči na servery Google.
+Odtud je hlas k přehrání vrácen zpět do aplikace, tam je přehrán
+a následně je na základě dřívějšího rozhodnutí buď spuštěno znovu
+rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
+
+
+\begin{figure}[h]\label{img-flowchart}
     \centering
     \includegraphics[width=0.98\textwidth]{../img/app-flowchart.pdf}
     \caption{Nákres fungování celého systému}
@@ -105,10 +126,10 @@ se v aplikacích
 pro Android nazývají \textit{Activity}. Protože primárním způsobem interakce
 s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující grafické
 rozhraní. Zvolili jsme tlačítko se symbolem mikrofonu na černém pozadí,
-jak ukazuje obrázek~\ref{ui}. Tímto tlačítkem je zahájen dialog (v případě
+jak ukazuje obrázek~\ref{img-ui}. Tímto tlačítkem je zahájen dialog (v případě
 dostatečných oprávnění, jejichž získání řešíme dále).
 
-\begin{figure}[h]\label{ui}
+\begin{figure}[h]\label{img-ui}
     \centering
     \includegraphics[width=0.3\textwidth]{../img/ui.pdf}
     \caption{Jednoduché uživatelské rozhraní}
@@ -156,13 +177,13 @@ které uložíme do slovníku.
 
 \subsection{Vytvoření session ve WA a odeslání jmen kontaktů}
 
-Po začátku dotazu na kontakty vyvoříme instanci třídy \texttt{Assistant}
+Po začátku dotazu na kontakty vytvoříme instanci třídy \texttt{Assistant}
 pro komunikaci s WA API, které předáme potřebné parametry a následně pošleme
 požadavek pro zahájení session. V Androidu není možné posílat síťové požadavky
 v hlavním vlákně (protože je potřeba udržovat ho volné pro UI), takže s výhodou
 opět použijeme běh jako koprogram. Následně pomocí \texttt{await} zajistíme
 kontrolu dokončení získávání kontaktů a předáme je jako \textit{kontext} do
-WA session. Pokud se v průběhu něco nepovede, vyjímku odchytíme a příště
+WA session. Pokud se v průběhu něco nepovede, výjimku odchytíme a příště
 se pokusíme provést celou inicializaci znovu.
 
 Původní záměr byl odesílat kontakty do WA jako standardní zprávu, jenže
@@ -246,7 +267,7 @@ dat do porovnávací komponenty. (TODO možná přesunout do popisu WA?) WA vyu�
 kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
 jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
 odpověď z něj a pokud nějaké má, zanoříme se do jeho synů. Ve webovém rozhraní je
-stavba dialogového stromu realtivně přímočará, ale v některých místech omezená,
+stavba dialogového stromu relativně přímočará, ale v některých místech omezená,
 proto jsme i zde použili skript.
 
 Vytváření dialogového stromu ve WA pomocí Python SDK je poněkud komplikovanější
@@ -265,7 +286,7 @@ uložit vstup a rozpoznané entity do kontextu, proto jeho syn dělá právě to
 má dalšího syna, který relevantní kontext (vstup, rozpoznané entity a kontakty)
 odešle do \textit{webhooku} (v zásadě webová adresa očekávající vstup a vracející
 výstup, oboje ve formátu JSON), kde běží porovnávací komponenta. Získá tak její
-výstup a na zákadě něj generuje odpověď -- pokud dostal zpět jedno jméno,
+výstup a na základě něj generuje odpověď -- pokud dostal zpět jedno jméno,
 vyzve k zahájení hovoru; pokud více, vyzve k vybrání (a nastaví je do kontextu,
 aby příště bylo porovnáváno jen s nimi); pokud žádné, oznámí že nic neodpovídá.
 Poté se vrátí do uzlu připravujícího údaje, aby mohlo být provedeno případné
@@ -301,7 +322,7 @@ seznamu. Tedy například pokud máme v seznamu na prvním místě kontakt \uv{J
 ve slovníku budou \uv{Jan} i \uv{Novák} odkazovat na index 1.
 
 Podobně předzpracujeme i rozpoznané entity, pro rychlý přístup k informacím o nich
-využijeme opět slovník. Navíc pokud WA rozpoznal dvě entity v navazujích úsesích vstupu,
+využijeme opět slovník. Navíc pokud WA rozpoznal dvě entity v navazujících úsecích vstupu,
 spojíme je dohromady, pravděpodobně se totiž jedná právě třeba o jméno a příjmení.
 Pokud WA v nějakém segmentu rozpoznal více entit a má dojít k tomuto spojování, spojíme
 je ve všech různých kombinacích (nějaká rozpoznaná je pravděpodobně chybná).
@@ -315,7 +336,7 @@ ať už není shoda úplná kvůli jinému tvaru slova (skloňování), chybě v
 hlasu, nebo chybě rozpoznání entity ve WA. Jako odpovídající pak označíme kontakty,
 jejichž vzdálenost je menší nebo rovna nějakému limitu. Jako limit maximálního počtu
 úprav jsme zvolili 3. Je dost vysoký na to, aby ještě přijal například slovo s příponou
-\uv{-ovi}, na druhou stranu vyšší limity způsobují přiřazení i řetězců neodpovídajích,
+\uv{-ovi}, na druhou stranu vyšší limity způsobují přiřazení i řetězců neodpovídajících,
 zvláště u krátkých slov (i s tímto limitem můžeme ke slovu délky 3 přiřadit libovolné jiné
 stejné délky 3, protože nám stačí vyměnit 3 znaky). Pokud celé entitě nic neodpovídá,
 zkusíme ji rozdělit podle mezer a porovnat jednotlivé části.
@@ -327,7 +348,7 @@ protože pak řetězce odpovídající přesně dostávají plnou jistotu, zatí
 hraně limitu jistotu poloviční.
 
 Poté ještě vezmeme v úvahu originální vstup, kdyby WA něco nerozpoznal. U každého
-úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na přechozí a následující
+úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na předchozí a následující
 slovo, zda neodpovídá stejnému kontaktu. Porovnání uděláme stejně jako v první fázi.
 Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu.
 
