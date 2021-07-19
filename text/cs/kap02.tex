@@ -1,7 +1,48 @@
 \chapter{Watson Assistant}
 
 Jak již bylo napsáno, WA je asistent vyvíjený firmou IBM.
-Vzhledem k tomu, že je to komerční produkt, není o jeho
-vnitřním fungování bohužel příliš mnoho veřejně dostupných
-informací. V této kapitole se pokusíme shrnout ty, které
-se nám podařilo získat.
+V této kapitole nejdříve uvedeme v sekci~\ref{wa-common} obecné informace
+o práci s ním, a pak se v sekci~\ref{wa-inside} pokusíme shrnout zjištěné
+informace o vnitřním fungování.
+Není jich bohužel příliš mnoho, jedná se o komerční produkt,
+a tak podrobnosti nejsou dostupné veřejně.
+
+\section{Obecné informace}\label{wa-common}
+
+\subsection{Popis}
+
+WA je určen především pro firmy, nabízí relativně jednoduché vytvoření
+vlastního modelu strojového učení na míru podle vložených trénovacích
+dat. Propojením s dalšími službami umí kromě předdefinovaných odpovědí
+také vyhledávat v databázi, zavolat vnější API pomocí webhooku a odpověď
+z něj využít v konverzaci, nebo v případě nutnosti předat dialog lidskému
+pracovníkovi. Je možné ho integrovat do existujících komunikačních platforem
+jako je Facebook Messenger, Slack nebo WhatsApp, propojit s telefonní
+bránou, či přidat do webové stránky nebo aplikace. Poskytuje také monitorování
+úspěšnosti proběhlých dialogů \citep{wa_about}.
+
+Přímo podporuje 13 jazyků včetně
+češtiny \citep{wa_languages}, ale nabízí také univerzální model. V případě
+jeho zvolení se použije předtrénovaný model chápající základní pravidla
+vyskytující se ve většině jazyků, který se dotrénuje na poskytnutých
+datech v daném jazyce \citep{wa_universal_model}.
+
+\subsection{Vytvoření asistenta}
+
+Každý vytvořený asistent musí mít nějaké \textit{dovednosti} (\textit{skills}),
+což jsou prostředí s definovanými úmysly a entitami, které bude asistent
+rozpoznávat, a strukturou dialogu. Více dovedností mezi sebou může komunikovat
+a řízení dialogu si předávat. Entity mohou být založené buď na rozpoznávání tvarů
+konkrétních slov, nebo na rozpoznávání dle vzorce -- například pro české telefonní
+číslo bychom mohli definovat vzorec pro devět číslic, volitelně s mezerami.
+
+WA využívá \textit{stromovou} reprezentaci dialogu,
+kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
+jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
+odpověď z něj a pokud nějaké má, zanoříme se do jeho synů.
+
+\section{Vnitřní fungování}\label{wa-inside}
+
+Nějaké shrnutí z https://www.ibm.com/cz-en/cloud/watson-assistant a
+
+https://www.ibm.com/blogs/watson/2020/12/watson-assistant-improves-intent-detection-accuracy-leads-against-ai-vendors-cited-in-published-study/
