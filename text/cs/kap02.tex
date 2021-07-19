@@ -31,15 +31,19 @@ datech v daném jazyce \citep{wa_universal_model}.
 
 Každý vytvořený asistent musí mít nějaké \textit{dovednosti (skills)},
 což jsou prostředí s definovanými úmysly a entitami, které bude asistent
-rozpoznávat, a strukturou dialogu. Více dovedností mezi sebou může komunikovat
+rozpoznávat. Více dovedností mezi sebou může komunikovat
 a řízení dialogu si předávat. Entity mohou být založené buď na rozpoznávání tvarů
 konkrétních slov, nebo na rozpoznávání dle vzorce -- například pro české telefonní
 číslo bychom mohli definovat vzorec pro devět číslic, volitelně s mezerami.
 
-WA využívá \textit{stromovou} reprezentaci dialogu,
+Každé prostředí musí mít také strukturu dialogu.
+WA využívá \textit{stromovou} reprezentaci,
 kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
 jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
 odpověď z něj a pokud nějaké má, zanoříme se do jeho synů.
+
+Podrobnější návod k vytvoření asistenta včetně komplikovanějších
+technik podává \citet{akbulut_common_2020}.
 
 \section{Vnitřní fungování}\label{wa-inside}
 
