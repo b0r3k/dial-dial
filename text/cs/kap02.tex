@@ -47,6 +47,35 @@ technik podává \citet{akbulut_common_2020}.
 
 \section{Vnitřní fungování}\label{wa-inside}
 
-Nějaké shrnutí z https://www.ibm.com/cz-en/cloud/watson-assistant a
+Nejkomplikovanější a zásadní částí WA je NLU, tedy detekce úmyslů
+a entit. Ke konci roku 2020 v tom byl úspěšnější než ostatní podobné
+systémy \citep{qi2021benchmarking}. Zde se hodí zmínit,
+že citovaný článek je sice vydán pracovníky IBM, ale údajně využili
+stejný způsob testování jako \citet{arora-etal-2020-hint3}, takže
+srovnání má určitou výpovědní hodnotu.
 
-https://www.ibm.com/blogs/watson/2020/12/watson-assistant-improves-intent-detection-accuracy-leads-against-ai-vendors-cited-in-published-study/
+Jak se vývojářům této úspěšnosti podařilo docílit? Posledním vylepšením
+je přidání \textit{AutoML}, což je automatické hledání nejlepších algoritmů,
+parametrů a vstupních rysů \citep{noauthor_watson_2020}. Tuto techniku
+spolu s aktuálně nejlepšími známými postupy shrnují \citet[duben]{He_2021}.
+Zkoušení všech
+možných kombinací by trvalo velmi dlouho, proto je pro urychlení
+využito \textit{meta-učení} \citep{hospedales2020metalearning}.
+Zde to konkrétně znamená, že se jiný model dříve naučil, jak které
+kombinace parametrů fungují pro
+různá data, a pak na nová data aplikuje kombinace, které dříve dobře
+fungovaly pro podobná data.
+
+Dále jsou využity hluboké neuronové sítě, ale v kombinaci s tradičními
+metodami strojového učení jako SVM \citep{bosertraining}, což umožňuje
+rychlejší trénink i klasifikaci \citep{potdar_watson_2021}. V neposlední
+řadě je potřeba zmínit přenosové učení, které využije model předtrénovaný
+na velkém množství obecnějších dat, kterému pak stačí pro dobré výsledky
+v konkrétní oblasti méně dat speciálních \citep{zhuang2020comprehensive}.
+
+Předtím, než uživatelův vstup vůbec přijde do složitého porozumění jazyku,
+je potřeba zbavit se nepřesností, které by klasifikaci výrazně ztížily.
+K tomu jsou využity jazykové modely, metody strojového učení a
+různé metriky vzdáleností mezi řetězci. Díky tomu WA údajně \uv{porozumí}
+okolnímu kontextu a dokáže překlepy a chyby opravovat v závislosti
+na něm \citep{mason_ahnouncing_2019}.
