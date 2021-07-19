@@ -280,7 +280,7 @@ který používá \textit{vocodery}. Jeden
 nazvaný \textit{Vocaine} představuje \citet{vocaine_2015}. Zbylé nabízené
 hlasy jsou založené na modelu \textit{WaveNet} \citep{oord_wavenet_2016},
 který využívá hlubokou neuronovou síť. Zajímavé je srovnání posouzené
-přirozenosti řeči na obrázku~TODO, kde se WaveNet dostává velmi blízko
+přirozenosti řeči na obrázku~\ref{img-wavenet}, kde se WaveNet dostává velmi blízko
 lidskému hlasu. Za zmínku jistě stojí ještě \textit{Tacotron} \citep{wang2017tacotron},
 odkazy na další články ohledně jeho vylepšování shrnuje webová
 stránka \citep{google_github_tacotron}, kde můžeme najít i ukázky různých verzí.
@@ -288,4 +288,9 @@ Bohužel se nám nepodařilo zjistit, který z těchto přístupů je využívá
 na Androidu, ale protože hlasy používající WaveNet nabízí Google jako svým
 způsobem prémiové, domníváme se, že půjde o hlasy standardní.
 
-TODO obrázek z https://cloud.google.com/text-to-speech/docs/wavenet
+\begin{figure}[h]\label{img-wavenet}
+    \centering
+    \includegraphics[angle=90, width=0.98\textwidth]{../img/wavenet-comparison.pdf}
+    \caption{Porovnání průměrného hodnocení přirozenosti řeči, převzato z
+        \citet[upraveno a přeloženo autorem]{google_tts}}
+\end{figure}
