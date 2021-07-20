@@ -1,6 +1,7 @@
 
 \chapter{Dialogové systémy}
 
+Toto je teoretický úvod představující důležité pojmy.
 Jak název napovídá, dialogové systémy vedou dialog s uživatelem. Jsou to
 tedy jakékoliv programy (nebo skupiny programů) využívající
 pro komunikaci přirozený jazyk, obvykle ve formě textové nebo hlasové.
@@ -10,7 +11,7 @@ i kniha \textit{Conversational AI} \citep{mctear_conversational_2020} nebo
 článek \textit{Neural Approaches to Conversational AI} \citep{gao_neural_2019},
 kde se autoři zabývají aplikací strojového učení.
 
-\section{Druhy}
+\section{Dělení systémů}
 Dialogové systémy můžeme dělit dle mnoha různých specifik. Asi vůbec
 nejzákladnějším je dělení na systémy \textit{zaměřené na plnění úkolů}
 (rozšířený je anglický termín \textit{task-oriented}), jejichž úkolem
@@ -73,7 +74,7 @@ nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
 detekovat schopni nejsme, oslovení dnešní technologie již dokáží. Většinou
 definujeme jedno nebo několik slov, které stroj chápe jako začátek dialogu,
 tzv. \textit{wake words}. Součást systému detekující tato slova musí být velmi
-energeticky úsporná, protože musí běžet neustále. Dnes jsou obvykle
+výpočetně úsporná, protože musí běžet neustále. Dnes jsou obvykle
 využívány komponenty využívající hlubokého učení, jako třeba Howl
 \citep{tang_howl_2020}.
 Běžným způsobem je ale stále zahájení dialogu stiskem tlačítka či něčím
@@ -183,8 +184,9 @@ interpretací jistý.
 Jako onu jednodušší reprezentaci často používáme \textit{dialogové akty}
 (\textit{DA}), pomocí kterých se snažíme význam zaznamenat. Často
 používanými jsou trojice \textit{úmysl}--\textit{slot}--\textit{hodnota},
-ale používány jsou různé. Metodologii pro převod několika z nich do podmnožiny
-ISO standardu navrhli \citet{mezza_iso-standard_2018}.
+ale používány jsou různé reprezentace. Několik jich popisují a
+metodologii pro převod z nich do podmnožiny
+ISO standardu navrhují \citet{mezza_iso-standard_2018}.
 
 Použití trojic můžeme ilustrovat na úryvku \uv{v deset hodin}, který bychom
 přeložili na trojici
@@ -220,7 +222,7 @@ značena \textit{DST} z anglického \textit{Dialogue State Tracker}. V případ�
 zmíněné reprezentace pomocí trojic paměti docílíme obvykle tak, že si pro každý
 slot pamatujeme hodnotu. Buď jednu, kterou v případě detekce jiné ihned přepíšeme,
 nebo si pro každý slot pamatujeme pravděpodobnostní rozložení více hodnot, které
-průběžně upravujeme. Téma hezky shrnují \citet{williams_dialog_2016} ve svém článku.
+průběžně upravujeme. Téma hezky shrnují \citet{williams_dialog_2016}.
 Paměť nesmíme zapomenout v určitých případech
 resetovat, například když uživatel změní celý svůj cíl, jím dříve
 zmíněné hodnoty se stávají irelevantními.

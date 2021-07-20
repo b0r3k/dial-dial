@@ -1,27 +1,28 @@
 \chapter{Watson Assistant}\label{chapter-wa}
 
-Jak již bylo napsáno, WA je asistent vyvíjený firmou IBM.
-V této kapitole nejdříve uvedeme v sekci~\ref{wa-common} obecné informace
+Tato kapitola slouží k představení WA,
+kterého využíváme k řízení dialogu.
+Nejdříve uvedeme v sekci~\ref{wa-common} obecné informace
 o práci s ním, a pak se v sekci~\ref{wa-inside} pokusíme shrnout zjištěné
 informace o vnitřním fungování.
-Není jich bohužel příliš mnoho, jedná se o komerční produkt,
-a tak podrobnosti nejsou dostupné veřejně.
 
 \section{Obecné informace}\label{wa-common}
 
 \subsection{Popis}
 
-WA je určen především pro firmy, nabízí relativně jednoduché vytvoření
+Jak již bylo napsáno, WA je asistent vyvíjený firmou IBM.
+Je určen především pro firmy, nabízí relativně jednoduché vytvoření
 vlastního modelu strojového učení na míru podle vložených trénovacích
 dat. Propojením s dalšími službami umí kromě předdefinovaných odpovědí
-také vyhledávat v databázi, zavolat vnější API pomocí webhooku a odpověď
+také vyhledávat v databázi, zavolat vnější API pomocí webhooku (propojení,
+které v určitou chvíli pošle požadavek jinam na web) a odpověď
 z něj využít v konverzaci, nebo v případě nutnosti předat dialog lidskému
 pracovníkovi. Je možné ho integrovat do existujících komunikačních platforem
 jako je Facebook Messenger, Slack nebo WhatsApp, propojit s telefonní
-bránou, či přidat do webové stránky nebo aplikace. Poskytuje také monitorování
+bránou či přidat do webové stránky nebo aplikace. Poskytuje také monitorování
 úspěšnosti proběhlých dialogů \citep{wa_about}.
 
-Přímo podporuje 13 jazyků včetně
+WA přímo podporuje 13 jazyků včetně
 češtiny \citep{wa_languages}, ale nabízí také univerzální model. V případě
 jeho zvolení se použije předtrénovaný model chápající základní pravidla
 vyskytující se ve většině jazyků, který se dotrénuje na poskytnutých
@@ -33,14 +34,17 @@ Každý vytvořený asistent musí mít nějaké \textit{dovednosti (skills)},
 což jsou prostředí s definovanými úmysly a entitami, které bude asistent
 rozpoznávat. Více dovedností mezi sebou může komunikovat
 a řízení dialogu si předávat. Entity mohou být založené buď na rozpoznávání tvarů
-konkrétních slov, nebo na rozpoznávání dle vzorce -- například pro české telefonní
-číslo bychom mohli definovat vzorec pro devět číslic, volitelně s mezerami.
+konkrétních slov, nebo na rozpoznávání dle regulárních výrazů -- například
+pro české telefonní
+číslo bychom mohli definovat výraz pro devět číslic, volitelně s
+předvolbou a mezerami.
 
-Každé prostředí musí mít také strukturu dialogu.
+Každá dovednost musí mít také strukturu dialogu.
 WA využívá \textit{stromovou} reprezentaci,
 kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
-jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
-odpověď z něj a pokud nějaké má, zanoříme se do jeho synů.
+jednotlivých sourozencích. Jakmile v jednom vrcholu najdeme podmínku
+splněnou, vybereme
+odpověď z něj a příště budeme vybírat z jeho synů, pokud nějaké má.
 
 Podrobnější návod k vytvoření asistenta včetně komplikovanějších
 technik podává \citet{akbulut_common_2020}.
@@ -49,27 +53,30 @@ technik podává \citet{akbulut_common_2020}.
 
 Nejkomplikovanější a zásadní částí WA je NLU, tedy detekce úmyslů
 a entit. Ke konci roku 2020 v tom byl úspěšnější než ostatní podobné
-systémy \citep{qi2021benchmarking}. Zde se hodí zmínit,
-že citovaný článek je sice vydán pracovníky IBM, ale údajně využili
-stejný způsob testování jako \citet{arora-etal-2020-hint3}, takže
-srovnání má určitou výpovědní hodnotu.
+systémy \citep{qi2021benchmarking}. Využit byl způsob testování,
+který popsali \citet{arora-etal-2020-hint3}. Systémy byly natrénovány
+na datech vytvořených tak, aby co nejvíce připomínala reálná data.
+Následně byly testovány na vstupech reálných uživatelů nasbíraných
+z běžících systémů.
 
-Jak se vývojářům této úspěšnosti podařilo docílit? Posledním vylepšením
-je přidání \textit{AutoML}, což je automatické hledání nejlepších algoritmů,
+WA k vysoké úspěšnosti pomáhá využití \textit{AutoML}, což je
+automatické hledání nejlepších algoritmů,
 parametrů a vstupních rysů \citep{noauthor_watson_2020}. Tuto techniku
 spolu s aktuálně nejlepšími známými postupy shrnují \citet[duben]{He_2021}.
 Zkoušení všech
 možných kombinací by trvalo velmi dlouho, proto je pro urychlení
-využito \textit{meta-učení} \citep{hospedales2020metalearning}.
+využito \textit{meta-učení (meta-learning)} \citep{hospedales2020metalearning}.
 Zde to konkrétně znamená, že se jiný model dříve naučil, jak které
 kombinace parametrů fungují pro
 různá data, a pak na nová data aplikuje kombinace, které dříve dobře
 fungovaly pro podobná data.
 
 Dále jsou využity hluboké neuronové sítě, ale v kombinaci s tradičními
-metodami strojového učení jako SVM \citep{bosertraining}, což umožňuje
+metodami strojového učení jako \textit{SVM (support vector machines)}
+\citep{bosertraining}, což umožňuje
 rychlejší trénink i klasifikaci \citep{potdar_watson_2021}. V neposlední
-řadě je potřeba zmínit přenosové učení, které využije model předtrénovaný
+řadě je potřeba zmínit přenosové učení \textit{(transfer learning)}, které
+využije model předtrénovaný
 na velkém množství obecnějších dat, kterému pak stačí pro dobré výsledky
 v konkrétní oblasti méně dat speciálních \citep{zhuang2020comprehensive}.
 
