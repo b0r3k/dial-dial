@@ -32,7 +32,7 @@ rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.98\textwidth]{../img/app-flowchart.pdf}
-    \caption{Nákres fungování celého systému}
+    \caption{Nákres fungování celého systému.}
     \label{img-flowchart}
 \end{figure}
 
@@ -67,7 +67,8 @@ padla právě na něj.
 
 Inicializace WA lze provést v interaktivním prostředí v prohlížeči. Toto
 prostředí je však v mnohém omezené. V našem případě jsme například potřebovali
-vložit stovky entit pro trénování rozpoznání. Přenést je do WA přes prohlížeč
+vložit stovky entit pro trénování rozpoznání (asistenta jsme popsali v
+kapitole~\ref{chapter-wa}). Přenést je do WA přes prohlížeč
 by bylo absurdně náročné, navíc složitě replikovatelné. Použili jsme proto opět
 po SDK, pomocí kterého můžeme WA iniciovat relativně krátkým skriptem. Na volbě
 konkrétního programovacího jazyka zde téměř nezáleželo (skript je krátký a běží
@@ -123,40 +124,27 @@ jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
 hovor. Všemi součástmi se budeme zabývat v následujících podsekcích, začneme
 ale celkovou koncepcí a vzhledem.
 
-\subsection{Celková koncepce a vzhled}
+\subsection{Uživatelské rozhraní}
 
-Jednotlivé komponenty (obvykle reprezentované jednou obrazovkou)
-se v aplikacích
-pro Android nazývají \textit{Activity}. Protože primárním způsobem interakce
+Protože primárním způsobem interakce
 s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující grafické
 rozhraní. Zvolili jsme tlačítko se symbolem mikrofonu na černém pozadí,
 jak ukazuje obrázek~\ref{img-ui}. Tímto tlačítkem je zahájen dialog (v případě
-dostatečných oprávnění, jejichž získání řešíme dále).
+dostatečných oprávnění, jejichž získání řešíme dále). Při běhu aplikace
+pak obrázkem na něm indikujeme přijímání vstupu (mikrofon se změní na
+plný červený) či čtení výstupu (místo mikrofonu se objeví symbol reproduktoru).
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.3\textwidth]{../img/ui.pdf}
-    \caption{Jednoduché uživatelské rozhraní}
+    \caption{Jednoduché uživatelské rozhraní.}
     \label{img-ui}
 \end{figure}
-
-Protože nám stačí jedna obrazovka, je celý kód umístěn v jednom souboru
-\texttt{MainActivity.kt}. Pro změnu grafického rozhraní z kódu je třeba
-jejich propojení, které zajišťuje instance třídy \texttt{ActivityMainBinding}.
-Toto je aktuálně oficiálně doporučený postup (na úkor dříve používaného
-vyhledání pomocí \texttt{id}), ale vygenerování propojovací třídy musíme
-povolit v souboru \texttt{build.gradle} na úrovni modulu.
-
-Tato instance je využita při otevření aplikace pro \uv{nafouknutí} grafického
-rozhraní a následně v kódu kdykoliv chceme k rozhraní přistupovat. To v našem
-případě znamená nastavení reakce na stisk tlačítka, případně jeho deaktivace
-či změna vzhledu pro indikaci probíhajících procesů.
 
 \subsection{Získání oprávnění}
 
 Pro svou správnou funkci potřebuje aplikace povolení nahrávat zvuk, číst
-kontakty, vykonávat hovory a přistupovat k internetu. Všechna požadovaná
-oprávnění musí být uvedena v souboru \texttt{AndroidManifest.xml}, první
+kontakty, vykonávat hovory a přistupovat k internetu. První
 tři jsou navíc oprávněními za času běhu, tedy o ně musíme explicitně
 požádat. Oprávnění k přístupu k internetu není tak zásadní (především
 protože neoperuje s uživatelovými daty), tedy je v Androidu automaticky
@@ -166,12 +154,6 @@ Aktuálně oficiálně doporučeným postupem (který z toho důvodu využívám
 řešit oprávnění, je nejprve o ně požádat, pokud uživatel odmítne a pokusí se
 aplikaci znovu použít, zobrazit vysvětlení, k čemu jsou nutná a znovu o ně
 požádat, a pokud znovu odmítne, již jen ukazovat upozornění o nedostupnosti.
-
-Pro požádání o oprávnění potřebujeme spustit jinou aktivitu (pro získání
-oprávnění existuje jedna vestavěná), vyčkat na její výsledek a na základě
-něj rozhodnout o dalších krocích. K tomu využíváme opět aktuálně doporučenou
-metodu \texttt{registerForActivityResult}. Pro zobrazení vysvětlení potřeby
-oprávnění i upozornění o nedostupnosti využíváme třídu \texttt{AlertDialog}.
 
 \subsection{Získání kontaktů}
 
@@ -183,10 +165,11 @@ které uložíme do slovníku.
 \subsection{Vytvoření session ve WA a odeslání jmen kontaktů}
 
 Po začátku dotazu na kontakty vytvoříme instanci třídy \texttt{Assistant}
+z Python SDK
 pro komunikaci s WA API, které předáme potřebné parametry a následně pošleme
 požadavek pro zahájení session. V Androidu není možné posílat síťové požadavky
 v hlavním vlákně (protože je potřeba udržovat ho volné pro UI), takže s výhodou
-opět použijeme běh jako koprogram. Následně pomocí \texttt{await} zajistíme
+opět použijeme běh jako koprogram. Následně zajistíme
 kontrolu dokončení získávání kontaktů a předáme je jako \textit{kontext} do
 WA session. Pokud se v průběhu něco nepovede, výjimku odchytíme a příště
 se pokusíme provést celou inicializaci znovu.
@@ -196,108 +179,89 @@ tam jsme brzy narazili na limit velikosti požadavku 2048 znaků. Delší
 seznam kontaktů se do tohoto limitu nevejde, proto jsme nakonec využili
 nastavení kontextu.
 
-Důležité je ještě zmínit, že parametry pro komunikaci s WA jsou uloženy
-zvlášť v souboru \texttt{credentials.xml}.
-
 \subsection{Spuštění rozpoznávání hlasu}
 
-Obdobně jako u získání
-oprávnění potřebujeme spustit nějakou aktivitu a získat její výsledek, tedy
-využijeme \texttt{registerForActivityResult}, tentokrát nejde o vestavěnou
-aktivitu, ale můžeme využít parametr \texttt{Intent} (úmysl) při spuštění.
-Protože ho potřebujeme používat často, vytvoříme ho jen jednou při otevření
-aplikace a předáme mu potřebné parametry (český jazyk, jeden výsledek, atp.).
-Když aktivita spuštěná s tímto úmyslem skončí, zkontrolujeme, že proběhla
-úspěšně a pokračujeme k dalšímu kroku.
+Využijeme vestavěný \texttt{RecognizerIntent.ACTION\_RECOGNIZE\_SPEECH}
+nastavený na češtinu. Rozpoznávání hlasu je delší aktivita, takže nemůžeme
+aktivně čekat na její
+dokončení. Místo toho registrujeme zpětné volání na výsledek aktivity.
+Po získání výsledku zkontrolujeme, že proběhla úspěšně a pokud ano, pokračujeme
+k dalšímu kroku.
 
 \subsection{Odeslání do WA a získání odpovědi}
-Opět pomocí \texttt{await} vyčkáme nachystání WA. Pokud je vše připraveno,
+Nejdříve ověříme nachystání WA. Pokud je vše připraveno,
 pošleme v koprogramu (jedná se o síťový požadavek) text do WA a získáme odpověď.
-Tuto odpověď ještě zpracujeme, pokud je na prvním řádku \texttt{[call]}, jedná
-se o pokyn k hovoru, na druhém řádku najdeme jméno kontaktu a na třetím text k
-přečtení. Pomocí jména kontaktu zjistíme jeho číslo, vytvoříme \texttt{Intent}
-volání a nastavením proměnné \texttt{launchAgain} na \texttt{false} uložíme,
-že dialog skončil. V opačném případě pošleme celou odpověď k přečtení.
+Protože dialog řídí WA, potřebovali jsme v něm nějakým způsobem aplikaci
+předat informaci, že má zahájit hovor a komu má volat. Rozhodli jsme se na první
+řádek takové odpovědi umístit řetězec \texttt{[call]}, na druhý řádek jméno kontaktu
+a na třetí zprávu pro uživatele. Tak nám v aplikaci stačí kontrolovat první řádek získané
+odpovědi a podle něj se rozhodnout. Pomocí jména kontaktu pak zjistíme jeho číslo
+a zapamatujeme si, že nemáme znovu spouštět běh pipeline. Podle prvního řádku
+pak část nebo celou odpověď pošleme do TTS.
 
 \subsection{Spuštění hlasového syntetizátoru}
 
-Převod textu na řeč budeme také potřebovat používat často, proto instanci
-třídy \texttt{TextToSpeech} též vytvoříme při otevření programu. Nastavíme
+K převodu textu na řeč použijeme instanci vestavěné
+třídy \texttt{TextToSpeech}, kterou vytvoříme při otevření programu. Nastavíme
 ji na český jazyk a přepíšeme v ní funkci \texttt{onDone}, která je spuštěna,
-když skončí přehrávání hlasu. Pokud dialog neskončil, spustíme celý běh
-od rozpoznání hlasu zabalený ve funkci \texttt{launchPipeline} znovu. Pokud
+když skončí přehrávání hlasu. Pokud dialog neskončil, spustíme celou pipeline
+pomocí obalovací funkce \texttt{launchPipeline} znovu. Pokud
 skončil, jsme připraveni začít volat, vytočíme tedy číslo a ukončíme session ve
 WA i celou aplikaci.
 
 \section{Inicializace WA}\label{wainit}
 
-Bohužel samotné vytvoření instance WA zatím není možné provést pomocí skriptů,
-musíme ho tedy vytvořit ve webovém rozhraní. Odsud také získáme soubor
-\texttt{ibm-credentials.env}, který budeme používat k autentizaci skriptů.
+WA v našem programu využíváme pro řízení dialogu. Potřebuje tedy dokázat
+rozpoznávat úmysly a entity (rozebíráme v podsekci~\ref{intents-entities}),
+v případě nutnosti zavolat porovnávací komponentu, a vybrat na základě
+rozpoznaného správnou odpověď (popisujeme v podsekci~\ref{building-dialog}).
 
-Když toto uděláme, jako první musíme vytvořit \textit{workspace}
-(prostředí pro danou schopnost WA), což uděláme
-jednoduchým požadavkem, který bude obsahovat parametry jako jméno nebo jazyk.
-Zpět dostaneme odpověď, jejíž součástí bude \texttt{workspace\_id}, které budeme
-dál potřebovat k manipulaci s prostředím. Pro úpravu tohoto prostředí
-vždy budeme používat metodu \texttt{update\_workspace}, pomocí které můžeme
-nahrát větší množství úprav naráz a nebudeme tak mít problémy s limitem na
-počet požadavků.
+\subsection{Úmysly a entity}\label{intents-entities}
 
-\subsection{Úmysly a entity}
-
-Jako první do něj přidáme detekci uživatelových úmyslů (intents), jejichž využití
-jsme si představili v podsekci~\ref{nlu}. Zásadní je úmysl
+Zásadní je úmysl
 \texttt{dial}, pomocí kterého detekujeme, že uživatel chce někomu volat. Pro
 každý úmysl přidáme několik vzorových vět, na základě kterých by ho měl WA
-rozpoznat. Ty jsou interně použity pro trénink umělé modelu stojícího za WA.
+rozpoznat. Ty jsou interně použity pro trénink modelu stojícího za WA, jak
+jsme popsali v sekci~\ref{wa-inside}.
 Obdobně vytvoříme zbývající úmysly \texttt{greet} a \texttt{bye}, aby náš
 asistent uměl slušně pozdravit.
 
 Jediné entity, které potřebujeme rozeznávat, jsou jména lidí, případně příjmení.
-Do WA je k tréninku dostaneme obdobně jako úmysly. Uvažovali jsme, jak ale tato
+Uvažovali jsme, jak tato
 data získat. Nakonec jsme využili data četnosti jmen a příjmení MVČR z roku 2017.
 Sice již přímo na stránkách MVČR nejsou dostupná, ale ve ve webových archivech
-existují. Tato data byla uložena ve formátu \texttt{xls} ve více listech, pro
-počítačové zpracování ne moc ideálním. Pomocí knihovny \texttt{pandas} jsme je
-tedy převedli do formátu \texttt{csv}, kde byla i výrazně menší. Následně jsme
-vybrali všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
-200 (TODO check hranice) lidí a ta jsme nahráli do WA.
+existují \citep{mvcr_cetnost_2018}. Z nich jsme pomocí krátkého skriptu vybrali
+všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
+200 lidí a ta jsme nahráli do WA.
 
-\subsection{Stavba dialogu}
+\subsection{Stavba dialogu}\label{building-dialog}
 
-Nejkomplikovanější částí bylo samotné sestavení průběhu dialogu s odesláním
-dat do porovnávací komponenty. (TODO možná přesunout do popisu WA?) WA využívá
-\textit{stromovou} reprezentaci dialogu,
-kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
-jednotlivých sourozencích. Jakmile v jednom najdeme podmínku splněnou, vybereme
-odpověď z něj a pokud nějaké má, zanoříme se do jeho synů. Ve webovém rozhraní je
-stavba dialogového stromu relativně přímočará, ale v některých místech omezená,
-proto jsme i zde použili skript.
-
-Vytváření dialogového stromu ve WA pomocí Python SDK je poněkud komplikovanější
-než přes webové rozhraní. Například pokud chceme, aby vrchol vyžadoval zaplnění
-určitého slotu a rozpoznanou hodnotu v něm ukládal do kontextu, musíme pro
-každou tuto operaci vyrobit jeden podvrchol, zatímco v rozhraní bychom jen
-vyplnili dvě pole.
-
-Celkově je povrchová koncepce stromu relativně jednoduchá. Máme sourozenecké
+Jak jsme popsali v sekci~\ref{wa-create}, je využívána stromová reprezentace stromu.
+Povrchová koncepce našeho stromu je relativně jednoduchá, jak ukazuje obrázek~\ref{img-wa-tree}.
+Máme sourozenecké
 vrcholy pro detekci uživatelových úmyslů pozdravit, zavolat a rozloučit se, navíc
 dva speciální. Ty zajistí, že na začátku dialogu asistent nic neříká, a že
 pokud není detekován žádný úmysl, asistent se na něj zeptá. Jediným vrcholem
 s potomky je vrchol detekující úmysl volat, který ještě kontroluje zaplnění slotu
-pro jméno (případně se na něj doptá). Nepřišli jsme na to, jak přímo z něj
-uložit vstup a rozpoznané entity do kontextu, proto jeho syn dělá právě to. Ten
-má dalšího syna, který relevantní kontext (vstup, rozpoznané entity a kontakty)
-odešle do \textit{webhooku} (v zásadě webová adresa očekávající vstup a vracející
+pro jméno (případně se na něj doptá). Jeho syn ukládá vstup a rozpoznané entity
+do kontextu. Ten
+má dalšího syna, který odešle relevantní kontext (vstup, rozpoznané entity a kontakty)
+do \textit{webhooku} (v zásadě webová adresa očekávající vstup a vracející
 výstup, oboje ve formátu JSON), kde běží porovnávací komponenta. Získá tak její
 výstup a na základě něj generuje odpověď -- pokud dostal zpět jedno jméno,
 vyzve k zahájení hovoru; pokud více, vyzve k vybrání (a nastaví je do kontextu,
-aby příště bylo porovnáváno jen s nimi); pokud žádné, oznámí že nic neodpovídá.
+aby příště bylo porovnáváno jen s nimi); pokud žádné, oznámí že nic nenašel.
 Poté se vrátí do uzlu připravujícího údaje, aby mohlo být provedeno případné
 upřesnění.
 
-TODO možná obrázek stromu?
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{../img/wa-tree.pdf}
+    \caption{Strom dialogu ve WA. Zelené vrcholy detekují vestavěné úmysly,
+        šedivé námi definované úmysly, modrý jen vnitřně připravuje data a fialový
+        kontaktuje webhook.}
+    \label{img-wa-tree}
+\end{figure}
 
 \section{Porovnávací komponenta}\label{matching}
 
