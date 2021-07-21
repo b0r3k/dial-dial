@@ -6,27 +6,44 @@ vylepšení, která jsme na základě výsledků navrhli, spolu s nápady k jeji
 
 \section{Způsob vyhodnocení}\label{methods}
 
-Běžné způsoby vyhodnocení dialogových systémů zaměřených na plnění úkolů popisují
-\citet[podsekce 24.5.2]{jurafsky_slp_2020}. Primárním měřítkem je poměr úspěšně
-splněných úkolů. U jiných druhů úkolů, kde je potřeba vyplnit více slotů, je možné
-sledovat ještě podrobněji poměr správně vyplněných slotů, ale náš systém
+Běžné způsoby vyhodnocování dialogových systémů popisují
+\citet[sekce 24.5]{jurafsky_slp_2020}, podrobněji pak ještě \citet{Deriu_2020}.
+U systémů zaměřených na plnění úkolů je primárním měřítkem poměr úspěšných
+splnění cíle. U jiných druhů úkolů než je náš, kde je potřeba vyplnit více slotů, je možné
+sledovat ještě podrobněji poměr správně vyplněných slotů. Náš systém však
 vyplňuje pouze jméno, tedy řešit poměr splněných úkolů je dostatečné.
 
 Vytvořili jsme dotazník, v jehož úvodu jsme popsali náš systém a způsob instalace
 aplikace, a následně se uživatelů dotazovali především na počet pokusů o hovor a
-množství úspěšných zahájení hovoru. Dále nás zajímaly konkrétnější důvody neúspěšných
-pokusů o hovor, návrhy na vylepšení a celkový zájem o takovou aplikaci. Dotazník je
-možné najít v příloze TODO .
+množství úspěšných zahájení hovoru. Dále nás zajímalo, jak často se objevily
+následující problémy:
+\begin{itemize}
+    \item chyba při inicializaci,
+    \item špatně rozpoznaný hlas,
+    \item jméno nerozpoznáno WA,
+    \item jméno nenalezeno v kontaktech, i když mělo být,
+    \item ke jménu nalezeny neodpovídající kontakty,
+    \item nalezeno více kontaktů a výběr z nich se nepodařil,
+    \item hlas byl rozpoznán, ale nepřišla žádná odpověď,
+    \item celá aplikace selhala.
+\end{itemize}
+Následující otázky se týkaly návrhů na opravy a vylepšení dále jsme zjišťovali celkový
+zájem o podobnou aplikaci. Z důvodu kontroly implementace jsme přidali ještě
+dotaz na verzi systému, který uživatel měl ve svém mobilním telefonu při testování. Dotazník je
+možné najít v příloze TODO.
 
 \section{Výsledky}\label{results}
 
 Podařilo se nám získat \(15\) testovacích uživatelů, kteří dohromady uskutečnili 91
 pokusů o hovor, z toho \(51\) bylo úspěšných, jak znázorňuje
 graf na obrázku~\ref{img-ratio-succ}. Celková úspěšnost
-systému tedy byla \(56\,\rm \%\).
+systému tedy byla \(56\,\rm \%\), ale s relativně velkým rozptylem. U některých uživatelů
+byly úspěšné skoro všechny pokusy, u některých skoro žádné. Z analýzy záznamů ve WA usuzujeme,
+že rozdíl dělá především způsob komunikace a jména uložených kontaktů daného
+uživatele.
 
-Velmi zajímavý je zájem o podobnou aplikaci, který znázorňuje graf na obrázku~\ref{img-ratio-interest}.
-Pouze \(20\,\rm \%\) uživatelů uvedlo, že by o takovou aplikaci nemělo vůbec zájem.
+Zájem o podobnou aplikaci ukazuje graf na obrázku~\ref{img-ratio-interest}.
+Pouze 3 z 15 uživatelů uvedli, že by o takovou aplikaci neměli vůbec zájem.
 Zbylí by o takovou aplikaci měli zájem, pokud by fungovala lépe, přidala nové funkce,
 případně oboje.
 
@@ -112,7 +129,7 @@ bez celé detekce úmyslů a mohli celý dialog velmi zjednodušit.
 Navrhovaný běh představujeme v ukázce níže. Uživatel by stiskem
 tlačítka zapnul rozpoznávání řeči a řekl jen název kontaktu,
 kterému chce zavolat. Celý tento vstup by byl přímo v zařízení
-porovnán se všemi názvy kontaktů v seznamu, pravděpodobně za
+porovnán se všemi jmény kontaktů v seznamu, pravděpodobně za
 využití knihovny \texttt{JavaWuzzy}.\footnote{\url{https://github.com/xdrop/fuzzywuzzy}} Pokud by byl
 nalezen jeden ostře lépe odpovídající kontakt, aplikace
 by oznámila úmysl mu volat a uživatel by potvrdil \uv{ano/ne}.
