@@ -1,4 +1,4 @@
-\chapter{Implementace}
+\chapter{Implementace}\label{chapter-implementation}
 
 V úvodu této kapitoly popíšeme koncepci programu, co kde
 běží a jakým způsobem spolu komunikuje. Následně v sekci~\ref{analysis}
@@ -308,7 +308,7 @@ rozpoznat s prvního slova \uv{Jana} i \uv{Jan}, z druhého slova pak \uv{Nový}
 předem nedokážeme říct, která. Vytvoříme tedy všechny a v dalších krocích
 je vyzkoušíme.
 
-\subsection{Vlastní porovnávání}
+\subsection{Vlastní porovnávání}\label{subsection-matching}
 
 Kdykoliv budeme porovnávat nějaké řetězce, využijeme tzv. \textit{fuzzy matching}.
 To znamená, že řetězce nebudeme porovnávat přímo, ale pomocí Levenshteinovy vzdálenosti
@@ -319,8 +319,8 @@ jejichž vzdálenost je menší nebo rovna nějakému limitu. Jako limit maximá
 jsme zvolili 3. Je dost vysoký na to, aby ještě přijal například slovo s příponou
 \uv{-ovi}, na druhou stranu vyšší limity způsobují přiřazení i řetězců neodpovídajících,
 zvláště u krátkých slov.\footnote{I s tímto limitem můžeme ke slovu délky 3 přiřadit libovolné jiné
-    slovo délky 3, protože nám stačí vyměnit 3 znaky.} Pokud celé entitě nalezené
-v transkripci uživatelova vstupu nic neodpovídá,
+    slovo délky 3, protože nám stačí vyměnit 3 znaky. Zlepšení navrhujeme v sekci~\ref{better-match}.}
+Pokud celé entitě nalezené v transkripci uživatelova vstupu nic neodpovídá,
 zkusíme ji rozdělit na slova a porovnat s telefonním seznamem jednotlivá slova.
 
 Každému přiřazenému kontaktu pak ještě určíme \textit{jistotu} (\textit{confidence}),

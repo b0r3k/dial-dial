@@ -1,4 +1,4 @@
-\chapter{Vyhodnocení}
+\chapter{Vyhodnocení}\label{chapter-results}
 
 V této kapitole popisujeme v sekci~\ref{methods} způsob vyhodnocení našeho systému,
 v sekci~\ref{results} výsledky tohoto vyhodnocení a v sekci~\ref{improvements}
@@ -93,6 +93,14 @@ Poslední možností je přepracovat porovnávací komponentu, aby nebyla závis
 na entitách rozpoznaných pomocí WA. Touto cestou se pravděpodobně vydáme,
 protože nám dává největší volnost implementace a především velkou
 použitelnost mimo konkrétní doménu.
+
+Jistě nutným vylepšením porovnávací komponenty je také přidání závislosti
+limitu vzdálenosti na délce slov, které porovnáváme. V aktuální verzi
+totiž využíváme stejný limit 3 pro všechna slova, jak jsme popsali
+v podsekci~\ref{subsection-matching}. To u krátkých slov umožní
+přiřazení i kompletně rozdílných slov, zatímco u dlouhých
+slov je tento limit v kombinaci s komplikovaným skloňováním češtiny
+příliš malý.
 
 \subsection{Přepracování mobilní aplikace}\label{better-app}
 
