@@ -3,7 +3,7 @@
 Tato kapitola slouží k představení WA,
 kterého využíváme k řízení dialogu.
 Nejdříve uvedeme v sekci~\ref{wa-common} obecné informace
-o práci s ním, a pak se v sekci~\ref{wa-inside} pokusíme shrnout zjištěné
+o práci s ním a pak se v sekci~\ref{wa-inside} pokusíme shrnout zjištěné
 informace o vnitřním fungování.
 
 \section{Obecné informace}\label{wa-common}
@@ -75,13 +75,13 @@ Dále jsou využity hluboké neuronové sítě, ale v kombinaci s tradičními
 metodami strojového učení jako \textit{SVM (support vector machines)}
 \citep{bosertraining}, což umožňuje
 rychlejší trénink i klasifikaci \citep{potdar_watson_2021}. V neposlední
-řadě je potřeba zmínit přenosové učení \textit{(transfer learning)}, které
-využije model předtrénovaný
+řadě je potřeba zmínit přenosové učení \textit{(transfer learning)}. Při
+jeho aplikaci využijeme model předtrénovaný
 na velkém množství obecnějších dat, kterému pak stačí pro dobré výsledky
 v konkrétní oblasti méně dat speciálních \citep{zhuang2020comprehensive}.
 
-Předtím, než uživatelův vstup vůbec přijde do složitého porozumění jazyku,
-je potřeba zbavit se nepřesností, které by klasifikaci výrazně ztížily.
+Předtím, než uživatelův vstup vůbec začneme klasifikovat,
+je potřeba zbavit se nepřesností, které by detekci úmyslů a entit výrazně ztížily.
 K tomu jsou využity jazykové modely, metody strojového učení a
 různé metriky vzdáleností mezi řetězci. Díky tomu WA údajně \uv{porozumí}
 okolnímu kontextu a dokáže překlepy a chyby opravovat v závislosti

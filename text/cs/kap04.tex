@@ -18,7 +18,7 @@ je jen jakýmsi spojem a médiem pro komunikaci s uživatelem. Celý běh
 je znázorněn na obrázku~\ref{img-flowchart}. Stisknutím tlačítka v
 telefonu se
 inicializuje session ve WA běžícím v cloudu IBM a spustí rozpoznávání řeči,
-které běží na serverech Google. Po zahájení session ve WA jsou tam též
+které běží na serverech Google. Po zahájení session ve WA jsou do něj
 odeslána jména kontaktů uložených v telefonu. Jakmile je z hlasu rozpoznán
 text, je vrácen zpět do aplikace a odtud odeslán jako zpráva do WA.
 Ten rozhodne, zda je potřeba volat
@@ -26,7 +26,7 @@ porovnávací komponentu. Pokud ano, zavolá ji z jiné části IBM cloudu,
 předá jí relevantní data a získá od ní odpověď. V každém případě
 WA vygeneruje odpověď na zaslanou zprávu a odešle ji zpět do telefonu.
 Tam je odpověď z WA zpracována (mj. je rozhodnuto, zda by měl být
-zahájen hovor) a odeslána do syntetizátoru řeči na servery Google.
+zahájen hovor) a odeslána do syntezátoru řeči na servery Google.
 Odtud je hlas k přehrání vrácen zpět do aplikace, tam je přehrán
 a následně je na základě dřívějšího rozhodnutí buď spuštěno znovu
 rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
@@ -72,7 +72,8 @@ Nastavení WA lze provést v interaktivním prostředí v prohlížeči. Toto
 prostředí je však v mnohém omezené. V našem případě jsme například potřebovali
 vložit stovky entit pro trénování rozpoznání. Přenést je do WA přes prohlížeč
 by bylo absurdně náročné, navíc složitě replikovatelné. Použili jsme proto opět
-po SDK, pomocí kterého můžeme WA nastavit relativně krátkým skriptem. Na volbě
+SDK,\footnote{\url{https://github.com/watson-developer-cloud/python-sdk}} pomocí
+kterého můžeme WA nastavit relativně krátkým skriptem. Na volbě
 konkrétního programovacího jazyka zde téměř nezáleželo (skript je krátký a běží
 jen jednou), zvolili jsme proto Python jakožto dobře čitelný
 jazyk, se kterým máme mnoho zkušeností.
@@ -123,7 +124,7 @@ Aplikace musela vyřešit několik věcí, které popisujeme
 v následujících podsekcích: získat oprávnění ke všem operacím (podsekce~\ref{get-permissions}),
 získat kontakty uživatele (\ref{get-contacts}), vytvořit \textit{session} ve WA a odeslat
 tam jména kontaktů (\ref{create-session}), spustit rozpoznání hlasu (\ref{start-tts}), po dokončení odeslat jeho výsledek
-jako zprávu do WA (\ref{contact-wa}), po získání odpovědi spustit hlasový syntetizátor (\ref{start-tts}), po skončení
+jako zprávu do WA (\ref{contact-wa}), po získání odpovědi spustit hlasový syntezátor (\ref{start-tts}), po skončení
 jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
 hovor. Všemi součástmi se budeme zabývat v následujících podsekcích, začneme
 ale celkovou koncepcí a vzhledem (\ref{desc-ui}).
@@ -135,8 +136,8 @@ s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující gra
 rozhraní. Zvolili jsme tlačítko se symbolem mikrofonu na černém pozadí,
 jak ukazuje obrázek~\ref{img-ui}. Tímto tlačítkem je zahájen dialog (v případě
 dostatečných oprávnění). Při běhu aplikace
-pak obrázkem na něm indikujeme přijímání vstupu (mikrofon se změní na
-plný červený) či čtení výstupu (místo mikrofonu se objeví symbol reproduktoru).
+pak obrázkem na něm indikujeme přijímání vstupu (mikrofon se z prázdného bílého
+změní na plný červený) či čtení výstupu (místo mikrofonu se objeví symbol reproduktoru).
 
 \begin{figure}[h]
     \centering
@@ -163,7 +164,7 @@ požádat, a pokud znovu odmítne, již jen ukazovat upozornění o nedostupnost
 \subsection{Získání kontaktů}\label{get-contacts}
 
 Kontakty potřebujeme získat z úložiště telefonu, které se chová podobně jako
-databáze. Proto dotaz na ně začneme na začátku inicializace celé služby WA
+databáze. Proto dotaz na ně spustíme na začátku inicializace celé služby WA
 asynchronně jako koprogram. V rámci něj pak získáme jména a čísla kontaktů,
 vše uložíme do slovníku.
 
@@ -191,7 +192,7 @@ Využijeme vestavěný \texttt{RecognizerIntent.ACTION\_RECOGNIZE\_SPEECH}%
 nastavený na češtinu. Rozpoznávání hlasu je delší aktivita, takže nemůžeme
 aktivně čekat na její
 dokončení. Místo toho registrujeme zpětné volání na výsledek aktivity.
-Po získání výsledku zkontrolujeme, že proběhla úspěšně a pokud ano, pokračujeme
+Po získání výsledku zkontrolujeme, že proběhla úspěšně, a pokud ano, pokračujeme
 k dalšímu kroku.
 
 \subsection{Odeslání do WA a získání odpovědi}\label{contact-wa}
@@ -201,11 +202,11 @@ Protože dialog řídí WA, potřebovali jsme v něm nějakým způsobem aplikac
 předat informaci, že má zahájit hovor a komu má volat. Rozhodli jsme se na první
 řádek takové odpovědi umístit řetězec \texttt{[call]}, na druhý řádek jméno kontaktu
 a na třetí zprávu pro uživatele. Tak nám v aplikaci stačí kontrolovat první řádek získané
-odpovědi a podle něj se rozhodnout. Pomocí jména kontaktu pak zjistíme jeho číslo
-a zapamatujeme si, že nemáme znovu spouštět běh pipeline. Podle prvního řádku
-pak část nebo celou odpověď pošleme do TTS.
+odpovědi a podle něj se rozhodnout. Buď pomocí jména kontaktu zjistíme jeho číslo, zapamatujeme
+si, že nemáme znovu spouštět běh pipeline a pošleme do TTS jen poslední řádek.
+Nebo do TTS pošleme celou odpověď z WA a pipeline spustíme znovu.
 
-\subsection{Spuštění hlasového syntetizátoru}\label{start-tts}
+\subsection{Spuštění hlasového syntezátoru}\label{start-tts}
 
 K převodu textu na řeč použijeme instanci vestavěné
 třídy \texttt{TextToSpeech},%
@@ -244,11 +245,11 @@ všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
 
 \subsection{Stavba dialogu}\label{building-dialog}
 
-Jak jsme popsali v sekci~\ref{wa-create}, je využívána stromová reprezentace dialogu.
+Jak jsme popsali v sekci~\ref{wa-create}, ve WA je využívána stromová reprezentace dialogu.
 Povrchová koncepce našeho stromu je relativně jednoduchá, jak ukazuje obrázek~\ref{img-wa-tree}.
 Máme sourozenecké
 vrcholy pro detekci uživatelových úmyslů pozdravit, zavolat a rozloučit se, navíc
-dva speciální. Ty zajistí, že na začátku dialogu asistent nic neříká a že
+pak dva speciální. Ty zajistí, že na začátku dialogu asistent nic neříká a že
 pokud není detekován žádný úmysl, asistent se na něj zeptá. Jediným vrcholem
 s potomky je vrchol detekující úmysl volat, který ještě kontroluje zaplnění slotu
 pro jméno (případně se na něj doptá). Jeho syn ukládá vstup a rozpoznané entity
@@ -325,9 +326,9 @@ jsme zvolili 3. Je dost vysoký na to, aby ještě přijal například slovo s p
 zvláště u krátkých slov.\footnote{I s tímto limitem můžeme ke slovu délky 3 přiřadit libovolné jiné
     slovo délky 3, protože nám stačí vyměnit 3 znaky. Zlepšení navrhujeme v sekci~\ref{better-match}.}
 Pokud celé entitě nalezené v transkripci uživatelova vstupu nic neodpovídá,
-zkusíme ji rozdělit na slova a porovnat s telefonním seznamem jednotlivá slova.
+zkusíme ji rozdělit na slova a ta porovnat s telefonním seznamem jednotlivě.
 
-Každému přiřazenému kontaktu pak ještě určíme \textit{jistotu} (\textit{confidence}),
+Každému přiřazenému kontaktu ještě určíme \textit{jistotu} (\textit{confidence}),
 s jakou jsme ho přiřadili. Tu jsme se rozhodli počítat jako
 \[ \text{jistota} = 0,5 + \frac{0,5 \cdot (\text{limit\_úprav} - \text{vzdálenost})}{\text{limit\_úprav}} ,\]
 protože pak řetězce odpovídající přesně dostávají plnou jistotu, zatímco řetězce na
@@ -358,10 +359,13 @@ všechny přiřazené kontakty, jimž jsme udělili jistotu menší než 0,5.
 \subsection{Integrace komponenty do systému}\label{integration}
 
 Pro použití v tomto systému potřebujeme, aby komponenta provedla
-celé rozhodnutí a pokud si je dostatečně jista, vrátila jen jediný kontakt,
-o kterém pak WA předá informaci, že mu má aplikace zavolat. Proto
-se podívá na jistoty všech přiřazených kontaktů. Pokud u jednoho
-vyjde jistota ostře lepší, vrátí pouze ten. Jako hranici
-\uv{ostře lepší} jsme zvolili limit alespoň o 0,1 vyšší než u
-ostatních. Pokud žádný ostře lepší nevyjde, vrátíme všechny
-nalezené. Pokud jsme nic odpovídajícího nenašli, vrátíme prázdné pole.
+celé rozhodnutí a pokud si je dostatečně jista, vrátila jen jediný kontakt.
+O tom pak WA předá informaci, že mu má aplikace zavolat.
+
+Jako hranici \uv{ostře lepší} jsme zvolili limit alespoň o 0,1 vyšší než u ostatních.
+Komponenta se podívá na jistoty všech přiřazených kontaktů a provede rozhodnutí:
+\begin{itemize}
+    \item Když u jednoho vyjde jistota ostře lepší, vrátí pouze ten.
+    \item Jestliže žádný ostře lepší nevyjde, vrátí všechny nalezené.
+    \item Pokud jsme nic odpovídajícího nenašli, vrátí prázdné pole.
+\end{itemize}

@@ -213,8 +213,8 @@ protože u nich i velmi málo úpravami můžeme dostat slovo kompletně rozdíl
 \subsection{Udržování stavu}\label{dst}
 
 Od systému samozřejmě budeme vyžadovat určitou paměť. Pokud řekneme, že
-chceme někomu zavolat, pak dostaneme otázku komu, a pak ji zodpovíme, očekáváme,
-že systém si bude ještě pamatovat, že chceme volat. Tato komponenta je
+chceme někomu zavolat, pak dostaneme otázku komu a pak ji zodpovíme, očekáváme,
+že systém si bude ještě pamatovat náš úmysl volat. Tato komponenta je
 značena \textit{DST} z anglického \textit{Dialogue State Tracker}. V případě
 zmíněné reprezentace pomocí trojic paměti docílíme obvykle tak, že si pro každý
 slot pamatujeme hodnotu. Buď jednu, kterou v případě detekce jiné ihned přepíšeme,
@@ -240,7 +240,7 @@ můžeme již zmíněné trojice úmysl--slot--hodnota.
 
 \subsection{Vytvoření odpovědi v přirozeném jazyce}\label{nlg}
 
-Z interní reprezentace významu nyní potřebujeme vytvořit odpověď v přirozeném
+Z interní reprezentace významu potřebujeme vytvořit odpověď v přirozeném
 jazyce, kterou pochopí libovolný uživatel. Můžeme využít \textit{šablon}, do
 kterých doplníme vynechané části dle stavu dialogu \citep[strana 508]{jurafsky_slp_2020}. Například pokud bychom
 se zabývali rezervacemi letů, mohla by naše potvrzovací šablona vypadat jako
@@ -250,7 +250,7 @@ Přidáním více variant pro každou šablonu dosáhneme i určité autenticity
 Z variant pak můžeme volit náhodně, sekvenčně či heuristicky podle uživatelova
 vyjadřování, například pokud se vyjadřuje nespisovně, mohli bychom se také
 chtít vyjadřovat nespisovně. Opět narážíme na pracnost tohoto přístupu, šablon
-totiž i pro jednotlivou doménu musíme vytvořit desítky a více. Přesto mohou
+totiž i pro jednu doménu musíme vytvořit desítky a více. Přesto mohou
 posloužit až překvapivě dobře. Dalšími možnostmi je použít formálních gramatik
 \citep{teich_grammars_1999} či i zde strojového učení \citep{wen_stochastic_2015}.
 
@@ -274,7 +274,7 @@ výsledky.
 
 Dalším přístupem je opět využití HMM a jiných modelů strojového učení.
 Google TTS poskytuje několik hlasů využívajících různé technologie. Jak uvádí \citep{google_tts},
-jejich \textit{standardní} hlasy jsou založené na parametrickém přístupu,
+jejich standardní hlasy jsou založené na \textit{parametrickém} přístupu,
 který používá \textit{vocodery}. Jeden
 nazvaný \textit{Vocaine} představuje \citet{vocaine_2015}. Zbylé nabízené
 hlasy jsou založené na modelu \textit{WaveNet} \citep{oord_wavenet_2016},
