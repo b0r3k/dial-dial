@@ -7,7 +7,7 @@ další sekce budou pak věnovány popisu komponent, které jsme museli
 naimplementovat pro funkci celého systému. Konkrétně jde o aplikaci pro
 mobilní telefony s operačním systémem Android (naše implementace,
 v sekci~\ref{app}), vytvoření instance WA pro řízení
-dialogu (náš návrh za využití implementovaného WA,
+dialogu (náš návrh za využití existujícího WA,
 s popisem získání nejběžnějších českých jmen pro trénink, \ref{wainit}) a komponenty
 pro porovnání entit nalezených pomocí WA se seznamem kontaktů (naše implementace,
 \ref{matching}).
@@ -328,11 +328,20 @@ neboť také provádí podobné porovnání. Tyto dvě jistoty navzájem vynáso
 Poté ještě vezmeme v úvahu originální vstup, kdyby WA něco nerozpoznal. U každého
 úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na předchozí a následující
 slovo, zda neodpovídá stejnému kontaktu. Porovnání uděláme stejně jako v první fázi.
-Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu.
+Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu. Ukážeme
+to na příkladu vstupu \uv{chci zavolat Janu Pacušiakovi}, kde WA rozpoznal entitu \uv{Jan}
+ke slovu vstupu \uv{Janu} a nic víc, protože příjmení je unikátní a nezná ho.
+Naše komponenta pak k této entitě v předchozím kroku přiřadila
+kontakty \uv{Jan Novák} a \uv{Jan Pacušiak}, o obou ví zatím jen že odpovídají slovu \uv{Janu}.
+V tomto kroku se komponenta dívá na okolní slova.
+Zkontroluje slovo \uv{zavolat} a zjistí, že žádný z přiřazených kontaktů mu neodpovídá. Pak
+vyzkouší následující slovo \uv{Pacušiakovi} a zjistí, že kontakt \uv{Jan Pacušiak} mu odpovídá,
+proto u něj poznačí, že odpovídá celému řetězci \uv{Janu Pacušiakovi}.
 
 Dále z rozpoznání vyřadíme kontakty, které odpovídají jen podúseku jiného
-přiřazeného kontaktu.\footnote{To se může stát právě pokud jednomu úseku odpovídalo více
-    kontaktů, ale jen jeden z nich jsme rozšířili kontrolou okolních slov.} Vyřadíme také
+přiřazeného kontaktu, tedy pokračováním s naším příkladem komponenta vyřadí kontakt \uv{Jan Novák},
+protože odpovídá jen slovu \uv{Janu}, zatímco \uv{Jan Pacušiak} odpovídá nadmnožině \uv{Janu Pacušiakovi}.
+Vyřadíme také
 všechny přiřazené kontakty, jimž jsme udělili jistotu menší než 0,5.
 
 \subsection{Provedené úpravy a integrace}
