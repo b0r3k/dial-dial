@@ -17,15 +17,15 @@ nejzákladnějším je dělení na systémy \textit{zaměřené na plnění úko
 (rozšířený je anglický termín \textit{task-oriented}), jejichž úkolem
 je dosáhnout nějakého uživatelova cíle; a \uv{\textit{tlachací}} (anglicky
 \textit{chitchat}), jejichž úkolem je jen vést s uživatelem smysluplnou
-konverzaci.
+konverzaci \citep[strana 6]{gao_neural_2019}.
 
 \textit{Doménou} systému se rozumí téma, kterému by se měl být schopen
 věnovat. Podle toho, zda to dokáže jen u jednoho, nebo u více různých,
-můžeme systém nazývat \textit{jednodoménový} nebo \textit{vícedoménový}.
+můžeme systém nazývat \textit{jednodoménový} nebo \textit{vícedoménový} \citep[strana 47]{gao_neural_2019}.
 
 Dále můžeme systémy dělit podle toho, kdo řídí dialog. Dotaz či změnu tématu
 může iniciovat vždy pouze uživatel a systém jen odpovídat, nebo naopak, nebo
-se mohou v iniciativě střídat. Implementace posledního jmenovaného je samozřejmě
+se mohou v iniciativě střídat \citep[strany 495-496]{jurafsky_slp_2020}. Implementace posledního jmenovaného je samozřejmě
 nejkomplikovanější.
 
 Posledním dělením, které uvedeme, je podle kanálů komunikace, tedy
@@ -42,7 +42,7 @@ naše implementace spadá.
 \section{Problémy ve zpracování dialogu}
 
 Při trochu podrobnějším pohledu na většinu rozhovorů zjistíme, že nejsou
-tak jednoduché a přímočaré, jak si je představíme. To dále ztěžuje
+tak jednoduché a přímočaré, jak si je představíme \citep[sekce 24.1]{jurafsky_slp_2020}. To dále ztěžuje
 veškeré strojové zpracování. Některé komplikace umíme řešit jen do určité
 míry, některé zatím vůbec. Vezměme si například takovýto smyšlený dialog:
 
@@ -68,7 +68,7 @@ směru potýkáme, rozebereme v následujících třech podsekcích.
 
 Prvním problémem je jak vůbec zjistit, kdy uživatel dialog začal, kdy
 skončil svůj \textit{tah} (souvislou promluvu, po které obvykle očekává odpověď),
-a kdy skončil celý dialog.
+a kdy skončil celý dialog \citep[strana 494]{jurafsky_slp_2020}.
 Jako lidé většinou začátek dialogu jsme schopni rozpoznat tím, že se na
 nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
 detekovat schopni nejsme, oslovení dnešní technologie již dokáží. Většinou
@@ -100,7 +100,7 @@ systém splní uživatelův cíl či uživatel již neodpoví.
 
 \subsection{Zpracování zvuku}
 
-Při převodu mluveného slova na text narážíme na problémy spousty nepřesností.
+Při převodu mluveného slova na text narážíme na problémy spousty nepřesností \citep[sekce 4.1]{glass_challenges_1999}.
 Přepis nám ztěžuje okolní hluk, který dokážeme automaticky odfiltrovat jen do určité míry
 a obtížně. Navíc pokud dojde k chybě v nějakém slově, můžeme se ji sice snažit
 z kontextu nějak zpětně opravit, ale opět je to složitá práce navíc. Člověk
@@ -123,23 +123,19 @@ a obecně věcí nevyjádřených přímo. Více výrazů odkazujících na jedn
 označujeme \textit{koreference}, podrobnější popis tématu dává
 \citet[kapitola 21]{jurafsky_slp_2020}.
 
-Systému však všechny tyto znalosti a schopnosti musíme nějakým způsobem předat, buď
-explicitně, nebo u pokročilých modelů strojového učení dodat potřebná
-data.
-
 
 \section{Konstrukce dialogových systémů}
 
 Tradiční přístup implementace bychom mohli označit jako postupný. Čítá několik
 komponent, kde každá zajišťuje část práce nutné k porozumění uživateli a
-zodpovězení jeho prohlášení. Takovou konstrukci budeme nazývat \textit{pipeline}.
+zodpovězení jeho prohlášení \citep[sekce 4.1]{gao_neural_2019}. Takovou konstrukci budeme nazývat \textit{pipeline}.
 Tento přístup dobře ilustruje, co všechno vlastně
 člověk podvědomě při komunikaci dělá. Druhý přístup reprezentují tzv. \textit{end-to-end}
 systémy využívající metod strojového učení, které umožňují nahrazení až
-několika komponent jedním modelem. Taková implementace první uvedený v mnohém
+několika komponent jedním modelem \citep[sekce 4.6]{gao_neural_2019}. Taková implementace první uvedený v mnohém
 předčí, ale v praxi se příliš nevyužívá z důvodu náročnosti na trénovací data.
 
-Již jsme zmínili vícekrokové systémy mají několik komponent, které na sebe
+Již jsme zmínili, že vícekrokové systémy mají několik komponent, které na sebe
 navazují, jedna obvykle určitým způsobem využije výstup z předchozí jako svůj
 vstup. Nejčastěji se používá rozdělení na šest částí, kterým se podrobněji
 budeme věnovat v následujících podsekcích. Jsou to: převod textu na řeč (v podsekci~\ref{stt}),
@@ -234,7 +230,7 @@ rozhodnout, jak zareagujeme. Můžeme ručně napsat pravidla, na základě kter
 se rozhodneme o odpovědi. U systémů zaměřených na plnění úkolů je častou
 strategií snaha zjistit uživatelův cíl a následné získání informací potřebných
 k tomuto cíli (například pokud máme zarezervovat let, potřebujeme vědět kdy,
-odkud a kam), jinými slovy vyplnění potřebných slotů. Rozhodovacích pravidel
+odkud a kam), jinými slovy vyplnění potřebných slotů \citep[strany 504-506]{jurafsky_slp_2020}. Rozhodovacích pravidel
 však potřebujeme mnoho a zvláště u větších systémů může být výsledný proces dost
 zmatený. I zde jsou dnes využívány statistické modely a různé druhy strojového
 učení (hodí se zmínit především \textit{zpětnovazební} \citep{su_reward_2015}). Výstupem této komponenty
@@ -245,7 +241,7 @@ můžeme již zmíněné trojice úmysl--slot--hodnota.
 
 Z interní reprezentace významu nyní potřebujeme vytvořit odpověď v přirozeném
 jazyce, kterou pochopí libovolný uživatel. Můžeme využít \textit{šablon}, do
-kterých doplníme vynechané části dle stavu dialogu. Například pokud bychom
+kterých doplníme vynechané části dle stavu dialogu \citep[strana 508]{jurafsky_slp_2020}. Například pokud bychom
 se zabývali rezervacemi letů, mohla by naše potvrzovací šablona vypadat jako
 \uv{Přejete si odlétat \{den\} v \{čas\} z \{letiště\}?} a dle stavu dialogu
 bychom ji doplnili na \uv{Přejete si odlétat zítra v 10:00 z Londýna Lutonu?}.
@@ -263,13 +259,13 @@ Obdobně jako u převodu opačným směrem, značíme \textit{TTS} (z \textit{te
 Důležitými pojmy
 při popisu řeči jsou \textit{fón}, což je v zásadě jakýkoliv zvuk nehledě na
 význam; a \textit{foném}, což je nejmenší část jazyka,
-pomocí které jsme schopni význam rozlišit. Především jejich analýza pomáhá
+pomocí které jsme schopni význam rozlišit \citep[kapitola 1]{li2020universal}. Především jejich analýza pomáhá
 při snaze o počítačovou syntézu řeči.
 
 Důkazem může být například
 \textit{konkatenační} přístup k syntéze hlasu, kdy nahrajeme mluvu člověka,
 nahrávku rozdělíme na \textit{difóny} (dva za sebou jdoucí fóny) a ty pak
-zpět \uv{slepíme} v požadovaném pořadí. V této základní variantě dostaneme
+zpět \uv{slepíme} v požadovaném pořadí \citep{OSHAUGHNESSY198855}. V této základní variantě dostaneme
 hlas, který bude znít značně roboticky (mimo jiné kvůli absenci intonace či
 přízvuků), ale uživatel z něj dokáže pochopit význam. Při dostatečném množství
 vzorových dat a aplikaci dalších vylepšení však dostáváme již velmi dobré
