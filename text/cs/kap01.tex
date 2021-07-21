@@ -90,7 +90,7 @@ je proto začít znovu poslouchat až po ukončení jejich promluvy.
 
 Existují však již i \textit{inkrementální} dialogové systémy, které
 vstup zpracovávají průběžně a detekují konec tahu i jinými způsoby.
-Možné způsoby (často využívané i člověkem) ve svém článku popisují \citet{turn_taking_taxonomy_2015},
+Možné způsoby (často využívané i člověkem) popisují \citet{turn_taking_taxonomy_2015},
 \citet{khouzaimi_turn-taking_2016} pak ve své práci navrhuje
 možnou architekturu inkrementálních systémů a způsob jejich učení.
 
@@ -175,11 +175,11 @@ jednodušeji vyjádřit podstatné části. Této komponentě se obvykle říká
 smyslu je její úkol nejnáročnější, neboť jazyky mají mnoho nejasností,
 víceznačností a nuancí obecně. Výstupem této komponenty je často opět
 seznam reprezentací s hodnotou, nakolik si je systém tou konkrétní
-interpretací jistý.
+interpretací jistý \citep[sekce 4.3]{gao_neural_2019}.
 
-Jako onu jednodušší reprezentaci často používáme \textit{dialogové akty}
-(\textit{DA}), pomocí kterých se snažíme význam zaznamenat. Často
-používanými jsou trojice \textit{úmysl}--\textit{slot}--\textit{hodnota},
+K získání oné jednodušší reprezentace můžeme využít \textit{dialogových aktů}
+(\textit{DA}) \citep[strana 494]{jurafsky_slp_2020}. Ty pak
+často popisujeme například trojicemi \textit{úmysl}--\textit{slot}--\textit{hodnota},
 ale používány jsou různé reprezentace. Několik jich popisují a
 metodologii pro převod z nich do podmnožiny
 ISO standardu navrhují \citet{mezza_iso-standard_2018}.
@@ -253,14 +253,14 @@ totiž i pro jednotlivou doménu musíme vytvořit desítky a více. Přesto moh
 posloužit až překvapivě dobře. Dalšími možnostmi je použít formálních gramatik
 \citep{teich_grammars_1999} či i zde strojového učení \citep{wen_stochastic_2015}.
 
-\subsection{Převod textu na hlas}\label{tts}
+\subsection{Převod textu na řeč}\label{tts}
 
 Obdobně jako u převodu opačným směrem, značíme \textit{TTS} (z \textit{text-to-speech}).
 Důležitými pojmy
 při popisu řeči jsou \textit{fón}, což je v zásadě jakýkoliv zvuk nehledě na
 význam; a \textit{foném}, což je nejmenší část jazyka,
 pomocí které jsme schopni význam rozlišit \citep[kapitola 1]{li2020universal}. Především jejich analýza pomáhá
-při snaze o počítačovou syntézu řeči.
+při snaze o počítačovou syntézu řeči, pokud nevyužíváme strojového učení.
 
 Důkazem může být například
 \textit{konkatenační} přístup k syntéze hlasu, kdy nahrajeme mluvu člověka,
