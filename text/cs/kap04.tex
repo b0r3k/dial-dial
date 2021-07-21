@@ -44,7 +44,7 @@ rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
 \subsection{Platforma a jazyk mobilní aplikace}
 Pro mobilní aplikace máme v dnešní době v zásadě dvě možnosti, iOS nebo Android.
 Zvolili jsme Android, neboť je celkově otevřenější, autor telefon s tímto
-operačním systémem vlastní a mají tedy alespoň uživatelské zkušenosti. IBM navíc
+operačním systémem vlastní a má tedy alespoň uživatelské zkušenosti. IBM navíc
 poskytuje vývojový balíček (\textit{SDK}) pro použití WA v programovacím
 jazyku Java, který je použitelný i v Androidu.
 
@@ -66,25 +66,25 @@ zřetel, ale nakonec se ukázala jako relativně zásadní, je podpora \textit{k
 \subsection{Volba asistenta a jeho inicializace}
 Frameworků pro tvorbu asistentů existuje na trhu mnoho, jen jeden však aktuálně oficiálně plně
 podporuje český jazyk -- Watson Assistant od IBM. Proto zde volba jednoduše
-padla právě na něj. Představujeme ho v kapitole~\ref{chapter-wa}.
+padla právě na něj. Představili jsme ho v kapitole~\ref{chapter-wa}.
 
-Inicializace WA lze provést v interaktivním prostředí v prohlížeči. Toto
+Nastavení WA lze provést v interaktivním prostředí v prohlížeči. Toto
 prostředí je však v mnohém omezené. V našem případě jsme například potřebovali
-vložit stovky entit pro trénování rozpoznání (asistenta jsme popsali v
-kapitole~\ref{chapter-wa}). Přenést je do WA přes prohlížeč
+vložit stovky entit pro trénování rozpoznání. Přenést je do WA přes prohlížeč
 by bylo absurdně náročné, navíc složitě replikovatelné. Použili jsme proto opět
-po SDK, pomocí kterého můžeme WA iniciovat relativně krátkým skriptem. Na volbě
+po SDK, pomocí kterého můžeme WA nastavit relativně krátkým skriptem. Na volbě
 konkrétního programovacího jazyka zde téměř nezáleželo (skript je krátký a běží
-jen jednou pro inicializaci), zvolili jsme proto Python jakožto dobře čitelný
+jen jednou), zvolili jsme proto Python jakožto dobře čitelný
 jazyk, se kterým máme mnoho zkušeností.
 
 \subsection{Jazyk a prostředí běhu porovnávací komponenty}
 
-Volba jazyka byla zde také jednoduchá, kolegové z MAMA AI totiž plánovali
-komponentu také využít a požadovaným jazykem byl Python.
+Volba jazyka byla zde také jednoduchá, neboť má být obecně využitelná v rámci
+knihovny \texttt{mConversation} firmy MAMA AI a požadovaným jazykem byl Python.
 
-Při implementaci jsme potřebovali počítat podobnost řetězců. Algoritmus
-pro tento výpočet je relativně komplikovaný a běžně používaný, nedávalo tedy
+Pro implementaci jsme potřebovali zjišťovat podobnost řetězců. Algoritmus
+zjišťující Levenshteinovu vzdálenost (představili jsme v podsekci~\ref{nlu})
+je relativně komplikovaný a běžně používaný, nedávalo tedy
 smysl programovat jej znovu. Využili jsme modul
 \texttt{editdistance}\footnote{\url{https://pypi.org/project/editdistance/}},
 protože je psaný v rychlejším jazyce C++ a má vhodnou licenci.
@@ -119,21 +119,22 @@ až po problémy při kompilaci. Nakonec jsme tedy tuto cestu opustili a
 musíme konstatovat, že především pro vývojáře začínající s Androidem
 ji považujeme za silně nevhodnou.
 
-Aplikace musela vyřešit několik věcí: získání oprávnění ke všem operacím,
-získání kontaktů uživatele, vytvoření \textit{session} ve WA a odeslání
-jmen kontaktů, spuštění rozpoznání hlasu, po dokončení jeho výsledek odeslat
-jako zprávu do WA, po získání odpovědi spustit hlasový syntetizátor, po skončení
+Aplikace musela vyřešit několik věcí, které popisujeme
+v následujících podsekcích: získat oprávnění ke všem operacím (podsekce~\ref{get-permissions}),
+získat kontakty uživatele (\ref{get-contacts}), vytvořit \textit{session} ve WA a odeslat
+tam jména kontaktů (\ref{create-session}), spustit rozpoznání hlasu (\ref{start-tts}), po dokončení odeslat jeho výsledek
+jako zprávu do WA (\ref{contact-wa}), po získání odpovědi spustit hlasový syntetizátor (\ref{start-tts}), po skončení
 jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
 hovor. Všemi součástmi se budeme zabývat v následujících podsekcích, začneme
-ale celkovou koncepcí a vzhledem.
+ale celkovou koncepcí a vzhledem (\ref{desc-ui}).
 
-\subsection{Uživatelské rozhraní}
+\subsection{Uživatelské rozhraní}\label{desc-ui}
 
 Protože primárním způsobem interakce
 s aplikací má být hlas, cílili jsme na jednoduché a sebevysvětlující grafické
 rozhraní. Zvolili jsme tlačítko se symbolem mikrofonu na černém pozadí,
 jak ukazuje obrázek~\ref{img-ui}. Tímto tlačítkem je zahájen dialog (v případě
-dostatečných oprávnění, jejichž získání řešíme dále). Při běhu aplikace
+dostatečných oprávnění). Při běhu aplikace
 pak obrázkem na něm indikujeme přijímání vstupu (mikrofon se změní na
 plný červený) či čtení výstupu (místo mikrofonu se objeví symbol reproduktoru).
 
@@ -144,7 +145,7 @@ plný červený) či čtení výstupu (místo mikrofonu se objeví symbol reprod
     \label{img-ui}
 \end{figure}
 
-\subsection{Získání oprávnění}
+\subsection{Získání oprávnění}\label{get-permissions}
 
 Pro svou správnou funkci potřebuje aplikace povolení nahrávat zvuk, číst
 kontakty, vykonávat hovory a přistupovat k internetu. První
@@ -159,14 +160,14 @@ požádat, pokud uživatel odmítne a pokusí se
 aplikaci znovu použít, zobrazit vysvětlení, k čemu jsou nutná a znovu o ně
 požádat, a pokud znovu odmítne, již jen ukazovat upozornění o nedostupnosti.
 
-\subsection{Získání kontaktů}
+\subsection{Získání kontaktů}\label{get-contacts}
 
 Kontakty potřebujeme získat z úložiště telefonu, které se chová podobně jako
 databáze. Proto dotaz na ně začneme na začátku inicializace celé služby WA
 asynchronně jako koprogram. V rámci něj pak získáme jména a čísla kontaktů,
-které uložíme do slovníku.
+vše uložíme do slovníku.
 
-\subsection{Vytvoření session ve WA a odeslání jmen kontaktů}
+\subsection{Vytvoření session ve WA a odeslání jmen kontaktů}\label{create-session}
 
 Po začátku dotazu na kontakty vytvoříme instanci třídy \texttt{Assistant}
 z Java SDK\footnote{\url{https://github.com/watson-developer-cloud/java-sdk}}
@@ -183,16 +184,17 @@ tam jsme brzy narazili na limit velikosti požadavku 2048 znaků. Delší
 seznam kontaktů se do tohoto limitu nevejde, proto jsme nakonec využili
 nastavení kontextu.
 
-\subsection{Spuštění rozpoznávání hlasu}
+\subsection{Spuštění rozpoznávání hlasu}\label{start-tts}
 
-Využijeme vestavěný \texttt{RecognizerIntent.ACTION\_RECOGNIZE\_SPEECH}
+Využijeme vestavěný \texttt{RecognizerIntent.ACTION\_RECOGNIZE\_SPEECH}%
+\footnote{\url{https://developer.android.com/reference/android/speech/RecognizerIntent\#ACTION\_RECOGNIZE\_SPEECH}}
 nastavený na češtinu. Rozpoznávání hlasu je delší aktivita, takže nemůžeme
 aktivně čekat na její
 dokončení. Místo toho registrujeme zpětné volání na výsledek aktivity.
 Po získání výsledku zkontrolujeme, že proběhla úspěšně a pokud ano, pokračujeme
 k dalšímu kroku.
 
-\subsection{Odeslání do WA a získání odpovědi}
+\subsection{Odeslání do WA a získání odpovědi}\label{contact-wa}
 Nejdříve ověříme nachystání WA. Pokud je vše připraveno,
 pošleme v koprogramu (jedná se o síťový požadavek) text do WA a získáme odpověď.
 Protože dialog řídí WA, potřebovali jsme v něm nějakým způsobem aplikaci
@@ -203,10 +205,12 @@ odpovědi a podle něj se rozhodnout. Pomocí jména kontaktu pak zjistíme jeho
 a zapamatujeme si, že nemáme znovu spouštět běh pipeline. Podle prvního řádku
 pak část nebo celou odpověď pošleme do TTS.
 
-\subsection{Spuštění hlasového syntetizátoru}
+\subsection{Spuštění hlasového syntetizátoru}\label{start-tts}
 
 K převodu textu na řeč použijeme instanci vestavěné
-třídy \texttt{TextToSpeech}, kterou vytvoříme při otevření programu. Nastavíme
+třídy \texttt{TextToSpeech},%
+\footnote{\url{https://developer.android.com/reference/android/speech/tts/TextToSpeech}}
+kterou vytvoříme při otevření programu. Nastavíme
 ji na český jazyk a přepíšeme v ní funkci \texttt{onDone}, která je spuštěna,
 když skončí přehrávání hlasu. Pokud dialog neskončil, spustíme celou pipeline
 pomocí obalovací funkce \texttt{launchPipeline} znovu. Pokud
@@ -236,7 +240,7 @@ data získat. Nakonec jsme využili data četnosti jmen a příjmení MVČR z ro
 Sice již přímo na stránkách MVČR nejsou dostupná, ale ve ve webových archivech
 existují \citep{mvcr_cetnost_2018}. Z nich jsme pomocí krátkého skriptu vybrali
 všechna jména i příjmení, která v Česku k roku 2017 nosilo alespoň
-200 lidí a ta jsme nahráli do WA.
+200 lidí, a ta jsme nahráli do WA.
 
 \subsection{Stavba dialogu}\label{building-dialog}
 
@@ -244,7 +248,7 @@ Jak jsme popsali v sekci~\ref{wa-create}, je využívána stromová reprezentace
 Povrchová koncepce našeho stromu je relativně jednoduchá, jak ukazuje obrázek~\ref{img-wa-tree}.
 Máme sourozenecké
 vrcholy pro detekci uživatelových úmyslů pozdravit, zavolat a rozloučit se, navíc
-dva speciální. Ty zajistí, že na začátku dialogu asistent nic neříká, a že
+dva speciální. Ty zajistí, že na začátku dialogu asistent nic neříká a že
 pokud není detekován žádný úmysl, asistent se na něj zeptá. Jediným vrcholem
 s potomky je vrchol detekující úmysl volat, který ještě kontroluje zaplnění slotu
 pro jméno (případně se na něj doptá). Jeho syn ukládá vstup a rozpoznané entity
@@ -256,7 +260,7 @@ výstup a na základě něj generuje odpověď:
 \begin{itemize}
     \item Pokud dostal zpět jedno jméno, vyzve k zahájení hovoru.
     \item Pokud jich dostal více, vyzve k vybrání a tento seznam nastaví do kontextu místo původního
-          seznamu kontaktů, takže příště se bude porovnávat již jen s nimi.
+          seznamu kontaktů, takže příště se bude porovnávat již jen s tímto zúženým seznamem.
     \item Pokud nedostal žádné, oznámí, že nic nenašel.
 \end{itemize}
 Poté se vrátí do uzlu připravujícího údaje, aby mohlo být provedeno případné
@@ -274,10 +278,10 @@ upřesnění.
 \section{Porovnávací komponenta}\label{matching}
 
 Tuto komponentu jsme implementovali pro obecné použití v dialogových systémech
-v rámci knihovny \texttt{mConversation} MAMA AI. Za účelem využití v aplikaci
-jsme komponentu
-drobně upravili pro kontext vybírání z telefonního seznamu. Proto zde první popíšeme
-obecnou část cílů a implementace, a pak konkrétní provedené úpravy.
+v rámci knihovny \texttt{mConversation} firmy MAMA AI. Za účelem využití v našem
+systému jsme komponentě přidali konečné rozhodování, které popisujeme v podsekci~\ref{integration}.
+První však v tomto úvodu popíšeme obecné cíle a v podsekcích~\ref{preprocess}~a~\ref{subsection-matching}
+vlastní běh komponenty, tedy jak v ní předpřipravujeme data a jak probíhá porovnávání.
 
 Vstupem komponenty jsou entity rozpoznané pomocí WA, původní textový vstup do něj
 a určitý (obvykle vázaný na uživatele) seznam entit. Cílem je vybrat entitu ze seznamu,
@@ -290,7 +294,7 @@ Součástí je i příprava pro určité rozšíření využívající strojové
 uživatel by měl v budoucnu mít uložený svůj model, který se naučí jeho preference a bude se
 průběžně zlepšovat využitím zpětné vazby.
 
-\subsection{Předzpracování}
+\subsection{Předzpracování}\label{preprocess}
 
 K seznamu kontaktů si vytvoříme slovník,
 který jako klíče bude mít všechny části kontaktů a jako hodnoty indexy do původního
@@ -303,7 +307,7 @@ spojíme je dohromady, pravděpodobně se totiž jedná právě třeba o jméno 
 Pokud WA v nějakém segmentu rozpoznal více entit a má dojít k tomuto spojování, spojíme
 je ve všech různých kombinacích -- například v řetězci \uv{Janě Nové} by mohl
 rozpoznat s prvního slova \uv{Jana} i \uv{Jan}, z druhého slova pak \uv{Nový} i
-\uv{Nová}, tak bychom vytvořili všechny kombinace \uv{Jana Nový}, \uv{Jana Nový},
+\uv{Nová}, tak bychom vytvořili všechny kombinace \uv{Jana Nová}, \uv{Jana Nový},
 \uv{Jan Nový} a \uv{Jan Nová}. Nějaká z nich bude pravděpodobně správná, ale
 předem nedokážeme říct, která. Vytvoříme tedy všechny a v dalších krocích
 je vyzkoušíme.
@@ -325,7 +329,7 @@ zkusíme ji rozdělit na slova a porovnat s telefonním seznamem jednotlivá slo
 
 Každému přiřazenému kontaktu pak ještě určíme \textit{jistotu} (\textit{confidence}),
 s jakou jsme ho přiřadili. Tu jsme se rozhodli počítat jako
-\[ \text{confidence} = 0,5 + \frac{0,5 \cdot (\text{edit\_limit} - \text{distance})}{\text{edit\_limit}} ,\]
+\[ \text{jistota} = 0,5 + \frac{0,5 \cdot (\text{limit\_úprav} - \text{vzdálenost})}{\text{limit\_úprav}} ,\]
 protože pak řetězce odpovídající přesně dostávají plnou jistotu, zatímco řetězce na
 hraně limitu jistotu poloviční. Určitou jistotu navíc entitě přiřadil již WA,
 neboť také provádí podobné porovnání. Tyto dvě jistoty navzájem vynásobíme.
@@ -333,7 +337,9 @@ neboť také provádí podobné porovnání. Tyto dvě jistoty navzájem vynáso
 Poté ještě vezmeme v úvahu originální vstup, kdyby WA něco nerozpoznal. U každého
 úseku vstupu, který byl přiřazen nějakému kontaktu, se díváme na předchozí a následující
 slovo, zda neodpovídá stejnému kontaktu. Porovnání uděláme stejně jako v první fázi.
-Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu. Ukážeme
+Pokud najdeme slovo, kde tomu tak je, rozšíříme úsek přiřazený k tomuto kontaktu.
+
+Ukážeme
 to na příkladu vstupu \uv{chci zavolat Janu Pacušiakovi}, kde WA rozpoznal entitu \uv{Jan}
 ke slovu vstupu \uv{Janu} a nic víc, protože příjmení je unikátní a nezná ho.
 Naše komponenta pak k této entitě v předchozím kroku přiřadila
@@ -344,12 +350,12 @@ vyzkouší následující slovo \uv{Pacušiakovi} a zjistí, že kontakt \uv{Jan
 proto u něj poznačí, že odpovídá celému řetězci \uv{Janu Pacušiakovi}.
 
 Dále z rozpoznání vyřadíme kontakty, které odpovídají jen podúseku jiného
-přiřazeného kontaktu, tedy pokračováním s naším příkladem komponenta vyřadí kontakt \uv{Jan Novák},
+přiřazeného kontaktu. Budeme-li pokračovat s naším příkladem, komponenta vyřadí kontakt \uv{Jan Novák},
 protože odpovídá jen slovu \uv{Janu}, zatímco \uv{Jan Pacušiak} odpovídá nadmnožině \uv{Janu Pacušiakovi}.
 Vyřadíme také
 všechny přiřazené kontakty, jimž jsme udělili jistotu menší než 0,5.
 
-\subsection{Integrace komponenty do systému}
+\subsection{Integrace komponenty do systému}\label{integration}
 
 Pro použití v tomto systému potřebujeme, aby komponenta provedla
 celé rozhodnutí a pokud si je dostatečně jista, vrátila jen jediný kontakt,
@@ -358,4 +364,4 @@ se podívá na jistoty všech přiřazených kontaktů. Pokud u jednoho
 vyjde jistota ostře lepší, vrátí pouze ten. Jako hranici
 \uv{ostře lepší} jsme zvolili limit alespoň o 0,1 vyšší než u
 ostatních. Pokud žádný ostře lepší nevyjde, vrátíme všechny
-nalezené, případně nic.
+nalezené. Pokud jsme nic odpovídajícího nenašli, vrátíme prázdné pole.

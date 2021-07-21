@@ -33,7 +33,7 @@ v jaké prvotní formě je informace mezi uživatelem a systémem předávána.
 Obvykle je forma na obou stranách stejná, může se však i lišit. Mezi
 nejčastější patří text, mluvená řeč a obraz (ať už statický nebo
 dynamický), ale existují již i humanoidní roboti schopni vyjadřovat emoce pomocí
-mimiky, jakého popisují \citet{faraj_facially_2021} ve svém článku.
+mimiky, jednoho takového popisují \citet{faraj_facially_2021} ve svém článku.
 
 My se nadále budeme zabývat systémem zaměřeným na plnění úkolů v rámci jedné
 domény, který má jako vstup i výstup mluvenou řeč, protože do této kategorie
@@ -42,7 +42,7 @@ naše implementace spadá.
 \section{Problémy ve zpracování dialogu}
 
 Při trochu podrobnějším pohledu na většinu rozhovorů zjistíme, že nejsou
-tak jednoduché a přímočaré, jak si je představíme \citep[sekce 24.1]{jurafsky_slp_2020}. To dále ztěžuje
+tak jednoduché a přímočaré, jak si představujeme \citep[sekce 24.1]{jurafsky_slp_2020}. To dále ztěžuje
 veškeré strojové zpracování. Některé komplikace umíme řešit jen do určité
 míry, některé zatím vůbec. Vezměme si například takovýto smyšlený dialog:
 
@@ -69,13 +69,13 @@ směru potýkáme, rozebereme v následujících třech podsekcích.
 Prvním problémem je jak vůbec zjistit, kdy uživatel dialog začal, kdy
 skončil svůj \textit{tah} (souvislou promluvu, po které obvykle očekává odpověď),
 a kdy skončil celý dialog \citep[strana 494]{jurafsky_slp_2020}.
-Jako lidé většinou začátek dialogu jsme schopni rozpoznat tím, že se na
+Jako lidé jsme většinou schopni začátek dialogu rozpoznat tím, že se na
 nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
 detekovat schopni nejsme, oslovení dnešní technologie již dokáží. Většinou
 definujeme jedno nebo několik slov, které stroj chápe jako začátek dialogu,
-tzv. \textit{wake words}. Součást systému detekující tato slova musí být velmi
-výpočetně úsporná, protože musí běžet neustále. Dnes jsou obvykle
-využívány komponenty využívající hlubokého učení, jako třeba Howl
+tzv. \textit{wake-up words}. Součást systému detekující tato slova musí být velmi
+výpočetně úsporná, protože je nutné, aby běžela neustále. Dnes jsou obvykle
+využívány komponenty založené na hlubokém učení, jako třeba Howl
 \citep{tang_howl_2020}.
 Běžným způsobem je ale stále zahájení dialogu stiskem tlačítka či něčím
 podobným.
@@ -85,7 +85,8 @@ většinou považována delší pauza, v takovou chvíli systém vyhodnotí odpo
 a začne odpovídat. Problém je, pokud jsme konec tahu detekovali špatně a
 v průběhu systémové odpovědi začne uživatel opět mluvit. V lidské konverzaci
 se to stává běžně a umíme se s tím jednoduše vypořádat, protože jsme schopni
-zároveň mluvit a poslouchat. U strojů to však problém je, běžnou praxí asistentů
+zároveň mluvit a poslouchat. U strojů to však problém je a je náročné ho řešit,
+běžnou praxí asistentů
 je proto začít znovu poslouchat až po ukončení jejich promluvy.
 
 Existují však již i \textit{inkrementální} dialogové systémy, které
@@ -114,13 +115,13 @@ strojově dohromady výsledek promluvy.
 \subsection{Očekávané znalosti, domýšlení}
 
 Při běžné komunikaci člověk od druhého očekává určitou míru přehledu o světě
--- minimálně fakta typu že Slunce je na obloze považujeme za samozřejmá.
+-- minimálně fakta typu \uv{Slunce je na obloze} považujeme za samozřejmá.
 Předáváním těchto obecných znalostí dialogovým systémům se ve svém článku
 zabývají \citet{young_augmenting_2018}.
 
 Také očekáváme, že druhý bude schopen pochopit význam zájmen, odkazů
 a obecně věcí nevyjádřených přímo. Více výrazů odkazujících na jednu věc
-označujeme \textit{koreference}, podrobnější popis tématu dává
+označujeme \textit{koreference}, podrobnější popis tématu dávají
 \citet[kapitola 21]{jurafsky_slp_2020}.
 
 
@@ -194,7 +195,7 @@ učení. Aplikaci hlubokých neuronových sítí na tento problém
 popisují \citet{liu_multi-task_2019}.
 
 \subsubsection{Jména a názvy}
-Důležitou součástí je \textit{rozpoznání jmenných entit} (anglicky
+Důležitou součástí je \textit{rozpoznávání jmenných entit} (anglicky
 \textit{named entity recognition, NER}),
 kde cílem je rozpoznat v textu názvy, které jako slova sama o sobě nemají
 význam, pokud nevíme, že jde o název. Zajímají nás jak jména lidí, tak
