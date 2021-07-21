@@ -25,6 +25,8 @@
 % \setlength\headheight{0mm}
 % \let\openright=\cleardoublepage
 
+%% Rozdělování URL na pomlčkách
+\usepackage[hyphens]{url}
 %% Vytváříme PDF/A-2u
 \usepackage[a-2u]{pdfx}
 
@@ -56,6 +58,8 @@
 \usepackage{booktabs}       % lepší vodorovné linky v tabulkách
 \usepackage{paralist}       % lepší enumerate a itemize
 \usepackage{xcolor}         % barevná sazba
+\usepackage{float}
+\usepackage{subfig}
 
 %%% Údaje o práci
 
@@ -137,8 +141,8 @@ Abstract.
 \include{uvod}
 \include{kap01}
 \include{kap02}
-\include{kap03}
 \include{kap04}
+\include{kap05}
 
 \include{zaver}
 
