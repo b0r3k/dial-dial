@@ -5,17 +5,32 @@ V kapitolách~\ref{chapter-theory}~a~\ref{chapter-wa} jsme popsali teorii nutnou
 k pochopení problematiky dialogových systémů a námi využívaného WA.
 V kapitole~\ref{chapter-implementation} jsme představili naši
 implementaci dialogového systému pro hlasové vytáčení.
-Z uživatelského hlediska se jedná o aplikaci pro telefony se
-systémem Android, kterou jsme implementovali. Vnitřně využívá STT/TTS
-firmy Google, námi nastavenou instanci WA a námi implementovanou porovnávací
-komponentu.
-
-Nakonec v kapitole~\ref{chapter-results} popisujeme testování
-aplikace 15 uživateli, kteří se dohromady pokusili zahájit 91 hovorů,
-z toho 51 úspěšně. Výsledná úspěšnost našeho systému je tedy \(56\,\rm \%\).
-Na základě zpětné vazby od uživatelů a naší analýzy jsme navrhli možná
+Nakonec v kapitole~\ref{chapter-results} popisujeme zkušenosti
+uživatelů s naší aplíkací. Na základě zpětné vazby od nich a naší analýzy jsme navrhli možná
 vylepšení systému, která jsme uvedli taktéž v kapitole~\ref{chapter-results}.
 
-Zajímavým výsledkem je, že \(80\,\rm \%\) uživatelů projevilo o podobnou
+Podařilo se nám vytvořit mobilní aplikaci pro hlasové vytáčení využívající
+Google STT/TTS. Úspěšně jsme ji propojili s
+instancí WA, kterou jsme nastavili pro řízení dialogu. Ta navíc komunikuje s námi
+implementovanou porovnávací komponentou, výsledky odesíláme zpět do telefonu,
+kde je případně zahájen hovor.
+
+Naši aplikaci testovalo 15 uživatelů, kteří se dohromady pokusili zahájit 91 hovorů,
+z toho 51 úspěšně. Výsledná úspěšnost našeho systému je tedy \(56\,\rm \%\).
+Jako hlavní příčinu problémů jsme identifikovali špatnou detekci entit.
+Naše komponenta pracovala pouze s entitami již alespoň částečně rozpoznanými
+WA, jenže obecné rozpoznávání ve WA se ukázalo jako velmi obtížné. Jako nejlepší
+řešení tedy navrhujeme změnit porovnávací komponentu, aby pracovala vždy s celým
+uživatelovým vstupem a ne jen rozšiřovala již rozpoznané entity.
+
+Pokud bychom tuto vylepšenou komponentu z WA volali jen při detekci uživatelova
+úmyslu volat, zachovali bychom jednoduchou rozšiřitelnost aplikace. Jako
+druhou možnost vidíme zaměřit se čistě na hlasové vytáčení a v takovém
+případě implementovat aplikaci s výrazně jednodušším lokálně řízeným
+dialogem, kde by i porovnávání probíhalo lokálně na celém vstupu. Ideální
+variantou by bylo použít i jinou implementaci STT/TTS, pak by
+celá aplikace mohla běžet offline.
+
+Zajímavým výsledkem je, že 12 z 15 testovacích uživatelů projevilo o podobnou
 aplikaci zájem. Poukazuje to na atraktivitu hlasových asistentů
 a také jejich nedostatky v poskytování české lokalizace.
