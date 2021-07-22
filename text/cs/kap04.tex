@@ -8,7 +8,7 @@ naimplementovat pro funkci celého systému. Konkrétně jde o~aplikaci pro
 mobilní telefony s~operačním systémem Android (naše implementace,
 v~sekci~\ref{app}), vytvoření instance WA pro řízení
 dialogu (náš návrh za využití existujícího WA,
-s~popisem získání nejběžnějších českých jmen pro trénink, \ref{wainit}) a komponenty
+s~popisem získání nejběžnějších českých jmen pro trénink, \ref{wainit}) a~komponenty
 pro porovnání entit nalezených pomocí WA se seznamem kontaktů (naše implementace,
 \ref{matching}).
 
@@ -26,7 +26,7 @@ porovnávací komponentu. Pokud ano, zavolá ji z~jiné části IBM cloudu,
 předá jí relevantní data a získá od ní odpověď. V~každém případě
 WA vygeneruje odpověď na zaslanou zprávu a odešle ji zpět do telefonu.
 Tam je odpověď z~WA zpracována (mj.\ je rozhodnuto, zda by měl být
-zahájen hovor) a odeslána do syntezátoru řeči na servery Google.
+zahájen hovor) a~odeslána do syntezátoru řeči na servery Google.
 Odtud je hlas k~přehrání vrácen zpět do aplikace, tam je přehrán
 a následně je na základě dřívějšího rozhodnutí buď spuštěno znovu
 rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
@@ -100,7 +100,7 @@ běží jen ve chvíli, kdy dostane nějaký požadavek. Liší se tak od standa
 webových serverů, které musí \uv{poslouchat} neustále. Konkrétně byla vybrána
 služba IBM Cloud Functions především proto, že lze spravovat ze stejného účtu jako
 WA. Teoreticky může být výhoda využití stejného poskytovatele ještě v~tom, že
-servery budou na stejném místě a tedy výměna dat mezi nimi bude probíhat rychleji.
+servery budou na stejném místě, a tedy výměna dat mezi nimi bude probíhat rychleji.
 
 \section{Mobilní aplikace}\label{app}
 
@@ -221,8 +221,8 @@ WA i celou aplikaci.
 
 WA v~našem programu využíváme pro řízení dialogu. Potřebuje tedy dokázat
 rozpoznávat úmysly a entity (rozebíráme v~podsekci~\ref{intents-entities}),
-v~případě nutnosti zavolat porovnávací komponentu, a vybrat na základě
-rozpoznaného správnou odpověď (popisujeme v~podsekci~\ref{building-dialog}).
+v~případě nutnosti zavolat porovnávací komponentu, a na základě
+rozpoznaného vybrat správnou odpověď (popisujeme v~podsekci~\ref{building-dialog}).
 
 \subsection{Úmysly a entity}\label{intents-entities}
 
@@ -280,7 +280,7 @@ Tuto komponentu jsme implementovali pro obecné použití v~dialogových systém
 v~rámci knihovny \texttt{mConversation} firmy MAMA AI. Za účelem využití v~našem
 systému jsme komponentě přidali konečné rozhodování, které popisujeme v~podsekci~\ref{integration}.
 První však v~tomto úvodu popíšeme obecné cíle a v~podsekcích~\ref{preprocess}~a~\ref{subsection-matching}
-vlastní běh komponenty, tedy jak v~ní předpřipravujeme data a jak probíhá porovnávání.
+vlastní běh komponenty, tedy jak v~ní předpřipravujeme data a~jak probíhá porovnávání.
 
 Vstupem komponenty jsou entity rozpoznané pomocí WA, původní textový vstup do něj
 a určitý (obvykle vázaný na uživatele) seznam entit. Cílem je vybrat entitu ze seznamu,
@@ -315,7 +315,7 @@ je vyzkoušíme.
 
 Kdykoliv budeme porovnávat nějaké řetězce, využijeme tzv. \textit{fuzzy matching}.
 To znamená, že řetězce nebudeme porovnávat přímo, ale pomocí Levenshteinovy vzdálenosti
-zmíněné v~podsekci~\ref{nlu}. Tím umožníme přiřazení ke kontaktu i při nepřesné shodě,
+zmíněné v~podsekci~\ref{nlu}. Tím umožníme přiřazení ke kontaktu i~při nepřesné shodě,
 ať už není shoda úplná kvůli jinému tvaru slova (skloňování), chybě v~rozpoznání
 hlasu, nebo chybě rozpoznání entity ve WA. Jako odpovídající pak označíme kontakty,
 jejichž vzdálenost je menší nebo rovna nějakému limitu. Jako limit maximální vzdálenosti
@@ -365,5 +365,5 @@ Komponenta se podívá na jistoty všech přiřazených kontaktů a provede rozh
 \begin{itemize}
     \item Když u~jednoho vyjde jistota ostře lepší, vrátí pouze ten.
     \item Jestliže žádný ostře lepší nevyjde, vrátí všechny nalezené.
-    \item Pokud jsme nic odpovídajícího nenašli, vrátí prázdné pole.
+    \item Pokud nic odpovídajícího nebylo nalezeno, vrátí prázdné pole.
 \end{itemize}
