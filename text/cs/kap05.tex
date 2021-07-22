@@ -156,7 +156,7 @@ Navrhovaný běh by pak vypadal následovně (podrobněji popisujeme dále):
     Uživatel: /Stiskne tlačítko/
     Systém:   /Začne naslouchat/
     Uživatel: Název Kontaktu
-    Systém:   /Porovnává celý vstup s~kontakty přímo v~zařízení/
+    Systém:   /Porovnává celý vstup s kontakty přímo v zařízení/
     Systém:   Chcete zavolat Název Kontaktu?
     Uživatel: Ano
     Systém:   /Zahájí hovor/
@@ -183,6 +183,7 @@ Ideální variantou by pak bylo kdyby i rozpoznání a generování řeči
 dokázalo běžet lokálně v~aplikaci bez nutnosti kontaktování serveru.
 Celá aplikace by pak mohla běžet offline. Zde by mohl pomoci projekt
 \texttt{DeepSpeech}.\footnote{\url{https://github.com/mozilla/DeepSpeech}}
-Nutností by bylo získat dostatek trénovacích dat v~češtině. Vytvořením
+Pro trénink rozpoznání by bylo možné využít data, která prezentují \citet{kratochvil-etal-2020-large}.
+Vhodná trénovací data pro syntézu řeči se nám najít nepodařilo. Vytvořením
 otevřených datasetů v~mnoha jazycích se zabývá projekt Common Voice \citep{commonvoice_2020},
 kam může kdokoliv dobrovolně přispět.
