@@ -25,18 +25,16 @@ Ten rozhodne, zda je potřeba volat
 porovnávací komponentu. Pokud ano, zavolá ji z~jiné části IBM cloudu,
 předá jí relevantní data a získá od ní odpověď. V~každém případě
 WA vygeneruje odpověď na zaslanou zprávu a odešle ji zpět do telefonu.
-Tam je odpověď z~WA zpracována (mj. je rozhodnuto, zda by měl být
+Tam je odpověď z~WA zpracována (mj.\ je rozhodnuto, zda by měl být
 zahájen hovor) a odeslána do syntezátoru řeči na servery Google.
 Odtud je hlas k~přehrání vrácen zpět do aplikace, tam je přehrán
 a následně je na základě dřívějšího rozhodnutí buď spuštěno znovu
 rozpoznání hlasu, nebo je zahájen hovor a aplikace ukončena.
 
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.98\textwidth]{../img/app-flowchart.pdf}
-    \caption{Nákres fungování celého systému.}
-    \label{img-flowchart}
+    \caption{Nákres fungování celého systému.}\label{img-flowchart}
 \end{figure}
 
 \section{Platforma a programovací jazyky}\label{analysis}
@@ -123,7 +121,7 @@ ji považujeme za silně nevhodnou.
 Aplikace musela vyřešit několik věcí, které popisujeme
 v~následujících podsekcích: získat oprávnění ke všem operacím (podsekce~\ref{get-permissions}),
 získat kontakty uživatele (\ref{get-contacts}), vytvořit \textit{session} ve WA a odeslat
-tam jména kontaktů (\ref{create-session}), spustit rozpoznání hlasu (\ref{start-tts}), po dokončení odeslat jeho výsledek
+tam jména kontaktů (\ref{create-session}), spustit rozpoznání hlasu (\ref{start-stt}), po dokončení odeslat jeho výsledek
 jako zprávu do WA (\ref{contact-wa}), po získání odpovědi spustit hlasový syntezátor (\ref{start-tts}), po skončení
 jeho projevu buď spustit rozpoznání hlasu a celý běh znovu, nebo zahájit
 hovor. Všemi součástmi se budeme zabývat v~následujících podsekcích, začneme
@@ -142,8 +140,7 @@ změní na plný červený) či čtení výstupu (místo mikrofonu se objeví sy
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.3\textwidth]{../img/ui.pdf}
-    \caption{Jednoduché uživatelské rozhraní.}
-    \label{img-ui}
+    \caption{Jednoduché uživatelské rozhraní.}\label{img-ui}
 \end{figure}
 
 \subsection{Získání oprávnění}\label{get-permissions}
@@ -187,7 +184,7 @@ tam jsme brzy narazili na limit velikosti požadavku 2048 znaků. Delší
 seznam kontaktů se do tohoto limitu nevejde, proto jsme nakonec využili
 nastavení kontextu.
 
-\subsection{Spuštění rozpoznávání hlasu}\label{start-tts}
+\subsection{Spuštění rozpoznávání hlasu}\label{start-stt}
 
 Využijeme vestavěný \texttt{RecognizerIntent.ACTION\_RECOGNIZE\_SPEECH}%
 \footnote{\url{https://developer.android.com/reference/android/speech/RecognizerIntent\#ACTION\_RECOGNIZE\_SPEECH}}
@@ -274,8 +271,7 @@ upřesnění.
     \includegraphics[width=0.7\textwidth]{../img/wa-tree.pdf}
     \caption{Strom dialogu ve WA. Zelené vrcholy detekují vestavěné úmysly,
         šedivé námi definované úmysly, modrý jen vnitřně připravuje data a fialový
-        kontaktuje webhook.}
-    \label{img-wa-tree}
+        kontaktuje webhook.}\label{img-wa-tree}
 \end{figure}
 
 \section{Porovnávací komponenta}\label{matching}
