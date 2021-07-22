@@ -1,0 +1,32 @@
+%%% A template for a simple PDF/A file like a stand-alone abstract of the thesis.
+
+\documentclass[12pt]{report}
+
+\usepackage[a4paper, hmargin=1in, vmargin=1in]{geometry}
+\usepackage[a-2u]{pdfx}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{textcomp}
+
+\begin{document}
+
+%% Do not forget to edit abstract.xmpdata.
+
+Dialog Systems are getting more and more popular, between users and companies alike.
+Users enjoy using smart phones and speakers, companies can hire fewer workers of
+support centers. In this thesis we summarize the basic theory about such systems,
+their taxonomy and how they are built. Then we shortly introduce IBM Watson Assistant.
+The main part is description of our own implementation of dialogue system for voice
+dialing in Czech language. The system is implemented as an application for mobile
+phones with Android operating system, which for voice communication with the user
+utilizes Google STT/TTS. The dialog is handled by an instance of IBM Watson Assistant,
+which we have set up. The matching of user's contacts with his input is supplied
+by a matching component which we implemented and which runs in IBM cloud. The application
+is implemented in Kotlin language, the matching component in Python language.
+In the last part we evaluate effectivity of our system. 15 test users tried to make
+91 phone calls and 51 of them were successful,
+which is a success rate of \(56\,\rm \%\). Based on the feedback we came up
+with ideas for improvements, which we also present.
+
+\end{document}
