@@ -1,3 +1,5 @@
+_This documentation is in English, because it is for a component which is a part of MAMA AI library._
+
 # Named Entities matching
 This component tries to match NEs returned in WA response to some user-defined contact list.
 
