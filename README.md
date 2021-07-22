@@ -4,10 +4,6 @@
 
 Voice assistant in Czech language for placing calls from Android phone. Built using IBM Watson, Google STT/TTS, Kotlin and Python. Bachelor thesis at MFF UK.
 
-## How to help?
-
-Try the app (**in Czech only**) and describe your experience in a [short questionnaire](https://forms.office.com/r/37GhdkZQAq). Thanks a lot!
-
 ## How it looks?
 
 You can watch preview on youtube:
@@ -48,10 +44,6 @@ one. Otherwise returns everything matched.
 
 Hlasový asistent pro zahájení hovoru s lidmi uloženými ve vašich kontaktech, aplikace pro Android. Využívá nástrojů IBM Watson a Google STT/TTS, 
 programovacích jazyků Kotlin a Python. Bakalářská práce na MFF UK.
-
-## Jak mi pomoct?
-
-Vyzkoušejte aplikaci a své zkušenosti popište v [krátkém dotazníku](https://forms.office.com/r/37GhdkZQAq). Děkuji!
 
 ## Jak to vypadá?
 
