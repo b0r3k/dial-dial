@@ -1,50 +1,50 @@
 \chapter{Vyhodnocení}\label{chapter-results}
 
-V této kapitole popisujeme v sekci~\ref{methods} způsob vyhodnocení našeho systému,
-v sekci~\ref{results} výsledky tohoto vyhodnocení a v sekci~\ref{improvements}
-vylepšení, která jsme na základě výsledků navrhli, spolu s nápady k jejich implementaci.
+V~této kapitole popisujeme v~sekci~\ref{methods} způsob vyhodnocení našeho systému,
+v~sekci~\ref{results} výsledky tohoto vyhodnocení a v~sekci~\ref{improvements}
+vylepšení, která jsme na základě výsledků navrhli, spolu s~nápady k~jejich implementaci.
 
 \section{Způsob vyhodnocení}\label{methods}
 
 Běžné způsoby vyhodnocování dialogových systémů popisují
 \citet[sekce 24.5]{jurafsky_slp_2020}, podrobněji pak ještě \citet{Deriu_2020}.
-U systémů zaměřených na plnění úkolů je primárním měřítkem poměr úspěšných
-splnění cíle. U jiných druhů úkolů než je náš, kde je potřeba vyplnit více slotů, je možné
+U~systémů zaměřených na plnění úkolů je primárním měřítkem poměr úspěšných
+splnění cíle. U~jiných druhů úkolů než je náš, kde je potřeba vyplnit více slotů, je možné
 sledovat ještě podrobněji poměr správně vyplněných slotů. Náš systém však
 vyplňuje pouze jméno, tedy řešit poměr splněných úkolů je dostatečné.
 
-Vytvořili jsme dotazník, v jehož úvodu jsme popsali náš systém a způsob instalace
-aplikace, a následně se uživatelů dotazovali především na počet pokusů o hovor a
+Vytvořili jsme dotazník, v~jehož úvodu jsme popsali náš systém a způsob instalace
+aplikace, a následně se uživatelů dotazovali především na počet pokusů o~hovor a
 množství úspěšných zahájení hovoru. Dále nás zajímalo, jak často se objevily
 následující problémy:
 \begin{itemize}
     \item chyba při inicializaci,
     \item špatně rozpoznaný hlas,
     \item jméno nerozpoznáno WA,
-    \item jméno nenalezeno v kontaktech, i když mělo být,
+    \item jméno nenalezeno v~kontaktech, i když mělo být,
     \item ke jménu nalezeny neodpovídající kontakty,
-    \item nalezeno více kontaktů a výběr z nich se nepodařil,
+    \item nalezeno více kontaktů a výběr z~nich se nepodařil,
     \item hlas byl rozpoznán, ale nepřišla žádná odpověď,
     \item celá aplikace selhala.
 \end{itemize}
 Následující otázky se týkaly návrhů na opravy a vylepšení dále jsme zjišťovali celkový
-zájem o podobnou aplikaci. Z důvodu kontroly implementace jsme přidali ještě
+zájem o~podobnou aplikaci. Z~důvodu kontroly implementace jsme přidali ještě
 dotaz na verzi systému, který uživatel měl ve svém mobilním telefonu při testování. Dotazník je
-možné najít v příloze TODO.
+možné najít v~příloze TODO.
 
 \section{Výsledky}\label{results}
 
 Podařilo se nám získat \(15\) testovacích uživatelů, kteří dohromady uskutečnili 91
-pokusů o hovor, z toho \(51\) bylo úspěšných, jak znázorňuje
+pokusů o~hovor, z~toho \(51\) bylo úspěšných, jak znázorňuje
 graf na obrázku~\ref{img-ratio-succ}. Celková úspěšnost
-systému tedy byla \(56\,\rm \%\), ale s relativně velkým rozptylem. U některých uživatelů
-byly úspěšné skoro všechny pokusy, u některých skoro žádné. Z analýzy záznamů ve WA usuzujeme,
+systému tedy byla \(56\,\rm \%\), ale s~relativně velkým rozptylem. U~některých uživatelů
+byly úspěšné skoro všechny pokusy, u~některých skoro žádné. Z~analýzy záznamů ve WA usuzujeme,
 že rozdíl dělá především způsob komunikace a jména uložených kontaktů daného
 uživatele.
 
-Zájem o podobnou aplikaci ukazuje graf na obrázku~\ref{img-ratio-interest}.
-Pouze 3 z 15 uživatelů uvedli, že by o takovou aplikaci neměli vůbec zájem.
-Zbylí by o takovou aplikaci měli zájem, pokud by fungovala lépe, přidala nové funkce,
+Zájem o~podobnou aplikaci ukazuje graf na obrázku~\ref{img-ratio-interest}.
+Pouze 3 z~15 uživatelů uvedli, že by o~takovou aplikaci neměli vůbec zájem.
+Zbylí by o~takovou aplikaci měli zájem, pokud by fungovala lépe, přidala nové funkce,
 případně oboje.
 
 % \begin{figure}[h]
@@ -61,7 +61,7 @@ případně oboje.
     \sbox{\tempbox}{\includegraphics[width=0.28\textwidth]{../img/chart-succ.pdf}}
     \subfloat[Úspěšnost plnění.]{\usebox{\tempbox}\label{img-ratio-succ}}%
     \qquad
-    \subfloat[Zájem o podobnou aplikaci.]{\vbox to \ht\tempbox{%
+    \subfloat[Zájem o~podobnou aplikaci.]{\vbox to \ht\tempbox{%
             \vfil
             \includegraphics[width=0.6\textwidth]{../img/chart-interest.pdf}
             \vfil}\label{img-ratio-interest}}%
@@ -69,11 +69,11 @@ případně oboje.
 \end{figure}
 
 Co se týká konkrétnějších důvodů selhání, největším problémem bylo nalezení více
-kontaktů a nezdařený výběr z nich. Dalšími častými problémy bylo nerozpoznání
+kontaktů a nezdařený výběr z~nich. Dalšími častými problémy bylo nerozpoznání
 jména ve WA, nalezení neodpovídajících kontaktů a špatně rozpoznaná řeč.
 
-Nutnou opravou je z pohledu uživatelů lepší rozpoznávání jmen i přiřazování
-kontaktů k nim, za důležité také zmínili potvrzení vytáčení ještě jedním
+Nutnou opravou je z~pohledu uživatelů lepší rozpoznávání jmen i přiřazování
+kontaktů k~nim, za důležité také zmínili potvrzení vytáčení ještě jedním
 \uv{ano/ne}. Několikrát byla zmíněna také plynulost aplikace a rychlost
 odpovědi.
 
@@ -84,18 +84,18 @@ zprávy.
 
 \section{Vylepšení a jejich možná implementace}\label{improvements}
 
-V této sekci se budeme zabývat nutnými a možnými vylepšeními, která
-vyplynula z vyhodnocení s uživateli. V podsekci~\ref{better-match}
-uvedeme návrhy na zlepšení porovnávání uživatelova vstupu s jeho
-seznamem kontaktů. V podsekci~\ref{better-app} pak navrhneme
-úpravy v aplikaci, které by vedly k lepšímu uživatelskému
+V~této sekci se budeme zabývat nutnými a možnými vylepšeními, která
+vyplynula z~vyhodnocení s~uživateli. V~podsekci~\ref{better-match}
+uvedeme návrhy na zlepšení porovnávání uživatelova vstupu s~jeho
+seznamem kontaktů. V~podsekci~\ref{better-app} pak navrhneme
+úpravy v~aplikaci, které by vedly k~lepšímu uživatelskému
 zážitku, pokud by cílem bylo čistě vytáčení kontaktů.
 
 \subsection{Zkvalitnění přiřazování}\label{better-match}
 
-Největším problémem bylo přiřazování názvů kontaktů spolu s neschopností přiřadit
-názvy, které nejsou českými jmény. Z hlediska implementačního se o tuto část
-stará WA, naše porovnávací komponenta pracuje až s entitami rozpoznanými jím.
+Největším problémem bylo přiřazování názvů kontaktů spolu s~neschopností přiřadit
+názvy, které nejsou českými jmény. Z~hlediska implementačního se o~tuto část
+stará WA, naše porovnávací komponenta pracuje až s~entitami rozpoznanými jím.
 Jako možná řešení vidíme rozšířit základnu entit, se kterými WA pracuje. Ke
 každému jménu bychom mohli získat domácké formy (jako \uv{Honza} ke jménu \uv{Jan})
 a přidat je do WA, kromě nich ještě běžné názvy rodinných příslušníků,
@@ -103,7 +103,7 @@ které uživatelé často využívají jako názvy kontaktů (\uv{Mamka}, \uv{Ba
 Pro zpřesnění bychom mohli přidat i relevantní vyskloňované tvary jmen (ke jménu \uv{Jan}
 také \uv{Janu}, \uv{Janovi}, \uv{Jana}).
 
-Další možností by bylo snažit se v této omezené doméně hledat jmenné entity na
+Další možností by bylo snažit se v~této omezené doméně hledat jmenné entity na
 základě vzorců. Když uživatel říká \uv{zavolej}, obvykle následuje název
 kontaktu.
 
@@ -113,50 +113,50 @@ protože nám dává největší volnost implementace a především velkou
 použitelnost mimo konkrétní doménu.
 
 Jistě nutným vylepšením porovnávací komponenty je také přidání závislosti
-limitu vzdálenosti na délce slov, které porovnáváme. V aktuální verzi
+limitu vzdálenosti na délce slov, které porovnáváme. V~aktuální verzi
 totiž využíváme stejný limit 3 pro všechna slova, jak jsme popsali
-v podsekci~\ref{subsection-matching}. To u krátkých slov umožní
-přiřazení i kompletně rozdílných slov, zatímco u dlouhých
-slov je tento limit v kombinaci s komplikovaným skloňováním češtiny
+v~podsekci~\ref{subsection-matching}. To u~krátkých slov umožní
+přiřazení i kompletně rozdílných slov, zatímco u~dlouhých
+slov je tento limit v~kombinaci s~komplikovaným skloňováním češtiny
 příliš malý.
 
 \subsection{Přepracování mobilní aplikace}\label{better-app}
 
-Velká většina uživatelů uvedla, že by o aplikaci měli zájem, pokud by fungovala
-lépe, i kdyby nepřidala další funkce. V takovém případě bychom se obešli
+Velká většina uživatelů uvedla, že by o~aplikaci měli zájem, pokud by fungovala
+lépe, i kdyby nepřidala další funkce. V~takovém případě bychom se obešli
 bez celé detekce úmyslů a mohli celý dialog velmi zjednodušit.
 
-Navrhovaný běh představujeme v ukázce níže. Uživatel by stiskem
+Navrhovaný běh představujeme v~ukázce níže. Uživatel by stiskem
 tlačítka zapnul rozpoznávání řeči a řekl jen název kontaktu,
-kterému chce zavolat. Celý tento vstup by byl přímo v zařízení
-porovnán se všemi jmény kontaktů v seznamu, pravděpodobně za
+kterému chce zavolat. Celý tento vstup by byl přímo v~zařízení
+porovnán se všemi jmény kontaktů v~seznamu, pravděpodobně za
 využití knihovny \texttt{JavaWuzzy}.\footnote{\url{https://github.com/xdrop/fuzzywuzzy}} Pokud by byl
 nalezen jeden ostře lépe odpovídající kontakt, aplikace
 by oznámila úmysl mu volat a uživatel by potvrdil \uv{ano/ne}.
 Pokud by odpovídalo více kontaktů, ale méně než 4, uživatel
-by z nich dostal na výběr. Pokud by jich bylo více, dostal by
-žádost o zpřesnění požadavku. Celou dobu by bylo možné slovem
+by z~nich dostal na výběr. Pokud by jich bylo více, dostal by
+žádost o~zpřesnění požadavku. Celou dobu by bylo možné slovem
 \uv{znovu} či obdobným začít od začátku.
 \begin{code}
     Uživatel: /Stiskne tlačítko/
     Systém:   /Začne naslouchat/
     Uživatel: Název Kontaktu
-    Systém:   /Porovnává celý vstup s kontakty přímo v zařízení/
+    Systém:   /Porovnává celý vstup s~kontakty přímo v~zařízení/
     Systém:   Chcete zavolat Název Kontaktu?
     Uživatel: Ano
     Systém:   /Zahájí hovor/
 \end{code}
 
-Tím, že by celé řízení dialogu i porovnání mohlo probíhat v aplikaci,
+Tím, že by celé řízení dialogu i porovnání mohlo probíhat v~aplikaci,
 dosáhli bychom větší plynulosti aplikace, neboť bychom nemuseli čekat
 na vyřízení síťových požadavků. Zjednodušením by se celý dialog také
 výrazně zrychlil, což je žádoucí, protože zahájení hovoru by mělo
 být rychlé.
 
 Ideální variantou by pak bylo kdyby i rozpoznání a generování řeči
-dokázalo běžet lokálně v aplikaci bez nutnosti kontaktování serveru.
+dokázalo běžet lokálně v~aplikaci bez nutnosti kontaktování serveru.
 Celá aplikace by pak mohla běžet offline. Zde by mohl pomoci projekt
 \texttt{DeepSpeech}.\footnote{\url{https://github.com/mozilla/DeepSpeech}}
-Nutností by bylo získat dostatek trénovacích dat v češtině. Vytvořením
-otevřených datasetů v mnoha jazycích se zabývá projekt Common Voice \citep{commonvoice_2020},
+Nutností by bylo získat dostatek trénovacích dat v~češtině. Vytvořením
+otevřených datasetů v~mnoha jazycích se zabývá projekt Common Voice \citep{commonvoice_2020},
 kam může kdokoliv dobrovolně přispět.

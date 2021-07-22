@@ -4,53 +4,53 @@
 Mluvené slovo je pro člověka nejjednodušším způsobem komunikace. Je to
 způsob rychlý, efektivní a nevyžaduje použití hmatu či zraku. Tyto smysly
 tak zůstávají volné pro využití jiným způsobem, například můžeme zároveň
-řídit auto či vařit oběd. V případě mateřského jazyka je navíc použita
+řídit auto či vařit oběd. V~případě mateřského jazyka je navíc použita
 syntaxe, kterou se učíme od narození. Taková komunikace pak nevyžaduje
 nic speciálního, jako znalost seznamu příkazů programu nebo funkcí
 ovládacích prvků. Jednoduše popíšeme, co chce.
 
-Přirozený jazyk proto vypadá jako v mnoha směrech ideální médium pro výměnu
+Přirozený jazyk proto vypadá jako v~mnoha směrech ideální médium pro výměnu
 informací mezi uživatelem a strojem. Proč ho tedy nepoužíváme víc už dávno?
-Extrahovat z něj význam tak, aby mohl být pochopen strojem, není vůbec
-jednoduché. Většího průlomu v tomto směru se podařilo dosáhnout až s příchodem
+Extrahovat z~něj význam tak, aby mohl být pochopen strojem, není vůbec
+jednoduché. Většího průlomu v~tomto směru se podařilo dosáhnout až s~příchodem
 technologií strojového učení, které jsou schopny se složité zákonitosti
 jazyka \uv{samy} naučit. Dnes pravděpodobně nejvyspělejším modelem je
 ten nazvaný GPT-3, který představili \citet{brown_language_2020}.
 Ani to však není samospásné, pro naučení modelu,
 který porozumí jazyku, je stále potřeba mnoho práce, dat a počítačového
 výkonu. Pomyslně na druhém konci komunikace pak leží problém vygenerovat
-odpověď zpět uživateli, který není o moc jednodušší.
+odpověď zpět uživateli, který není o~moc jednodušší.
 
-Pokrok v těchto směrech dal možnost vzniku a rozšíření
+Pokrok v~těchto směrech dal možnost vzniku a rozšíření
 \textit{hlasových asistentů}, které dnes již skoro každý nosí ve svém
-chytrém telefonu a mnozí je navíc mají doma v podobě \uv{chytrého}
+chytrém telefonu a mnozí je navíc mají doma v~podobě \uv{chytrého}
 reproduktoru. Grafické shrnutí důležitých milníků uvádí \citet{voicebotai_2021},
 podrobněji historii popisují \citet[strany 523-524]{jurafsky_slp_2020}.
 
-Jak již bylo zmíněno, vývoj takové služby je náročný v mnoha
-směrech, proto jsou asistenti obvykle dostupní jen v nejpoužívanějších
+Jak již bylo zmíněno, vývoj takové služby je náročný v~mnoha
+směrech, proto jsou asistenti obvykle dostupní jen v~nejpoužívanějších
 jazycích, jako je angličtina, španělština nebo němčina. Nakolik je autorovi
 známo, češtinu podporují asistenti \textit{IBM Watson Assistant}
-(dále WA), ten pouze v textové podobě, a \textit{Antelli}. Ten však sice
+(dále WA), ten pouze v~textové podobě, a \textit{Antelli}. Ten však sice
 umožňuje přidání funkcí do původní aplikace, ale ne vlastní stavbu dialogu.
 
-Cílem této práce je vytvořit hlasového asistenta v češtině, který bude schopný
-odpovídat na pozdravy a především zavolat kontakty ze seznamu v telefonu.
-Toho bude dosaženo propojením WA s vlastní komponentou
+Cílem této práce je vytvořit hlasového asistenta v~češtině, který bude schopný
+odpovídat na pozdravy a především zavolat kontakty ze seznamu v~telefonu.
+Toho bude dosaženo propojením WA s~vlastní komponentou
 pro porovnání se seznamem kontaktů, \textit{Google STT/TTS}
 (rozpoznání a generování mluvené řeči) a funkcionalitou telefonu. Velkou výhodou
-je relativně jednoduché rozšíření asistenta. O řízení dialogu se totiž stará WA,
+je relativně jednoduché rozšíření asistenta. O~řízení dialogu se totiž stará WA,
 takže zde můžeme přidat další pochopení uživatelových úmyslů a odpovědi na ně,
-případně speciální odpovědi, na které bude vnitřně reagovat aplikace v telefonu.
-Ošetřením těchto speciálních odpovědí z WA v mobilní aplikaci pak můžeme
+případně speciální odpovědi, na které bude vnitřně reagovat aplikace v~telefonu.
+Ošetřením těchto speciálních odpovědí z~WA v~mobilní aplikaci pak můžeme
 iniciovat například otevření jiné aplikace, rozsvícení svítilny, puštění
 hudby či cokoliv dalšího telefon umí.
 
-Práce vznikla v kooperaci s firmou MAMA AI, uvedená porovnávací komponenta má
-sloužit obecnějšímu účelu v rámci kni\-ho\-vny \texttt{mConversation}.
+Práce vznikla v~kooperaci s~firmou MAMA AI, uvedená porovnávací komponenta má
+sloužit obecnějšímu účelu v~rámci kni\-ho\-vny \texttt{mConversation}.
 
-V kapitole~\ref{chapter-theory} shrnujeme obecnou teorii ohledně dialogových
-systémů, v kapitole~\ref{chapter-wa} pak detaily o WA. Kapitola~\ref{chapter-implementation}
+V~kapitole~\ref{chapter-theory} shrnujeme obecnou teorii ohledně dialogových
+systémů, v~kapitole~\ref{chapter-wa} pak detaily o~WA. Kapitola~\ref{chapter-implementation}
 popisuje naši implementaci systému a nakonec kapitola~\ref{chapter-results}
 obsahuje vyhodnocení úspěšnosti systému a návrhy na vylepšení
 na základě sesbírané kritiky od uživatelů.

@@ -2,7 +2,7 @@
 \chapter{Dialogové systémy}\label{chapter-theory}
 
 Toto je teoretický úvod představující důležité pojmy.
-Jak název napovídá, dialogové systémy vedou dialog s uživatelem. Jsou to
+Jak název napovídá, dialogové systémy vedou dialog s~uživatelem. Jsou to
 tedy jakékoliv programy (nebo skupiny programů) využívající
 pro komunikaci přirozený jazyk, obvykle ve formě textové nebo hlasové.
 Vyčerpávající shrnutí tohoto tématu, souvisejících problémů a metod
@@ -16,26 +16,26 @@ Dialogové systémy můžeme dělit dle mnoha různých specifik. Asi vůbec
 nejzákladnějším je dělení na systémy \textit{zaměřené na plnění úkolů}
 (rozšířený je anglický termín \textit{task-oriented}), jejichž úkolem
 je dosáhnout nějakého uživatelova cíle; a \uv{\textit{tlachací}} (anglicky
-\textit{chitchat}), jejichž úkolem je jen vést s uživatelem smysluplnou
+\textit{chitchat}), jejichž úkolem je jen vést s~uživatelem smysluplnou
 konverzaci \citep[strana 6]{gao_neural_2019}.
 
 \textit{Doménou} systému se rozumí téma, kterému by se měl být schopen
-věnovat. Podle toho, zda to dokáže jen u jednoho, nebo u více různých,
+věnovat. Podle toho, zda to dokáže jen u~jednoho, nebo u~více různých,
 můžeme systém nazývat \textit{jednodoménový} nebo \textit{vícedoménový} \citep[strana 47]{gao_neural_2019}.
 
 Dále můžeme systémy dělit podle toho, kdo řídí dialog. Dotaz či změnu tématu
 může iniciovat vždy pouze uživatel a systém jen odpovídat, nebo naopak, nebo
-se mohou v iniciativě střídat \citep[strany 495-496]{jurafsky_slp_2020}. Implementace posledního jmenovaného je samozřejmě
+se mohou v~iniciativě střídat \citep[strany 495-496]{jurafsky_slp_2020}. Implementace posledního jmenovaného je samozřejmě
 nejkomplikovanější.
 
 Posledním dělením, které uvedeme, je podle kanálů komunikace, tedy
-v jaké prvotní formě je informace mezi uživatelem a systémem předávána.
+v~jaké prvotní formě je informace mezi uživatelem a systémem předávána.
 Obvykle je forma na obou stranách stejná, může se však i lišit. Mezi
 nejčastější patří text, mluvená řeč a obraz (ať už statický nebo
 dynamický), ale existují již i humanoidní roboti schopni vyjadřovat emoce pomocí
 mimiky, jednoho takového popisují \citet{faraj_facially_2021} ve svém článku.
 
-My se nadále budeme zabývat systémem zaměřeným na plnění úkolů v rámci jedné
+My se nadále budeme zabývat systémem zaměřeným na plnění úkolů v~rámci jedné
 domény, který má jako vstup i výstup mluvenou řeč, protože do této kategorie
 naše implementace spadá.
 
@@ -48,21 +48,21 @@ míry, některé zatím vůbec. Vezměme si například takovýto smyšlený dia
 
 \begin{code}
     A: Dal bych si.. hmmm.. majoránku, tedy pardon! Marokánku.
-    B: S sebou, nebo..
+    B: S~sebou, nebo..
     A: Vlastně ne! Raději cheesecake.
 \end{code}
 
 Jistě si dokážeme představit, že by mohl proběhnout a připadal by nám
-relativně normální. S čím se však musejí aktéři vypořádat? Mluvčí A se
+relativně normální. S~čím se však musejí aktéři vypořádat? Mluvčí A~se
 nejdříve rozmýšlí a druhý to musí pochopit a počkat. Poté se rozhodne
 a něco řekne, mluvčí B to pochopí, ale vzápětí musí své pochopení
-poupravit, protože A se jen přeřekl a opravuje se. Když se B konečně
+poupravit, protože A~se jen přeřekl a opravuje se. Když se B konečně
 dostane ke slovu, začne mluvit, ale hned musí zase skončit, protože
-A mu skáče do řeči s další opravou -- přeje si cheesecake. Pokud by
+A~mu skáče do řeči s~další opravou -- přeje si cheesecake. Pokud by
 však B neznal toto anglické slovo (systém naučený rozpoznávat češtinu
-by nemusel), v hlučnějším prostředí by pravděpodobně pochytil spíše
-něco jako \uv{čistej}. Nejběžnější problémy, se kterými se v tomto
-směru potýkáme, rozebereme v následujících třech podsekcích.
+by nemusel), v~hlučnějším prostředí by pravděpodobně pochytil spíše
+něco jako \uv{čistej}. Nejběžnější problémy, se kterými se v~tomto
+směru potýkáme, rozebereme v~následujících třech podsekcích.
 
 \subsection{Začátek a konec promluvy}
 
@@ -70,7 +70,7 @@ Prvním problémem je jak vůbec zjistit, kdy uživatel dialog začal, kdy
 skončil svůj \textit{tah} (souvislou promluvu, po které obvykle očekává odpověď),
 a kdy skončil celý dialog \citep[strana 494]{jurafsky_slp_2020}.
 Jako lidé jsme většinou schopni začátek dialogu rozpoznat tím, že se na
-nás druhý podívá či nás osloví. Pohled u stroje s pouze zvukovým vstupem
+nás druhý podívá či nás osloví. Pohled u~stroje s~pouze zvukovým vstupem
 detekovat schopni nejsme, oslovení dnešní technologie již dokáží. Většinou
 definujeme jedno nebo několik slov, které stroj chápe jako začátek dialogu,
 tzv. \textit{wake-up words}. Součást systému detekující tato slova musí být velmi
@@ -81,11 +81,11 @@ Běžným způsobem je ale stále zahájení dialogu stiskem tlačítka či ně�
 podobným.
 
 Zahájení jsme tedy detekovali, ale jak poznat konec? Za konec tahu je
-většinou považována delší pauza, v takovou chvíli systém vyhodnotí odpověď
+většinou považována delší pauza, v~takovou chvíli systém vyhodnotí odpověď
 a začne odpovídat. Problém je, pokud jsme konec tahu detekovali špatně a
-v průběhu systémové odpovědi začne uživatel opět mluvit. V lidské konverzaci
-se to stává běžně a umíme se s tím jednoduše vypořádat, protože jsme schopni
-zároveň mluvit a poslouchat. U strojů to však problém je a je náročné ho řešit,
+v~průběhu systémové odpovědi začne uživatel opět mluvit. V~lidské konverzaci
+se to stává běžně a umíme se s~tím jednoduše vypořádat, protože jsme schopni
+zároveň mluvit a poslouchat. U~strojů to však problém je a je náročné ho řešit,
 běžnou praxí asistentů
 je proto začít znovu poslouchat až po ukončení jejich promluvy.
 
@@ -103,18 +103,18 @@ systém splní uživatelův cíl či uživatel již neodpoví.
 
 Při převodu mluveného slova na text narážíme na problémy spousty nepřesností \citep[sekce 4.1]{glass_challenges_1999}.
 Přepis nám ztěžuje okolní hluk, který dokážeme automaticky odfiltrovat jen do určité míry
-a obtížně. Navíc pokud dojde k chybě v nějakém slově, můžeme se ji sice snažit
-z kontextu nějak zpětně opravit, ale opět je to složitá práce navíc. Člověk
+a obtížně. Navíc pokud dojde k~chybě v~nějakém slově, můžeme se ji sice snažit
+z~kontextu nějak zpětně opravit, ale opět je to složitá práce navíc. Člověk
 tyto drobné opravy na základě kontextu dělá podvědomě a bravurně.
 
-Dále se potýkáme s různou výslovností různých lidí, přeřeky, opravami
+Dále se potýkáme s~různou výslovností různých lidí, přeřeky, opravami
 či výplňovými zvuky, kdy se mluvčí rozmýšlí, co chce říct dál. Zvláště
 pokud se něco takového vyskytne uprostřed slova, může být obtížné dát
 strojově dohromady výsledek promluvy.
 
 \subsection{Očekávané znalosti, domýšlení}
 
-Při běžné komunikaci člověk od druhého očekává určitou míru přehledu o světě
+Při běžné komunikaci člověk od druhého očekává určitou míru přehledu o~světě
 -- minimálně fakta typu \uv{Slunce je na obloze} považujeme za samozřejmá.
 Předáváním těchto obecných znalostí dialogovým systémům se ve svém článku
 zabývají \citet{young_augmenting_2018}.
@@ -128,67 +128,67 @@ označujeme \textit{koreference}, podrobnější popis tématu dávají
 \section{Konstrukce dialogových systémů}
 
 Tradiční přístup implementace bychom mohli označit jako postupný. Čítá několik
-komponent, kde každá zajišťuje část práce nutné k porozumění uživateli a
+komponent, kde každá zajišťuje část práce nutné k~porozumění uživateli a
 zodpovězení jeho prohlášení \citep[sekce 4.1]{gao_neural_2019}. Takovou konstrukci budeme nazývat \textit{pipeline}.
 Tento přístup dobře ilustruje, co všechno vlastně
 člověk podvědomě při komunikaci dělá. Druhý přístup reprezentují tzv. \textit{end-to-end}
 systémy využívající metod strojového učení, které umožňují nahrazení až
-několika komponent jedním modelem \citep[sekce 4.6]{gao_neural_2019}. Taková implementace první uvedený v mnohém
-předčí, ale v praxi se příliš nevyužívá z důvodu náročnosti na trénovací data.
+několika komponent jedním modelem \citep[sekce 4.6]{gao_neural_2019}. Taková implementace první uvedený v~mnohém
+předčí, ale v~praxi se příliš nevyužívá z~důvodu náročnosti na trénovací data.
 
 Již jsme zmínili, že vícekrokové systémy mají několik komponent, které na sebe
-navazují, jedna obvykle určitým způsobem využije výstup z předchozí jako svůj
+navazují, jedna obvykle určitým způsobem využije výstup z~předchozí jako svůj
 vstup. Nejčastěji se používá rozdělení na šest částí, kterým se podrobněji
-budeme věnovat v následujících podsekcích. Jsou to: převod textu na řeč (v podsekci~\ref{stt}),
-extrakce významu (\ref{nlu}), udržování stavu (\ref{dst}), rozhodnutí o dalším kroku (\ref{dp}),
-vytvoření odpovědi v přirozeném jazyce (\ref{nlg}) a syntéza hlasu (\ref{tts}). První
-a poslední u textových systémů odpadají.
+budeme věnovat v~následujících podsekcích. Jsou to: převod textu na řeč (v~podsekci~\ref{stt}),
+extrakce významu (\ref{nlu}), udržování stavu (\ref{dst}), rozhodnutí o~dalším kroku (\ref{dp}),
+vytvoření odpovědi v~přirozeném jazyce (\ref{nlg}) a syntéza hlasu (\ref{tts}). První
+a poslední u~textových systémů odpadají.
 
 \subsection{Převod mluvené řeči na text}\label{stt}
 
-Zkráceně značíme nejčastěji \textit{STT} z anglického \textit{speech-to-text}.
+Zkráceně značíme nejčastěji \textit{STT} z~anglického \textit{speech-to-text}.
 Jak název napovídá, úkolem této komponenty je převést zvukový projev na text.
-Dříve byly k tomuto účelu využívány především \textit{skryté
+Dříve byly k~tomuto účelu využívány především \textit{skryté
     Markovovy modely (hidden Markov models, HMM)}. Tyto modely se nazývají skryté,
 protože jejich vnitřní stavy nemohou být pozorovány, vidíme pouze výstup.
 Jsou postaveny na \textit{Markovových řetězcích}, jejichž základním předpokladem
-je, že v sekvenci stavů pravděpodobnost příštího závisí jen na stavu aktuálním,
+je, že v~sekvenci stavů pravděpodobnost příštího závisí jen na stavu aktuálním,
 nikoliv žádném předchozím, jak uvádí například \citet[strana 4]{brooks_handbook_2011}.
 Jejich výhodou je, že jsou poměrně jednoduché a nenáročné na výpočetní výkon.
 
-Jako v mnoha jiných odvětvích, i zde přišly ke slovu neuronové sítě, které HMM
-ve většině směrů překonaly. V dobrých podmínkách jsou schopny provést přepis
+Jako v~mnoha jiných odvětvích, i zde přišly ke slovu neuronové sítě, které HMM
+ve většině směrů překonaly. V~dobrých podmínkách jsou schopny provést přepis
 téměř bezchybně \citep{zhang_pushing_2020}. Opět však narážíme i na jejich slabé stránky,
 totiž vysokou náročnost na množství trénovacích dat a výpočetní výkon.
 
-O obecných problémech typu okolního hluku či různé výslovnosti jsme se
+O~obecných problémech typu okolního hluku či různé výslovnosti jsme se
 již zmiňovali. Zde ještě dodáme, že komplikací může být i nedostatečná kvalita
-nahrávky. Mimo jiné z těchto důvodů výstupem často nebývá jen jedno
-slovo či věta, nýbrž několik spolu s \textit{jistotou}, kterou model této
+nahrávky. Mimo jiné z~těchto důvodů výstupem často nebývá jen jedno
+slovo či věta, nýbrž několik spolu s~\textit{jistotou}, kterou model této
 variantě přiřadil.
 
 \subsection{Extrakce významu}\label{nlu}
 
 \subsubsection{Obecný význam}
-Nyní když máme textovou reprezentaci výpovědi, budeme se z ní snažit nějak
+Nyní když máme textovou reprezentaci výpovědi, budeme se z~ní snažit nějak
 jednodušeji vyjádřit podstatné části. Této komponentě se obvykle říká
-\textit{porozumění jazyku (natural language understanding, NLU)}. V jistém
+\textit{porozumění jazyku (natural language understanding, NLU)}. V~jistém
 smyslu je její úkol nejnáročnější, neboť jazyky mají mnoho nejasností,
 víceznačností a nuancí obecně. Výstupem této komponenty je často opět
-seznam reprezentací s hodnotou, nakolik si je systém tou konkrétní
+seznam reprezentací s~hodnotou, nakolik si je systém tou konkrétní
 interpretací jistý \citep[sekce 4.3]{gao_neural_2019}.
 
-K získání oné jednodušší reprezentace můžeme využít \textit{dialogových aktů}
+K~získání oné jednodušší reprezentace můžeme využít \textit{dialogových aktů}
 (\textit{DA}) \citep[strana 494]{jurafsky_slp_2020}. Ty pak
 často popisujeme například trojicemi \textit{úmysl}--\textit{slot}--\textit{hodnota},
 ale používány jsou různé reprezentace. Několik jich popisují a
-metodologii pro převod z nich do podmnožiny
+metodologii pro převod z~nich do podmnožiny
 ISO standardu navrhují \citet{mezza_iso-standard_2018}.
 
-Použití trojic můžeme ilustrovat na úryvku \uv{v deset hodin}, který bychom
+Použití trojic můžeme ilustrovat na úryvku \uv{v~deset hodin}, který bychom
 přeložili na trojici
-informovat--čas--10:00. K získání relevantních trojic můžeme využít ručně
-psané \textit{regulární výrazy} vyhledávající vzorce v textu, tento přístup
+informovat--čas--10:00. K~získání relevantních trojic můžeme využít ručně
+psané \textit{regulární výrazy} vyhledávající vzorce v~textu, tento přístup
 je však dost náročný. Pro rozumnou funkcionalitu takových výrazů musíme napsat
 stovky. Dnes obvykle lepší alternativou jsou opět modely využívající strojové
 učení. Aplikaci hlubokých neuronových sítí na tento problém
@@ -197,57 +197,57 @@ popisují \citet{liu_multi-task_2019}.
 \subsubsection{Jména a názvy}
 Důležitou součástí je \textit{rozpoznávání jmenných entit} (anglicky
 \textit{named entity recognition, NER}),
-kde cílem je rozpoznat v textu názvy, které jako slova sama o sobě nemají
-význam, pokud nevíme, že jde o název. Zajímají nás jak jména lidí, tak
-geografických objektů či čehokoliv jiného, v závislosti na cílové doméně.
+kde cílem je rozpoznat v~textu názvy, které jako slova sama o~sobě nemají
+význam, pokud nevíme, že jde o~název. Zajímají nás jak jména lidí, tak
+geografických objektů či čehokoliv jiného, v~závislosti na cílové doméně.
 
-K jejich nalezení se opět často používají modely strojového učení, pro češtinu
+K~jejich nalezení se opět často používají modely strojového učení, pro češtinu
 jeden takový popsali \citet{ekstein_czech_2019}. Na pomoc či další zpracování
 můžeme využít metriky vzdálenosti mezi textovými řetězci,
-jako je \textit{Levenshteinova vzdálenost}, pravděpodobně představena autorem v
-článku roku 1965 \citep{Levenshtein1965BinaryCC}. Ta říká, kolik nejméně úprav
-musíme u jednoho řetězce udělat, abychom dostali druhý, tedy zjednodušeně řečeno
-jak moc jsou si dva řetězce podobné. Trochu problém nastává u krátkých slov,
-protože u nich i velmi málo úpravami můžeme dostat slovo kompletně rozdílné.
+jako je \textit{Levenshteinova vzdálenost}, pravděpodobně představena autorem
+v~článku roku 1965 \citep{Levenshtein1965BinaryCC}. Ta říká, kolik nejméně úprav
+musíme u~jednoho řetězce udělat, abychom dostali druhý, tedy zjednodušeně řečeno
+jak moc jsou si dva řetězce podobné. Trochu problém nastává u~krátkých slov,
+protože u~nich i velmi málo úpravami můžeme dostat slovo kompletně rozdílné.
 
 \subsection{Udržování stavu}\label{dst}
 
 Od systému samozřejmě budeme vyžadovat určitou paměť. Pokud řekneme, že
 chceme někomu zavolat, pak dostaneme otázku komu a pak ji zodpovíme, očekáváme,
 že systém si bude ještě pamatovat náš úmysl volat. Tato komponenta je
-značena \textit{DST} z anglického \textit{Dialogue State Tracker}. V případě
+značena \textit{DST} z~anglického \textit{Dialogue State Tracker}. V~případě
 zmíněné reprezentace pomocí trojic paměti docílíme obvykle tak, že si pro každý
-slot pamatujeme hodnotu. Buď jednu, kterou v případě detekce jiné ihned přepíšeme,
+slot pamatujeme hodnotu. Buď jednu, kterou v~případě detekce jiné ihned přepíšeme,
 nebo si pro každý slot pamatujeme pravděpodobnostní rozložení více hodnot, které
 průběžně upravujeme. Téma hezky shrnují \citet{williams_dialog_2016}.
-Paměť nesmíme zapomenout v určitých případech
+Paměť nesmíme zapomenout v~určitých případech
 resetovat, například když uživatel změní celý svůj cíl, jím dříve
 zmíněné hodnoty se stávají irelevantními.
 
-\subsection{Rozhodnutí o dalším kroku}\label{dp}
+\subsection{Rozhodnutí o~dalším kroku}\label{dp}
 
 Máme uživatelovu aktuální výpověď a relevantní historii dialogu, nyní potřebujeme
 rozhodnout, jak zareagujeme. Můžeme ručně napsat pravidla, na základě kterých
-se rozhodneme o odpovědi. U systémů zaměřených na plnění úkolů je častou
+se rozhodneme o~odpovědi. U~systémů zaměřených na plnění úkolů je častou
 strategií snaha zjistit uživatelův cíl a následné získání informací potřebných
-k tomuto cíli (například pokud máme zarezervovat let, potřebujeme vědět kdy,
+k~tomuto cíli (například pokud máme zarezervovat let, potřebujeme vědět kdy,
 odkud a kam), jinými slovy vyplnění potřebných slotů \citep[strany 504-506]{jurafsky_slp_2020}. Rozhodovacích pravidel
-však potřebujeme mnoho a zvláště u větších systémů může být výsledný proces dost
-zmatený. I zde jsou dnes využívány statistické modely a různé druhy strojového
+však potřebujeme mnoho a zvláště u~větších systémů může být výsledný proces dost
+zmatený. I~zde jsou dnes využívány statistické modely a různé druhy strojového
 učení (hodí se zmínit především \textit{zpětnovazební} \citep{su_reward_2015}). Výstupem této komponenty
 bývá opět určitý mezistupeň, jednodušší reprezentace nesoucí význam. Využít
 můžeme již zmíněné trojice úmysl--slot--hodnota.
 
-\subsection{Vytvoření odpovědi v přirozeném jazyce}\label{nlg}
+\subsection{Vytvoření odpovědi v~přirozeném jazyce}\label{nlg}
 
-Z interní reprezentace významu potřebujeme vytvořit odpověď v přirozeném
+Z~interní reprezentace významu potřebujeme vytvořit odpověď v~přirozeném
 jazyce, kterou pochopí libovolný uživatel. Můžeme využít \textit{šablon}, do
 kterých doplníme vynechané části dle stavu dialogu \citep[strana 508]{jurafsky_slp_2020}. Například pokud bychom
 se zabývali rezervacemi letů, mohla by naše potvrzovací šablona vypadat jako
-\uv{Přejete si odlétat \{den\} v \{čas\} z \{letiště\}?} a dle stavu dialogu
-bychom ji doplnili na \uv{Přejete si odlétat zítra v 10:00 z Londýna Lutonu?}.
+\uv{Přejete si odlétat \{den\} v~\{čas\} z~\{letiště\}?} a dle stavu dialogu
+bychom ji doplnili na \uv{Přejete si odlétat zítra v~10:00 z~Londýna Lutonu?}.
 Přidáním více variant pro každou šablonu dosáhneme i určité autenticity dialogu.
-Z variant pak můžeme volit náhodně, sekvenčně či heuristicky podle uživatelova
+Z~variant pak můžeme volit náhodně, sekvenčně či heuristicky podle uživatelova
 vyjadřování, například pokud se vyjadřuje nespisovně, mohli bychom se také
 chtít vyjadřovat nespisovně. Opět narážíme na pracnost tohoto přístupu, šablon
 totiž i pro jednu doménu musíme vytvořit desítky a více. Přesto mohou
@@ -256,19 +256,19 @@ posloužit až překvapivě dobře. Dalšími možnostmi je použít formálníc
 
 \subsection{Převod textu na řeč}\label{tts}
 
-Obdobně jako u převodu opačným směrem, značíme \textit{TTS} (z \textit{text-to-speech}).
+Obdobně jako u~převodu opačným směrem, značíme \textit{TTS} (z~\textit{text-to-speech}).
 Důležitými pojmy
-při popisu řeči jsou \textit{fón}, což je v zásadě jakýkoliv zvuk nehledě na
+při popisu řeči jsou \textit{fón}, což je v~zásadě jakýkoliv zvuk nehledě na
 význam; a \textit{foném}, což je nejmenší část jazyka,
 pomocí které jsme schopni význam rozlišit \citep[kapitola 1]{li2020universal}. Především jejich analýza pomáhá
-při snaze o počítačovou syntézu řeči, pokud nevyužíváme strojového učení.
+při snaze o~počítačovou syntézu řeči, pokud nevyužíváme strojového učení.
 
 Důkazem může být například
-\textit{konkatenační} přístup k syntéze hlasu, kdy nahrajeme mluvu člověka,
+\textit{konkatenační} přístup k~syntéze hlasu, kdy nahrajeme mluvu člověka,
 nahrávku rozdělíme na \textit{difóny} (dva za sebou jdoucí fóny) a ty pak
-zpět \uv{slepíme} v požadovaném pořadí \citep{OSHAUGHNESSY198855}. V této základní variantě dostaneme
+zpět \uv{slepíme} v~požadovaném pořadí \citep{OSHAUGHNESSY198855}. V~této základní variantě dostaneme
 hlas, který bude znít značně roboticky (mimo jiné kvůli absenci intonace či
-přízvuků), ale uživatel z něj dokáže pochopit význam. Při dostatečném množství
+přízvuků), ale uživatel z~něj dokáže pochopit význam. Při dostatečném množství
 vzorových dat a aplikaci dalších vylepšení však dostáváme již velmi dobré
 výsledky.
 
@@ -283,14 +283,14 @@ přirozenosti řeči na obrázku~\ref{img-wavenet}, kde se WaveNet dostává vel
 lidskému hlasu. Za zmínku jistě stojí ještě \textit{Tacotron} \citep{wang2017tacotron},
 odkazy na další články ohledně jeho vylepšování shrnuje webová
 stránka \citep{google_github_tacotron}, kde můžeme najít i ukázky různých verzí.
-Bohužel se nám nepodařilo zjistit, který z těchto přístupů je využíván
+Bohužel se nám nepodařilo zjistit, který z~těchto přístupů je využíván
 na Androidu, ale protože hlasy používající WaveNet nabízí Google jako svým
-způsobem prémiové, domníváme se, že půjde o hlasy standardní.
+způsobem prémiové, domníváme se, že půjde o~hlasy standardní.
 
 \begin{figure}[h]
     \centering
     \includegraphics[angle=90, width=0.98\textwidth]{../img/wavenet-comparison.pdf}
-    \caption{Porovnání průměrného hodnocení přirozenosti řeči na stupnici 1-5, převzato z dokumentace
+    \caption{Porovnání průměrného hodnocení přirozenosti řeči na stupnici 1-5, převzato z~dokumentace
         \citet[upraveno a přeloženo autorem]{google_tts}.}
     \label{img-wavenet}
 \end{figure}

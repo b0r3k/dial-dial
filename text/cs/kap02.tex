@@ -1,10 +1,10 @@
 \chapter{Watson Assistant}\label{chapter-wa}
 
-Tato kapitola slouží k představení WA,
-kterého využíváme k řízení dialogu.
-Nejdříve uvedeme v sekci~\ref{wa-common} obecné informace
-o práci s ním a pak se v sekci~\ref{wa-inside} pokusíme shrnout zjištěné
-informace o vnitřním fungování.
+Tato kapitola slouží k~představení WA,
+kterého využíváme k~řízení dialogu.
+Nejdříve uvedeme v~sekci~\ref{wa-common} obecné informace
+o~práci s~ním a pak se v~sekci~\ref{wa-inside} pokusíme shrnout zjištěné
+informace o~vnitřním fungování.
 
 \section{Obecné informace}\label{wa-common}
 
@@ -13,56 +13,56 @@ informace o vnitřním fungování.
 Jak již bylo napsáno, WA je asistent vyvíjený firmou IBM.
 Je určen především pro firmy, nabízí relativně jednoduché vytvoření
 vlastního modelu strojového učení na míru podle vložených trénovacích
-dat. Propojením s dalšími službami umí kromě předdefinovaných odpovědí
-také vyhledávat v databázi, zavolat vnější API pomocí webhooku (propojení,
-které v určitou chvíli pošle požadavek jinam na web) a odpověď
-z něj využít v konverzaci, nebo v případě nutnosti předat dialog lidskému
+dat. Propojením s~dalšími službami umí kromě předdefinovaných odpovědí
+také vyhledávat v~databázi, zavolat vnější API pomocí webhooku (propojení,
+které v~určitou chvíli pošle požadavek jinam na web) a odpověď
+z~něj využít v~konverzaci, nebo v~případě nutnosti předat dialog lidskému
 pracovníkovi. Je možné ho integrovat do existujících komunikačních platforem
-jako je Facebook Messenger, Slack nebo WhatsApp, propojit s telefonní
+jako je Facebook Messenger, Slack nebo WhatsApp, propojit s~telefonní
 bránou či přidat do webové stránky nebo aplikace. Poskytuje také monitorování
 úspěšnosti proběhlých dialogů \citep{wa_about}.
 
 WA přímo podporuje 13 jazyků včetně
-češtiny \citep{wa_languages}, ale nabízí také univerzální model. V případě
+češtiny \citep{wa_languages}, ale nabízí také univerzální model. V~případě
 jeho zvolení se použije předtrénovaný model chápající základní pravidla
 vyskytující se ve většině jazyků, který se dotrénuje na poskytnutých
-datech v daném jazyce \citep{wa_universal_model}.
+datech v~daném jazyce \citep{wa_universal_model}.
 
 \subsection{Vytvoření asistenta}\label{wa-create}
 
 Každý vytvořený asistent musí mít nějaké \textit{dovednosti (skills)},
-což jsou prostředí s definovanými úmysly a entitami, které bude asistent
+což jsou prostředí s~definovanými úmysly a entitami, které bude asistent
 rozpoznávat. Více dovedností mezi sebou může komunikovat
 a řízení dialogu si předávat. Entity mohou být založené buď na rozpoznávání tvarů
 konkrétních slov, nebo na rozpoznávání dle regulárních výrazů -- například
 pro české telefonní
-číslo bychom mohli definovat výraz pro devět číslic, volitelně s
-předvolbou a mezerami.
+číslo bychom mohli definovat výraz pro devět číslic, volitelně
+s~předvolbou a mezerami.
 
 Každá dovednost musí mít také strukturu dialogu.
 WA využívá \textit{stromovou} reprezentaci,
-kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity) v
-jednotlivých sourozencích. Jakmile v jednom vrcholu najdeme podmínku
+kde sekvenčně kontrolujeme splnění podmínky (detekci úmyslu nebo entity)
+v~jednotlivých sourozencích. Jakmile v~jednom vrcholu najdeme podmínku
 splněnou, vybereme
-odpověď z něj a příště budeme vybírat z jeho synů, pokud nějaké má.
+odpověď z~něj a příště budeme vybírat z~jeho synů, pokud nějaké má.
 
-Podrobnější návod k vytvoření asistenta včetně komplikovanějších
+Podrobnější návod k~vytvoření asistenta včetně komplikovanějších
 technik podává \citet{akbulut_common_2020}.
 
 \section{Vnitřní fungování}\label{wa-inside}
 
 Nejkomplikovanější a zásadní částí WA je NLU, tedy detekce úmyslů
-a entit. Ke konci roku 2020 v tom byl úspěšnější než ostatní podobné
+a entit. Ke konci roku 2020 v~tom byl úspěšnější než ostatní podobné
 systémy \citep{qi2021benchmarking}. Využit byl způsob testování,
 který popsali \citet{arora-etal-2020-hint3}. Systémy byly natrénovány
 na datech vytvořených tak, aby co nejvíce připomínala reálná data.
 Následně byly testovány na vstupech reálných uživatelů nasbíraných
-z běžících systémů.
+z~běžících systémů.
 
-WA k vysoké úspěšnosti pomáhá využití \textit{AutoML}, což je
+WA k~vysoké úspěšnosti pomáhá využití \textit{AutoML}, což je
 automatické hledání nejlepších algoritmů,
 parametrů a vstupních rysů \citep{noauthor_watson_2020}. Tuto techniku
-spolu s aktuálně nejlepšími známými postupy shrnují \citet[duben]{He_2021}.
+spolu s~aktuálně nejlepšími známými postupy shrnují \citet[duben]{He_2021}.
 Zkoušení všech
 možných kombinací by trvalo velmi dlouho, proto je pro urychlení
 využito \textit{meta-učení (meta-learning)} \citep{hospedales2020metalearning}.
@@ -71,18 +71,18 @@ kombinace parametrů fungují pro
 různá data, a pak na nová data aplikuje kombinace, které dříve dobře
 fungovaly pro podobná data.
 
-Dále jsou využity hluboké neuronové sítě, ale v kombinaci s tradičními
+Dále jsou využity hluboké neuronové sítě, ale v~kombinaci s~tradičními
 metodami strojového učení jako \textit{SVM (support vector machines)}
 \citep{bosertraining}, což umožňuje
-rychlejší trénink i klasifikaci \citep{potdar_watson_2021}. V neposlední
+rychlejší trénink i klasifikaci \citep{potdar_watson_2021}. V~neposlední
 řadě je potřeba zmínit přenosové učení \textit{(transfer learning)}. Při
 jeho aplikaci využijeme model předtrénovaný
 na velkém množství obecnějších dat, kterému pak stačí pro dobré výsledky
-v konkrétní oblasti méně dat speciálních \citep{zhuang2020comprehensive}.
+v~konkrétní oblasti méně dat speciálních \citep{zhuang2020comprehensive}.
 
 Předtím, než uživatelův vstup vůbec začneme klasifikovat,
 je potřeba zbavit se nepřesností, které by detekci úmyslů a entit výrazně ztížily.
-K tomu jsou využity jazykové modely, metody strojového učení a
+K~tomu jsou využity jazykové modely, metody strojového učení a
 různé metriky vzdáleností mezi řetězci. Díky tomu WA údajně \uv{porozumí}
-okolnímu kontextu a dokáže překlepy a chyby opravovat v závislosti
+okolnímu kontextu a dokáže překlepy a chyby opravovat v~závislosti
 na něm \citep{mason_ahnouncing_2019}.
