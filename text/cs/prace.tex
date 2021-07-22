@@ -221,6 +221,45 @@ user feedback we came up with ideas for improvements.
 \appendix
 \chapter{Přílohy}
 
+\section{Přiložené soubory}\label{appendix-file}
+
+Kód je přístupný také online na platformě GitHub,%
+\footnote{\url{https://github.com/b0r3k/dial-dial}}
+zkompilovanou mobilní aplikaci pak lze stáhnout ze sekce Releases.%
+\footnote{\url{https://github.com/b0r3k/dial-dial/releases/latest/download/dialog_dialer.apk}}
+Každá uvedená složka má vlastní soubor \texttt{README.md} s krátkým popisem.
+
+\begin{table}[ht]
+
+    \centering
+    %%% Tabulka používá následující balíčky:
+    %%%   - booktabs (\toprule, \midrule, \bottomrule)
+    %%%   - dcolumn (typ sloupce D: vycentrovaná čísla zarovnaná na
+    %%%     desetinnou čárku
+    %%%     Všimněte si, že ve zdrojovém kódu jsou desetinné tečky, ale
+    %%%     tisknou se čárky.
+    %%% Dále používáme příkazy \pulrad a \mc definované v makra.tex
+
+    %\begin{tabular}{l@{\hspace{5cm}}p{3cm}p{5cm}}
+    \begin{tabular}{l@{\hspace{2cm}}p{6cm}}
+        \toprule
+        \textbf{Název souboru}      & \mc{\textbf{Popis}}                                      \\
+        \midrule
+        \texttt{dialog\_dialer.apk} & Zkompilovaná mobilní aplikace připravená k~instalaci.    \\
+        \texttt{preview.mp4}        & Video demo běhu mobilní aplikace.                        \\
+        \texttt{README.md}          & Krátký popis celého systému v~češtině i~angličtině.      \\
+        \texttt{mobile\_app/}       & Složka se zdrojovými kódy k~mobilní aplikaci.            \\
+        \texttt{watson\_init/}      & Složka se zdrojovými kódy k~nastavení WA a~získání jmen. \\
+        \texttt{fuzzy\_ne/}         & Složka se zdrojovými kódy k~porovnávací komponentě.      \\
+        \bottomrule
+        \multicolumn{2}{l}{}
+    \end{tabular}
+
+    \label{tab-files}
+
+\end{table}
+
+
 \section{Dotazník}\label{appendix-quest}
 Dotazník byl vložen samostatně a začíná na další straně.
 \includepdf[pages=1-5,pagecommand={},width=\textwidth]{dotaznik.pdf}
