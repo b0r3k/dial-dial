@@ -16,19 +16,19 @@
 
 Dialogové systémy jsou dnes velmi populární, jak mezi uživateli chytrých
 telefonů či reproduktorů, tak mezi firmami, které je využívají ke snížení
-množství potřebných pracovníků zákaznické podpory. V~této práci
-shrnujeme základní dělení systémů spolu s~přístupy a technikami
-jejich konstrukce, následně krátce popisujeme asistenta IBM Watson.
-Hlavní částí je představení vlastní implementace dialogového systému
+množství potřebných pracovníků zákaznické podpory.
+Hlavním cílem práce je představení vlastní implementace dialogového systému
 pro hlasové vytáčení v~češtině. Systém je implementován jako aplikace
 pro mobilní telefony s~operačním systémem Android, která k~rozpoznání
 a syntéze řeči využívá služby Google. Řízení dialogu zajišťuje instance asistenta
-IBM Watson, vytvořená námi za využití služeb poskytovaných IBM.
-Porovnání se seznamem kontaktů provádí námi implementovaná komponenta běžící
-v~cloudu IBM. Aplikace je psána v~jazyce Kotlin, porovnávací komponenta
-v~jazyce Python. V poslední části vyhodnocujeme úspěšnost systému
+IBM Watson implementovaná autorem za využití služeb poskytovaných IBM.
+Porovnání se seznamem kontaktů provádí nově implementovaná komponenta běžící
+v~cloudu IBM. Ta entity rozpoznané pomocí asistenta porovnává se seznamem kontaktů
+uživatele, navíc bere v úvahu i původní uživatelův vstup.
+Aplikace je psána v~jazyce Kotlin, porovnávací komponenta
+v~jazyce Python. Úspěšnost systému byla vyhodnocena
 na základě zkušeností reálných uživatelů. Celkově se 15 uživatelů pokusilo
 zahájit 91 hovorů, z~čehož 51 se podařilo, což dává úspěšnost \(56\,\rm \%\).
-Podle zpětné vazby jsme navrhli možná vylepšení, která rovněž představujeme.
+Podle zpětné vazby jsme navrhli možná vylepšení, která rovněž popisujeme.
 
 \end{document}
