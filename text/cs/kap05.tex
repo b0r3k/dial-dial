@@ -15,8 +15,9 @@ vyplňuje pouze jméno, tedy řešit poměr splněných úkolů je dostatečné.
 
 Vytvořili jsme dotazník, v~jehož úvodu jsme popsali náš systém a způsob instalace
 aplikace, a následně se uživatelů dotazovali především na počet pokusů o~hovor a
-množství úspěšných zahájení hovoru. Dále nás zajímalo, jak často se objevily
-následující problémy:
+množství úspěšných zahájení hovoru. Dále nás zajímalo, jak často (na stupnici
+nikdy -- málokdy -- občas -- často -- vždy) se objevily
+tyto problémy:
 \begin{itemize}
     \item chyba při inicializaci,
     \item špatně rozpoznaný hlas,
@@ -68,9 +69,30 @@ případně oboje.
     \caption{Grafy výsledků.}
 \end{figure}
 
-Co se týká konkrétnějších důvodů selhání, největším problémem bylo nalezení více
-kontaktů a nezdařený výběr z~nich. Dalšími častými problémy bylo nerozpoznání
-jména ve WA, nalezení neodpovídajících kontaktů a špatně rozpoznaná řeč.
+Co se týká konkrétnějších nedostatků, u~otázek na inicializaci, rozpoznání
+hlasu bez odpovědi a celkové selhání všichni až na jednoho uživatele odpověděli,
+že toto byl problém nikdy nebo málokdy. U~inicializace za příčinu
+chyby považujeme nenainstalované či zakázané Google TTS, v~rámci
+implementace by asi bylo vhodné toto kontrolovat.
+
+Špatně rozpoznaný hlas uvedlo jako problém občas nebo často 5 z~15 uživatelů.
+To je nezanedbatelné množství, avšak protože používáme STT službu
+třetí strany, nemůžeme diskutovat o~příčině.
+
+Podobně častými problémy bylo nerozpoznání
+jména ve WA a nenalezení kontaktů k~zadanému vstupu. Oba
+tyto problémy označil 1 uživatel jako občasné, 3 jako časté, nenalezení kontaktu
+navíc 1 uživatel jako komplikaci vždy.
+
+Frekventovaným problémem bylo nalezení neodpovídajících kontaktů,
+což u\-ve\-dl 1 uživatel jako vždy, 1 jako často a 2 jako občas.
+
+Největším problémem bylo nalezení více kontaktů a nezdařený výběr z~nich.
+2 uživatelé uvedli, že to byl problém vždy, 1 že často a 5 že
+občas. Zde viníme především nedostatky porovnávací komponenty, kontroluje
+totiž čistě odpovídající části kontaktu a vstupu. V~případě, že uživatel
+řekne \uv{Jan Novák} a má uloženy kontakty \uv{Jan Novák} a \uv{Jan Novák starší},
+komponenta oběma přiřadí plnou jistotu a nedokáže mezi nimi vybrat.
 
 Nutnou opravou je z~pohledu uživatelů lepší rozpoznávání jmen i přiřazování
 kontaktů k~nim, za důležité také zmínili potvrzení vytáčení ještě jedním
@@ -120,13 +142,26 @@ přiřazení i kompletně rozdílných slov, zatímco u~dlouhých
 slov je tento limit v~kombinaci s~komplikovaným skloňováním češtiny
 příliš malý.
 
+Dále pak vyřešení problému popsaného v~sekci~\ref{results}, totiž zohlednění
+toho, že nějaký kontakt odpovídá naprosto
+přesně a jiný obsahuje v~názvu další slova.
+
 \subsection{Přepracování mobilní aplikace}\label{better-app}
 
-Velká většina uživatelů uvedla, že by o~aplikaci měli zájem, pokud by fungovala
-lépe, i kdyby nepřidala další funkce. V~takovém případě bychom se obešli
+Většina uživatelů uvedla, že by o~aplikaci měli zájem, pakliže by fungovala
+lépe. Pokud bychom se zaměřili čistě na vytáčení kontaktů, obešli bychom se
 bez celé detekce úmyslů a mohli celý dialog velmi zjednodušit.
-
-Navrhovaný běh představujeme v~ukázce níže. Uživatel by stiskem
+Navrhovaný běh by pak vypadal následovně (podrobněji popisujeme dále):
+\begin{code}
+    Uživatel: /Stiskne tlačítko/
+    Systém:   /Začne naslouchat/
+    Uživatel: Název Kontaktu
+    Systém:   /Porovnává celý vstup s~kontakty přímo v~zařízení/
+    Systém:   Chcete zavolat Název Kontaktu?
+    Uživatel: Ano
+    Systém:   /Zahájí hovor/
+\end{code}
+Uživatel by stiskem
 tlačítka zapnul rozpoznávání řeči a řekl jen název kontaktu,
 kterému chce zavolat. Celý tento vstup by byl přímo v~zařízení
 porovnán se všemi jmény kontaktů v~seznamu, pravděpodobně za
@@ -137,15 +172,6 @@ Pokud by odpovídalo více kontaktů, ale méně než 4, uživatel
 by z~nich dostal na výběr. Pokud by jich bylo více, dostal by
 žádost o~zpřesnění požadavku. Celou dobu by bylo možné slovem
 \uv{znovu} či obdobným začít od začátku.
-\begin{code}
-    Uživatel: /Stiskne tlačítko/
-    Systém:   /Začne naslouchat/
-    Uživatel: Název Kontaktu
-    Systém:   /Porovnává celý vstup s~kontakty přímo v~zařízení/
-    Systém:   Chcete zavolat Název Kontaktu?
-    Uživatel: Ano
-    Systém:   /Zahájí hovor/
-\end{code}
 
 Tím, že by celé řízení dialogu i porovnání mohlo probíhat v~aplikaci,
 dosáhli bychom větší plynulosti aplikace, neboť bychom nemuseli čekat
