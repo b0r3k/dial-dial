@@ -35,7 +35,10 @@ možné najít v~příloze~\ref{appendix-quest}.
 
 \section{Výsledky}\label{results}
 
-Podařilo se nám získat \(15\) testovacích uživatelů, kteří dohromady uskutečnili 91
+\paragraph{Přehledné shrnutí} Grafy úspěšnosti a popularity ukazuje obrázek~\ref{img-charts},
+frekventovanost konkrétnějších problémů pak tabulka~\ref{tab-results}.
+
+\paragraph{Celková úspěšnost} Podařilo se nám získat \(15\) testovacích uživatelů, kteří dohromady uskutečnili 91
 pokusů o~hovor, z~toho \(51\) bylo úspěšných, jak znázorňuje
 graf na obrázku~\ref{img-ratio-succ}. Celková úspěšnost
 systému tedy byla \(56\,\rm \%\), ale s~relativně velkým rozptylem. U~některých uživatelů
@@ -43,7 +46,7 @@ byly úspěšné skoro všechny pokusy, u~některých skoro žádné. Z~analýzy
 že rozdíl dělá především způsob komunikace a jména uložených kontaktů daného
 uživatele.
 
-Zájem o~podobnou aplikaci ukazuje graf na obrázku~\ref{img-ratio-interest}.
+\paragraph{Popularita} Zájem o~podobnou aplikaci ukazuje graf na obrázku~\ref{img-ratio-interest}.
 Pouze 3 z~15 uživatelů uvedli, že by o~takovou aplikaci neměli vůbec zájem.
 Zbylí by o~takovou aplikaci měli zájem, pokud by fungovala lépe, přidala nové funkce,
 případně oboje.
@@ -66,40 +69,71 @@ případně oboje.
             \vfil
             \includegraphics[width=0.6\textwidth]{../img/chart-interest.pdf}
             \vfil}\label{img-ratio-interest}}%
-    \caption{Grafy výsledků.}
+    \caption{Grafy výsledků.}\label{img-charts}
 \end{figure}
 
-Co se týká konkrétnějších nedostatků, u~otázek na inicializaci, rozpoznání
+\begin{table}[b!]
+
+    \centering
+    %%% Tabulka používá následující balíčky:
+    %%%   - booktabs (\toprule, \midrule, \bottomrule)
+    %%%   - dcolumn (typ sloupce D: vycentrovaná čísla zarovnaná na
+    %%%     desetinnou čárku
+    %%%     Všimněte si, že ve zdrojovém kódu jsou desetinné tečky, ale
+    %%%     tisknou se čárky.
+    %%% Dále používáme příkazy \pulrad a \mc definované v makra.tex
+
+    \begin{tabular}{l@{\hspace{1.5cm}}D{.}{,}{3.2}D{.}{,}{1.2}D{.}{,}{2.3}D{.}{,}{2.3}D{.}{,}{2.3}}
+        \toprule
+        \textbf{Problém}        & \mc{Nikdy} & \mc{Málokdy} & \mc{Občas} & \mc{Často} & \mc{Vždy} \\
+        \midrule
+        Inicializace            & 10         & 4            & 1          & 0          & 0         \\
+        Bez odpovědi            & 11         & 3            & 1          & 0          & 0         \\
+        Celkové selhání         & 11         & 3            & 1          & 0          & 0         \\
+        Rozpoznávání řeči       & 8          & 2            & 4          & 1          & 0         \\
+        Detekce entity WA       & 7          & 4            & 1          & 3          & 0         \\
+        Nenalezení kontaktů     & 7          & 3            & 1          & 3          & 1         \\
+        Neodpovídající kontakty & 9          & 2            & 2          & 1          & 1         \\
+        Výběr z kontaktů        & 6          & 1            & 5          & 1          & 2         \\
+        \bottomrule
+        \multicolumn{6}{l}{}
+    \end{tabular}
+
+    \caption{Počty uživatelů, kteří uvedli danou frekventovanost daného problému.}\label{tab-results}
+
+\end{table}
+
+\paragraph{Inicializace} Co se týká konkrétnějších nedostatků, u~otázek na inicializaci, rozpoznání
 hlasu bez odpovědi a celkové selhání všichni až na jednoho uživatele odpověděli,
 že toto byl problém nikdy nebo málokdy. U~inicializace za příčinu
 chyby považujeme nenainstalované či zakázané Google TTS, v~rámci
 implementace by asi bylo vhodné toto kontrolovat.
 
-Špatně rozpoznaný hlas uvedlo jako problém občas nebo často 5 z~15 uživatelů.
+\paragraph{Rozpoznávání řeči} Špatně rozpoznaný hlas uvedlo jako problém občas nebo často 5 z~15 uživatelů.
 To je nezanedbatelné množství, avšak protože používáme STT službu
 třetí strany, nemůžeme diskutovat o~příčině.
 
-Podobně častými problémy bylo nerozpoznání
+\paragraph{Detekce entity WA a nenalezení kontaktů} Podobně častými problémy bylo nerozpoznání
 jména ve WA a nenalezení kontaktů k~zadanému vstupu. Oba
 tyto problémy označil 1 uživatel jako občasné, 3 jako časté, nenalezení kontaktu
 navíc 1 uživatel jako komplikaci vždy.
 
-Frekventovaným problémem bylo nalezení neodpovídajících kontaktů,
+\paragraph{Neodpovídající kontakty} Frekventovaným problémem bylo nalezení neodpovídajících kontaktů,
 což u\-ve\-dl 1 uživatel jako vždy, 1 jako často a 2 jako občas.
 
-Největším problémem bylo nalezení více kontaktů a nezdařený výběr z~nich.
+\paragraph{Výběr z kontaktů} Největším problémem bylo nalezení více kontaktů a nezdařený výběr z~nich.
 2 uživatelé uvedli, že to byl problém vždy, 1 že často a 5 že
 občas. Zde viníme především nedostatky porovnávací komponenty, kontroluje
 totiž čistě odpovídající části kontaktu a vstupu. V~případě, že uživatel
 řekne \uv{Jan Novák} a má uloženy kontakty \uv{Jan Novák} a \uv{Jan Novák starší},
 komponenta oběma přiřadí plnou jistotu a nedokáže mezi nimi vybrat.
 
-Nutnou opravou je z~pohledu uživatelů lepší rozpoznávání jmen i přiřazování
+\paragraph{Žádané opravy} Nutnou opravou je z~pohledu uživatelů lepší rozpoznávání jmen i přiřazování
 kontaktů k~nim, za důležité také zmínili potvrzení vytáčení ještě jedním
 \uv{ano/ne}. Několikrát byla zmíněna také plynulost aplikace a rychlost
 odpovědi.
 
-Nejvíce žádaným vylepšením byla schopnost rozpoznávat libovolný název kontaktu
+\paragraph{Žádaná vylepšení} Nejvíce žádaným vylepšením byla schopnost rozpoznávat libovolný název kontaktu
 místo čistě jmen, mnoho uživatelů využívá názvy kontaktů \uv{Mamka} a podobné.
 Několikrát zmíněným vítaným vylepšením by také byla schopnost posílat textové
 zprávy.
