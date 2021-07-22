@@ -60,6 +60,7 @@
 \usepackage{xcolor}         % barevná sazba
 \usepackage{float}
 \usepackage{subfig}
+\usepackage{pdfpages}
 
 %%% Údaje o práci
 
@@ -193,7 +194,9 @@ Abstract.
 \appendix
 \chapter{Přílohy}
 
-\section{První příloha}
+\section{Dotazník}\label{appendix-quest}
+Dotazník byl vložen jako samostatné PDF a začíná na další straně.
+\includepdf[pages=-,pagecommand={},width=\textwidth]{dotaznik.pdf}
 
 \openright{}
 \end{document}
