@@ -107,10 +107,37 @@ uživatelům, kteří se zapojili do testování.
 
 % Abstrakt (doporučený rozsah cca 80-200 slov; nejedná se o zadání práce)
 \def\Abstrakt{%
-Abstrakt.
+Dialogové systémy jsou dnes velmi populární, jak mezi uživateli chytrých
+telefonů či reproduktorů, tak mezi firmami, které je využívají ke snížení
+množství potřebných pracovníků zákaznické podpory.
+Hlavním cílem práce je představení vlastní implementace dialogového systému
+pro hlasové vytáčení v~češtině. Systém je implementován jako aplikace
+pro mobilní telefony s~operačním systémem Android, která k~rozpoznání
+a syntéze řeči využívá služby Google. Řízení dialogu zajišťuje instance asistenta
+IBM Watson implementovaná autorem za využití služeb poskytovaných IBM.
+Porovnání se seznamem kontaktů provádí nově implementovaná komponenta běžící
+v~cloudu. Ta entity rozpoznané pomocí asistenta porovnává se seznamem kontaktů
+uživatele, navíc bere v~úvahu i původní uživatelův vstup.
+Aplikace je psána v~jazyce Kotlin, porovnávací komponenta
+v~jazyce Python. Úspěšnost systému byla vyhodnocena
+na základě zkušeností reálných uživatelů. Celkově se 15 uživatelů pokusilo
+zahájit 91 hovorů, z~čehož 51 se podařilo, což znamená úspěšnost \(56\,\rm \%\).
+Podle zpětné vazby jsme navrhli možná vylepšení, která rovněž popisujeme.
 }
 \def\AbstraktEN{%
-Abstract.
+Dialogue Systems are getting more and more popular, among users and companies alike.
+Users enjoy using smartphones and smart speakers; companies can hire fewer workers in support
+centres. The main goal of this thesis is to implement a dialogue system for voice dialing in
+the Czech language. The system is implemented as a mobile application for phones with
+the Android operating system which utilizes Google STT/TTS for voice communication
+with the user. The dialogue is handled by an instance of IBM Watson Assistant, which we
+have developed for the domain. Entities found by the assistant are matched against the
+user's contact list using a newly implemented matching component. This component takes
+the raw textual input into account to improve on the entities recognized by Watson Assistant.
+The application is implemented in the Kotlin language, the matching component in Python.
+The system was evaluated with real users. 15 test users tried to make 91 phone
+calls and 51 of them were successful, which means a success rate of \(56\,\rm \%\). Based on the
+user feedback we came up with ideas for improvements.
 }
 
 % 3 až 5 klíčových slov (doporučeno), každé uzavřeno ve složených závorkách
@@ -195,7 +222,7 @@ Abstract.
 \chapter{Přílohy}
 
 \section{Dotazník}\label{appendix-quest}
-Dotazník byl vložen jako samostatně a začíná na další straně.
+Dotazník byl vložen samostatně a začíná na další straně.
 \includepdf[pages=1-5,pagecommand={},width=\textwidth]{dotaznik.pdf}
 
 \openright{}
