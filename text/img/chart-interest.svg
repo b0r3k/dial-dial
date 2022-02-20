@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="287.01968mm"
+   height="170.82419mm"
+   viewBox="0 0 287.01968 170.82419"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="chart-interest.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.67081229"
+     inkscape:cx="998.04373"
+     inkscape:cy="514.30185"
+     inkscape:window-width="2542"
+     inkscape:window-height="1336"
+     inkscape:window-x="1281"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g298"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(86.642666,-65.536472)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Pokud lépe:6, Pokud více funkcí:1, Pokud lépe a více funkcí:5, Ne:3"
+     id="g298"
+     transform="translate(86.642666,-65.536472)">
+    <circle
+       cx="105"
+       cy="148.5"
+       r="68"
+       style="fill:#f9f9f9;stroke:#ececec"
+       id="circle272" />
+    <path
+       d="m 126.10811,213.09317 0.73683,8.13832"
+       style="fill:none;stroke:#000000;stroke-width:1.50568;stroke-linecap:butt"
+       id="path274" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:start;text-anchor:start;fill:#000000"
+       x="143.838"
+       y="220.58775"
+       id="text276"><tspan
+         sodipodi:role="line"
+         id="tspan17737"
+         x="143.838"
+         y="220.58775"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle">Ano,</tspan><tspan
+         sodipodi:role="line"
+         x="143.838"
+         y="234.06622"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle"
+         id="tspan36418">pokud by fungovala lépe</tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="0"
+       sodipodi:end="2.5132736"
+       style="fill:#f4ddbc;fill-opacity:1;stroke:none"
+       id="path278"
+       sodipodi:arc-type="slice"
+       d="M 173,148.5 A 68,68 0 0 1 126.01317,213.17184 68,68 0 0 1 49.986865,188.46943 L 105,148.5 Z" />
+    <path
+       d="m 44.048143,176.53194 -20.976351,0.47233"
+       style="fill:none;stroke:#000000;stroke-width:1.72125;stroke-linecap:butt"
+       id="path280" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+       x="-20.902702"
+       y="180.22868"
+       id="text282"><tspan
+         sodipodi:role="line"
+         id="tspan31024"
+         x="-20.902702"
+         y="180.22868"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle">Ano,</tspan><tspan
+         sodipodi:role="line"
+         id="tspan31026"
+         x="-20.902699"
+         y="193.70715"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle">pokud by přidala více funkcí</tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="2.5132736"
+       sodipodi:end="2.9321525"
+       style="fill:#d99b8a;fill-opacity:1;stroke:none"
+       id="path284"
+       sodipodi:arc-type="slice"
+       d="M 49.986865,188.46943 A 68,68 0 0 1 38.485972,162.63804 L 105,148.5 Z" />
+    <path
+       d="M 59.204094,97.691205 57.786716,90.712689"
+       style="fill:none;stroke:#000000;stroke-width:1.48666;stroke-linecap:butt"
+       id="path286" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:center;text-anchor:middle;fill:#000000"
+       x="4.0535388"
+       y="72.972687"
+       id="text288"><tspan
+         sodipodi:role="line"
+         id="tspan11582"
+         x="4.0535388"
+         y="72.972687"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle"
+           id="tspan8261">Ano,</tspan></tspan><tspan
+         sodipodi:role="line"
+         x="4.0535402"
+         y="86.451164"
+         id="tspan18457"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle"
+           id="tspan18459">pokud by fungovala lépe</tspan></tspan><tspan
+         sodipodi:role="line"
+         id="tspan11584"
+         x="4.0535407"
+         y="99.929642"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle"
+           id="tspan11586">a přidala více funkcí</tspan></tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="2.9321525"
+       sodipodi:end="5.0265472"
+       style="fill:#c7ddfe;fill-opacity:1;stroke:none"
+       id="path290"
+       sodipodi:arc-type="slice"
+       d="M 38.485972,162.63804 A 68,68 0 0 1 59.499076,97.96619 68,68 0 0 1 126.01309,83.828135 L 105,148.5 Z" />
+    <path
+       d="m 160.11352,108.33546 7.24619,-1.37228"
+       style="fill:none;stroke:#000000;stroke-width:1.52428;stroke-linecap:butt"
+       id="path292" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:start;text-anchor:start;fill:#000000"
+       x="169.07837"
+       y="108.80424"
+       id="text294"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+         id="tspan15944">Ne</tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="5.0265472"
+       sodipodi:end="6.283184"
+       style="fill:#d7f5ad;fill-opacity:1;stroke:none"
+       id="path296"
+       sodipodi:arc-type="slice"
+       d="M 126.01309,83.828135 A 68,68 0 0 1 173,148.49991 l -68,9e-5 z" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="108.4497"
+       y="186.17418"
+       id="text1771"><tspan
+         sodipodi:role="line"
+         id="tspan1769"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="108.4497"
+         y="186.17418">6</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="69.314201"
+       y="167.29742"
+       id="text7649"><tspan
+         sodipodi:role="line"
+         id="tspan7647"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="69.314201"
+         y="167.29742">1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="78.780624"
+       y="123.39836"
+       id="text14253"><tspan
+         sodipodi:role="line"
+         id="tspan14251"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="78.780624"
+         y="123.39836">5</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="136.18364"
+       y="118.07609"
+       id="text18115"><tspan
+         sodipodi:role="line"
+         id="tspan18113"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="136.18364"
+         y="118.07609">3</tspan></text>
+  </g>
+</svg>

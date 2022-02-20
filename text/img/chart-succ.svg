@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="137mm"
+   height="187.35492mm"
+   viewBox="0 0 137 187.35492"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="chart-succ.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.94867184"
+     inkscape:cx="128.07379"
+     inkscape:cy="366.82864"
+     inkscape:window-width="2542"
+     inkscape:window-height="1336"
+     inkscape:window-x="1281"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g1042"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs2">
+    <rect
+       x="247.71474"
+       y="191.84716"
+       width="86.436633"
+       height="67.462738"
+       id="rect2350" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-36.5,-57.595797)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Úspěšné:51, Neúspěšné:40"
+     id="g1042"
+     transform="translate(-36.5,-57.595797)">
+    <circle
+       cx="105"
+       cy="148.5"
+       r="68"
+       style="fill:#f9f9f9;stroke:#ececec"
+       id="circle1028" />
+    <path
+       d="m 92.085056,215.05686 -0.404524,17.8911"
+       style="fill:none;stroke:#000000;stroke-width:2.08296;stroke-linecap:butt"
+       id="path1030" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+       x="99.712875"
+       y="242.6563"
+       id="text1032"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+         id="tspan4107">Úspěšné</tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="0"
+       sodipodi:end="3.5213449"
+       style="fill:#d99b8a;fill-opacity:1;stroke:none"
+       id="path1034"
+       sodipodi:arc-type="slice"
+       d="M 173,148.5 A 68,68 0 0 1 131.29335,211.21092 68,68 0 0 1 57.333542,196.99648 68,68 0 0 1 41.844558,123.29305 L 105,148.5 Z" />
+    <path
+       d="m 117.91875,81.974402 0.39671,-14.520486"
+       style="fill:none;stroke:#000000;stroke-width:1.85833;stroke-linecap:butt"
+       id="path1036" />
+    <text
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:start;text-anchor:start;fill:#000000"
+       x="114.70776"
+       y="65.564278"
+       id="text1038"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+         id="tspan2125">Neúspěšné</tspan></text>
+    <path
+       sodipodi:type="arc"
+       sodipodi:cx="105"
+       sodipodi:cy="148.5"
+       sodipodi:rx="68"
+       sodipodi:ry="68"
+       sodipodi:start="3.5213449"
+       sodipodi:end="6.283184"
+       style="fill:#d7f5ad;fill-opacity:1;stroke:none"
+       id="path1040"
+       sodipodi:arc-type="slice"
+       d="M 41.844558,123.29305 A 68,68 0 0 1 117.83409,81.722113 68,68 0 0 1 173,148.49991 l -68,9e-5 z" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,35.783242,57.038)"
+       id="text2348"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect2350);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="247.71484"
+         y="228.34087"
+         id="tspan12265"><tspan
+           style="font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan12263">40</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="99.961563"
+       y="186.03238"
+       id="text8886"><tspan
+         sodipodi:role="line"
+         id="tspan8884"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="99.961563"
+         y="186.03238"
+         rotate="0 0 0">51</tspan></text>
+  </g>
+</svg>

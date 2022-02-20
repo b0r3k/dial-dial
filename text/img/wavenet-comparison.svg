@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="398.1124mm"
+   height="237.30553mm"
+   viewBox="0 0 398.1124 237.30553"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="wavenet-comparison.svg"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.5499273"
+     inkscape:cx="470.06213"
+     inkscape:cy="201.84486"
+     inkscape:window-width="2542"
+     inkscape:window-height="1336"
+     inkscape:window-x="1281"
+     inkscape:window-y="16"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g13583"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs2">
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14107">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14109"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14111">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14113"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14115">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14117"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14119">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14121"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14123">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14125"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14127">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14129"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14131">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14133"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath14135">
+      <rect
+         style="fill:#5a0101;fill-opacity:1;stroke-width:0.264583"
+         id="rect14137"
+         width="427.71942"
+         height="181.38383"
+         x="98.149338"
+         y="-334.86243" />
+    </clipPath>
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-6" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-7" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-4" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-5" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-79" />
+    <rect
+       x="-65.463196"
+       y="-69.100044"
+       width="154.56589"
+       height="63.644775"
+       id="rect15503-4-9" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-80.543803,-18.466787)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Concatenative:3.86,Parametric:3.67,WaveNet:4.21,Human Speech:4.55"
+     id="g120"
+     transform="translate(-80.543803,-18.466787)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Concatenative:3.86,Parametric:3.67,WaveNet:4.21,Human Speech:4.55,Concatenative:3.47,Parametric:3.79,WaveNet:4.08,Human Speech:4.21"
+     id="g4378"
+     transform="translate(-80.543803,-18.466787)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Concatenative:3.86,Parametric:3.67,WaveNet:4.21,Human Speech:4.55,Concatenative:3.47,Parametric:3.79,WaveNet:4.08,Human Speech:4.21"
+     id="g4491"
+     transform="translate(-80.543803,-18.466787)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Concatenative:3.86,Parametric:3.67,WaveNet:4.21,Human Speech:4.55,Concatenative:3.47,Parametric:3.79,WaveNet:4.08,Human Speech:4.21"
+     id="g12693"
+     transform="translate(24.456197,22.433213)" />
+  <g
+     inkscape:groupmode="layer"
+     inkscape:label="Chart-Layer: Concatenative:3.86,Parametric:3.67,WaveNet:4.21,Human Speech:4.55,Concatenative:3.47,Parametric:3.79,WaveNet:4.08,Human Speech:4.21"
+     id="g13583"
+     transform="translate(24.456197,22.433213)">
+    <g
+       id="g91279"
+       transform="translate(-6.2546156,28.386328)">
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.85963"
+         y="3.7434971"
+         id="text13553">Konkatenační</text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-122.05084"
+         y="48.7435"
+         id="text13557">Parametrické</text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.94232"
+         y="93.743477"
+         id="text13561"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan73937"
+           rotate="0 0 0 0 0 0 0 0">WaveNet</tspan></text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.82347"
+         y="138.74348"
+         id="text13565"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan76641">Lidský mluvčí</tspan></text>
+      <g
+         id="g53105"
+         transform="translate(-11.546981,-3.3678694)">
+        <rect
+           x="155"
+           y="-225.79814"
+           width="35"
+           height="339"
+           style="fill:#f4ddbc"
+           id="rect13551"
+           clip-path="url(#clipPath14135)"
+           transform="translate(-161.6546,271.87346)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,17.721983,49.74771)"
+           id="text15501"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21022">3.86</tspan></text>
+      </g>
+      <g
+         id="g53100"
+         transform="translate(-11.546981,-3.3627094)">
+        <rect
+           x="200"
+           y="-208.79814"
+           width="35"
+           height="322"
+           style="fill:#d99b8a"
+           id="rect13555"
+           clip-path="url(#clipPath14131)"
+           transform="translate(-161.6546,271.8683)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,63.001035,66.742543)"
+           id="text15501-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21024">3.67</tspan></text>
+      </g>
+      <g
+         id="g53090"
+         transform="translate(-11.546981,-2.4454494)">
+        <rect
+           x="290"
+           y="-286.79813"
+           width="35"
+           height="400"
+           style="fill:#d7f5ad"
+           id="rect13563"
+           clip-path="url(#clipPath14123)"
+           transform="translate(-161.6546,270.95104)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,153.25425,-12.174699)"
+           id="text15501-6-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-4);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21026">4.55</tspan></text>
+      </g>
+      <g
+         id="g53095"
+         transform="translate(-11.546981,-2.4609494)">
+        <rect
+           x="245"
+           y="-256.79813"
+           width="35"
+           height="370"
+           style="fill:#c7ddfe"
+           id="rect13559"
+           clip-path="url(#clipPath14127)"
+           transform="translate(-161.6546,270.96654)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,108.57723,17.840804)"
+           id="text15501-6-76"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-5);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21028">4.21</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g91255"
+       transform="translate(41.857769,28.386328)">
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.85963"
+         y="183.74348"
+         id="text13569"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan79517">Konkatenační</tspan></text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-122.05084"
+         y="228.74348"
+         id="text13573"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan81841">Parametrické</tspan></text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.94232"
+         y="273.74347"
+         id="text13577"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan84357">WaveNet</tspan></text>
+      <text
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:georgia;-inkscape-font-specification:'Bitstream Charter';text-align:end;text-anchor:end;fill:#000000"
+         transform="rotate(-90)"
+         x="-121.82347"
+         y="318.74347"
+         id="text13581"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:Georgia;-inkscape-font-specification:Georgia"
+           id="tspan88463">Lidský mluvčí</tspan></text>
+      <g
+         id="g53080"
+         transform="translate(-11.546981,-2.4764594)">
+        <rect
+           x="380"
+           y="-219.79814"
+           width="35"
+           height="333"
+           style="fill:#d99b8a"
+           id="rect13571"
+           clip-path="url(#clipPath14115)"
+           transform="translate(-161.6546,270.98205)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,243.26717,54.830454)"
+           id="text15501-6-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-6);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21030">3.79</tspan></text>
+      </g>
+      <g
+         id="g53085"
+         transform="translate(-11.546981,-2.4609494)">
+        <rect
+           x="335"
+           y="-191.79814"
+           width="35"
+           height="305"
+           style="fill:#f4ddbc"
+           id="rect13567"
+           clip-path="url(#clipPath14119)"
+           transform="translate(-161.6546,270.96654)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,198.0062,82.840789)"
+           id="text15501-6-2"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-7);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21032">3.47</tspan></text>
+      </g>
+      <g
+         id="g53075"
+         transform="translate(-11.546981,-3.3678694)">
+        <rect
+           x="425"
+           y="-244.79814"
+           width="35"
+           height="358"
+           style="fill:#c7ddfe"
+           id="rect13575"
+           clip-path="url(#clipPath14111)"
+           transform="translate(-161.6546,271.87346)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,287.48944,30.74771)"
+           id="text15501-6-70"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-79);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21034">4.08</tspan></text>
+      </g>
+      <g
+         id="g53070"
+         transform="translate(-11.546981,-2.4609494)">
+        <rect
+           x="470"
+           y="-256.79813"
+           width="35"
+           height="370"
+           style="fill:#d7f5ad"
+           id="rect13579"
+           clip-path="url(#clipPath14107)"
+           transform="translate(-161.6546,270.96654)" />
+        <text
+           xml:space="preserve"
+           transform="matrix(0.26458333,0,0,0.26458333,333.57723,17.840804)"
+           id="text15501-6-90"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;white-space:pre;shape-inside:url(#rect15503-4-9);fill:#000000;fill-opacity:1;stroke:none"><tspan
+             x="-65.462891"
+             y="-33.010799"
+             id="tspan21036">4.21</tspan></text>
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="13.924058"
+       y="-14.433726"
+       id="text94077"><tspan
+         sodipodi:role="line"
+         id="tspan94075"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="13.924058"
+         y="-14.433726">Americká angličtina</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="237.74989"
+       y="-12.309832"
+       id="text94077-6"><tspan
+         sodipodi:role="line"
+         id="tspan94075-3"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Georgia;-inkscape-font-specification:Georgia;stroke-width:0.264583"
+         x="237.74989"
+         y="-12.309832">Mandarinská čínština</tspan></text>
+  </g>
+</svg>
